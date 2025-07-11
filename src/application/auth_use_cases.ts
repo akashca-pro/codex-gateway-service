@@ -22,23 +22,23 @@ export class Auth_Use_Cases {
     return this.authService.login(data);
   }
 
-  async resendOtp(data: ResendOtpRequest): Promise<ResendOtpResponse> {
+  async resend_otp(data: ResendOtpRequest): Promise<ResendOtpResponse> {
     return this.authService.resend_otp(data);
   }
 
-  async verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
+  async verify_otp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
     return this.authService.verify_otp(data);
   }
 
-  async googleLogin(data: GoogleLoginRequest): Promise<GoogleLoginResponse> {
+  async google_login(data: GoogleLoginRequest): Promise<GoogleLoginResponse> {
     return this.authService.google_login(data);
   }
 
-  async forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
+  async forgot_password(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
     return this.authService.forgot_password(data);
   }
 
-  async changePassword(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
+  async change_password(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
     return this.authService.change_password(data);
   }
 }
