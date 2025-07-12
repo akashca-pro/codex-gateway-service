@@ -1,23 +1,107 @@
-import { Auth_Use_Cases } from "@/application/auth_use_cases";
-import { Grpc_Auth_Service } from "@/infrastructure/grpc/auth_services";
+import { Request, Response } from "express";
+import { ServiceError } from "@grpc/grpc-js";
+import { Auth_Use_Cases } from "@/application/auth_user_service/auth_use_cases";
+import { Grpc_Auth_Service } from "@/infrastructure/grpc/auth_user_service/auth_services";
 
-import { grpc_handler } from "@/utility/grpc_handler";
+import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
+import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
+import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
+import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 
 const authUseCase = new Auth_Use_Cases(new Grpc_Auth_Service);
 
 export const auth_controller = {
     
-    signup : grpc_handler('signup', authUseCase.signup),
+    signup : async (req : Request, res : Response) => {
 
-    resend_otp : grpc_handler('resend_otp', authUseCase.resend_otp),
+        try {
+            const grpc_response = await authUseCase.signup(req.body);
 
-    verify_otp : grpc_handler('verify_otp', authUseCase.verify_otp),
+            return ResponseHandler.success(res, grpc_response.message , HTTP_STATUS.OK);
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
 
-    login : grpc_handler('login', authUseCase.login),
+    },
 
-    google_login : grpc_handler('google_login', authUseCase.google_login),
+    resend_otp : async (req : Request, res : Response) => {
 
-    forgot_password : grpc_handler('forgot_password', authUseCase.forgot_password),
+        try {
+            const grpc_response = await authUseCase.resend_otp(req.body);
+            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
 
-    change_password : grpc_handler('change_password', authUseCase.change_password)
+    },
+
+    verify_otp : async (req : Request, res : Response) => {
+
+        try {
+            const grpc_response = await authUseCase.verify_otp(req.body);
+            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
+
+    },
+
+    login : async (req : Request, res : Response) => {
+
+        try {
+            const grpc_response = await authUseCase.login(req.body);
+            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
+
+    },
+
+    google_login : async (req : Request, res : Response) => {
+
+        try {
+            const grpc_response = await authUseCase.google_login(req.body);
+            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
+
+    },
+
+    forgot_password : async (req : Request, res : Response) => {
+
+        try {
+            const grpc_response = await authUseCase.forgot_password(req.body);
+            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
+
+    },
+
+    change_password : async (req : Request, res : Response) => {
+
+        try {
+            const grpc_response = await authUseCase.change_password(req.body);
+            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
+        } catch (error) {
+            const grpc_error = error as ServiceError;
+            logger.error(grpc_error.message);
+            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
+        }
+
+    },
+
 }

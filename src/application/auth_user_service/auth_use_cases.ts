@@ -1,4 +1,4 @@
-import { IAuthService } from "../domain/IAuth_services";
+import { IAuthService } from "@/domain/auth_service/IAuth_services";
 import {
     SignupRequest, SignupResponse,
     ResendOtpRequest, ResendOtpResponse,
@@ -11,34 +11,34 @@ import {
 
 export class Auth_Use_Cases {
   constructor(
-    private authService: IAuthService
+    private auth_service: IAuthService
   ) {}
 
   async signup(data: SignupRequest): Promise<SignupResponse> {
-    return this.authService.signup(data);
+    return this.auth_service.signup(data);
   }
 
   async login(data: LoginRequest): Promise<LoginResponse> {
-    return this.authService.login(data);
+    return this.auth_service.login(data);
   }
 
   async resend_otp(data: ResendOtpRequest): Promise<ResendOtpResponse> {
-    return this.authService.resend_otp(data);
+    return this.auth_service.resend_otp(data);
   }
 
   async verify_otp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
-    return this.authService.verify_otp(data);
+    return this.auth_service.verify_otp(data);
   }
 
   async google_login(data: GoogleLoginRequest): Promise<GoogleLoginResponse> {
-    return this.authService.google_login(data);
+    return this.auth_service.google_login(data);
   }
 
   async forgot_password(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
-    return this.authService.forgot_password(data);
+    return this.auth_service.forgot_password(data);
   }
 
   async change_password(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
-    return this.authService.change_password(data);
+    return this.auth_service.change_password(data);
   }
 }

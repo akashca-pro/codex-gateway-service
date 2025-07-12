@@ -1,11 +1,9 @@
-import { credentials, Metadata, ServiceError } from "@grpc/grpc-js";
+import { credentials, Metadata } from "@grpc/grpc-js";
 import { config } from "@/config";
-import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
-import type { grpc_unary_method } from '@/types/grpc_method'
-import { IAuthService } from "@/domain/IAuth_services";
+import { IAuthService } from "@/domain/auth_service/IAuth_services";
 
 import {
-    AuthServiceClient,
+    Auth_User_ServiceClient,
     SignupRequest, SignupResponse,
     ResendOtpRequest, ResendOtpResponse,
     VerifyOtpRequest, VerifyOtpResponse,
@@ -14,39 +12,18 @@ import {
     ForgotPasswordRequest, ForgotPasswordResponse,
     ChangePasswordRequest, ChangePasswordResponse
 } from '@akashcapro/codex-shared-utils';
+import { GrpcBaseService } from "../Grpc_Base_Service";
 
 
-export class Grpc_Auth_Service implements IAuthService {
-    private client : AuthServiceClient;
+export class Grpc_Auth_Service extends GrpcBaseService implements IAuthService {
+    private client : Auth_User_ServiceClient;
 
     constructor(){
-        this.client = new AuthServiceClient(
+        super();
+        this.client = new Auth_User_ServiceClient(
             config.AUTH_SERVICE_URL,
             credentials.createInsecure()
         )
-    }
-
-    // Generic helper to wrap gRPC calls in promises
-    private grpc_call<Req, Res>(
-    method: grpc_unary_method<Req, Res>,
-    request: Req,
-    metadata: Metadata = new Metadata()
-    ): Promise<Res> {
-    return new Promise((resolve, reject) => {
-        const deadline = new Date(Date.now() + config.DEFAULT_GRPC_TIMEOUT); // 5 seconds
-        method(
-        request,
-        metadata,
-        { deadline },
-        (error: ServiceError | null, response: Res) => {
-            if (error) {
-            logger.error(`gRPC error in ${method.name}: ${error.message}`);
-            return reject(error);
-            }
-            resolve(response);
-        }
-        );
-    });
     }
 
     // Signup method
@@ -82,5 +59,3 @@ export class Grpc_Auth_Service implements IAuthService {
         return this.grpc_call(this.client.changePassword,request,metadata)
     } 
 }
-
-export const auth_service = new Grpc_Auth_Service()

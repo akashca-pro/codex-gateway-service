@@ -12,7 +12,7 @@ const verify_jwt = (token : string) : CustomJwtPayload => {
     return jwt.verify(token,secret) as CustomJwtPayload
 }
 
-export const jwt_middleware = (req : Request, res : Response, next : NextFunction) =>{
+export const token_verification = (req : Request, res : Response, next : NextFunction) =>{
 
     const token = req.cookies?.token
 
@@ -21,7 +21,10 @@ export const jwt_middleware = (req : Request, res : Response, next : NextFunctio
 
     try {
         const decoded = verify_jwt(token);
-        req.userId = decoded.userId;
+
+        if(!decoded) return ResponseHandler.error(res,'Invalid Token',HTTP_STATUS.UNAUTHORIZED)
+
+        req.user_id = decoded.user_id;
         req.email = decoded.email;
         req.role = decoded.role;
         next();
@@ -32,4 +35,4 @@ export const jwt_middleware = (req : Request, res : Response, next : NextFunctio
     }
 };
 
-export default jwt_middleware
+export default token_verification
