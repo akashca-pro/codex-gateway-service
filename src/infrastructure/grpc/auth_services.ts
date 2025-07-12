@@ -1,8 +1,8 @@
 import { credentials, Metadata, ServiceError } from "@grpc/grpc-js";
-import { config } from "../../config";
+import { config } from "@/config";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
-import type { grpc_unary_method } from './grpc_method'
-import { IAuthService } from "../../domain/IAuth_services";
+import type { grpc_unary_method } from '@/types/grpc_method'
+import { IAuthService } from "@/domain/IAuth_services";
 
 import {
     AuthServiceClient,
@@ -15,6 +15,7 @@ import {
     ChangePasswordRequest, ChangePasswordResponse
 } from '@akashcapro/codex-shared-utils';
 
+
 export class Grpc_Auth_Service implements IAuthService {
     private client : AuthServiceClient;
 
@@ -26,21 +27,27 @@ export class Grpc_Auth_Service implements IAuthService {
     }
 
     // Generic helper to wrap gRPC calls in promises
-    private grpc_call<Req,Res>(
-        method : grpc_unary_method<Req,Res>, 
-        request : Req,
-        metadata : Metadata = new Metadata()
-    ) : Promise<Res> {
-        return new Promise((resolve,reject)=>{
-            method.call(this.client,request,metadata,(error : ServiceError | null, response : Res) => {
-                if(error){
-                    logger.error(`gRPC error in ${method.name} : ${error.message}`);
-                    return reject(error);
-                }
-                resolve(response);
-            });
-        });
-    };
+    private grpc_call<Req, Res>(
+    method: grpc_unary_method<Req, Res>,
+    request: Req,
+    metadata: Metadata = new Metadata()
+    ): Promise<Res> {
+    return new Promise((resolve, reject) => {
+        const deadline = new Date(Date.now() + config.DEFAULT_GRPC_TIMEOUT); // 5 seconds
+        method(
+        request,
+        metadata,
+        { deadline },
+        (error: ServiceError | null, response: Res) => {
+            if (error) {
+            logger.error(`gRPC error in ${method.name}: ${error.message}`);
+            return reject(error);
+            }
+            resolve(response);
+        }
+        );
+    });
+    }
 
     // Signup method
     async signup(request : SignupRequest, metadata : Metadata = new Metadata()) : Promise<SignupResponse> {

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { config } from '../../config';
+import { config } from '@/config';
 import { Request, Response, NextFunction } from 'express';
 import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
 

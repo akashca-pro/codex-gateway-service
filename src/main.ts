@@ -1,13 +1,14 @@
 import express,{Request, Response, NextFunction} from 'express';
 
-import { limiter } from './presentation/middlewares/rate-limiter';
+import { limiter } from '@/presentation/middlewares/rate-limiter';
 import helmet from 'helmet';
 import cors from 'cors'
 import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
-import { config } from './config';
+import { config } from '@/config';
 import cookieParser from 'cookie-parser';
 
-import authRoutes from './presentation/routes/auth'
+import authRoutes from '@/presentation/routes/auth_user/auth'
+import userRoutes from '@/presentation/routes/auth_user/user'
 
 const app = express();
 
@@ -27,9 +28,9 @@ app.get('/health', (req : Request, res : Response)=>{
     res.status(200).json({ status : 'OK' });
 })
 
-// Route to Auth service
-app.use('/api/auth/',authRoutes)
-
+// Route to Auth_user service
+app.use('/api/v1/auth/', authRoutes);
+app.use('/api/v1/user/', userRoutes);
 
 // 404 handler
 app.use((req : Request, res : Response, next : NextFunction)=>{
