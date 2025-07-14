@@ -4,13 +4,14 @@ import { IAuthService } from "@/domain/auth_service/IAuth_services";
 
 import {
     Auth_User_ServiceClient,
-    SignupRequest, SignupResponse,
-    ResendOtpRequest, ResendOtpResponse,
-    VerifyOtpRequest, VerifyOtpResponse,
-    LoginRequest, LoginResponse,
-    GoogleLoginRequest, GoogleLoginResponse,
-    ForgotPasswordRequest, ForgotPasswordResponse,
-    ChangePasswordRequest, ChangePasswordResponse
+    Signup_Request, Signup_Response,
+    Resend_Otp_Request, Resend_Otp_Response,
+    Verify_Otp_Request, Verify_Otp_Response,
+    Login_Request, Login_Response,
+    Google_Login_Request, Google_Login_Response,
+    Forgot_Password_Request, Forgot_Password_Response,
+    Change_Password_Request, Change_Password_Response,
+    Refresh_Token_Request, Refresh_Token_Response
 } from '@akashcapro/codex-shared-utils';
 import { GrpcBaseService } from "../Grpc_Base_Service";
 
@@ -26,36 +27,35 @@ export class Grpc_Auth_Service extends GrpcBaseService implements IAuthService {
         )
     }
 
-    // Signup method
-    async signup(request : SignupRequest, metadata : Metadata = new Metadata()) : Promise<SignupResponse> {
+    async signup(request : Signup_Request, metadata : Metadata = new Metadata()) : Promise<Signup_Response> {
         return this.grpc_call(this.client.signup, request, metadata)
     }
 
-    // Resend OTP method
-    async resend_otp(request : ResendOtpRequest, metadata : Metadata = new Metadata()) : Promise<ResendOtpResponse> {
+    async resend_otp(request : Resend_Otp_Request, metadata : Metadata = new Metadata()) : Promise<Resend_Otp_Response> {
         return this.grpc_call(this.client.resendOtp,request, metadata)
     } 
 
-    // Verify OTP method
-    async verify_otp(request : VerifyOtpRequest, metadata : Metadata = new Metadata()) : Promise<VerifyOtpResponse> {
+    async verify_otp(request : Verify_Otp_Request, metadata : Metadata = new Metadata()) : Promise<Verify_Otp_Response> {
         return this.grpc_call(this.client.verifyOtp,request,metadata)
     }
     
-    // Login method
-    async login(request : LoginRequest, metadata : Metadata = new Metadata()) : Promise<LoginResponse> {
+    async login(request : Login_Request, metadata : Metadata = new Metadata()) : Promise<Login_Response> {
         return this.grpc_call(this.client.login,request,metadata);
     }
 
-    // Google login
-    async google_login(request : GoogleLoginRequest, metadata: Metadata = new Metadata()) : Promise<GoogleLoginResponse> {
+    async google_login(request : Google_Login_Request, metadata: Metadata = new Metadata()) : Promise<Google_Login_Response> {
         return this.grpc_call(this.client.googleLogin,request,metadata)
     }   
 
-    async forgot_password(request : ForgotPasswordRequest, metadata: Metadata = new Metadata()) : Promise<ForgotPasswordResponse> {
+    async forgot_password(request : Forgot_Password_Request, metadata: Metadata = new Metadata()) : Promise<Forgot_Password_Response> {
         return this.grpc_call(this.client.forgotPassword,request,metadata)
     }
     
-    async change_password(request : ChangePasswordRequest, metadata: Metadata = new Metadata()) : Promise<ChangePasswordResponse> {
+    async change_password(request : Change_Password_Request, metadata: Metadata = new Metadata()) : Promise<Change_Password_Response> {
         return this.grpc_call(this.client.changePassword,request,metadata)
-    } 
+    }
+
+    async refresh_token(request: Refresh_Token_Request, metadata: Metadata = new Metadata()): Promise<Refresh_Token_Response> {
+        return this.grpc_call(this.client.refreshToken,request, metadata)
+    }
 }
