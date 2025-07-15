@@ -10,6 +10,7 @@ import {
 } from '@akashcapro/codex-shared-utils';
 
 export interface IAuthService {
+  
   signup(req: Signup_Request): Promise<Signup_Response>;
 
   resend_otp(req: Resend_Otp_Request): Promise<Resend_Otp_Response>;

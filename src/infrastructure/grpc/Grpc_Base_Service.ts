@@ -3,7 +3,7 @@ import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
 import type { grpc_unary_method } from '@/types/grpc_method';
 import { config } from '@/config';
 
-export abstract class GrpcBaseService {
+export class GrpcBaseService {
     
   protected grpc_call<Req, Res>(
     method: grpc_unary_method<Req, Res>,

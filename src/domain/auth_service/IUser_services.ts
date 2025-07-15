@@ -1,14 +1,14 @@
 import { User_Context } from '@/types/user_context'
 import {
 
-    ProfileRequest,
-    ProfileResponse
+    Profile_Request,
+    Profile_Response
 
 } from '@akashcapro/codex-shared-utils'
 
 
 export interface IUserService {
 
-    profile : (req : ProfileRequest, context? : User_Context) => Promise<ProfileResponse>
+    profile : (req : Profile_Request, context? : User_Context) => Promise<Profile_Response>
 
 }

@@ -5,8 +5,8 @@ import { IUserService } from '@/domain/auth_service/IUser_services'
 import {
 
     Auth_User_ServiceClient,
-    ProfileRequest,
-    ProfileResponse
+    Profile_Request,
+    Profile_Response
 
 } from '@akashcapro/codex-shared-utils'
 import { GrpcBaseService } from "../Grpc_Base_Service";
@@ -24,7 +24,7 @@ export class Grpc_User_Service extends GrpcBaseService implements IUserService {
         )
     }
 
-    async profile(request : ProfileRequest, context? : User_Context) : Promise<ProfileResponse> {
+    async profile(request : Profile_Request, context? : User_Context) : Promise<Profile_Response> {
         const metadata = new Metadata();
 
         if(context){
