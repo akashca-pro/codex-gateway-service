@@ -15,9 +15,9 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
 
-    "baseUrl": ".",               
+    "baseUrl": "./src",               
     "paths": {
-      "@/*": ["src/*"]           
+      "@/*": ["*"]           
     }
 
   },

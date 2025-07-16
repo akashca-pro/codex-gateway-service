@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export const set_cookie = (
+export const setCookie = (
     res : Response,
     token_name : string,
     token : string, 

@@ -1,0 +1,36 @@
+import { credentials, Metadata } from "@grpc/grpc-js";
+import { config } from "@/config";
+import { IAdminProfileService } from "@/domain/auth-service/admin/IAdminProfileService";
+
+import { 
+  AuthAdminServiceClient,
+  AdminProfileRequest, AdminProfileResponse
+} from '@akashcapro/codex-shared-utils';
+
+import { GrpcBaseService } from "../../GrpcBaseService";
+import { TokenContext } from "@/types/TokenContext";
+
+export class GrpcAdminProfileService extends GrpcBaseService implements IAdminProfileService {
+  private client: AuthAdminServiceClient;
+
+  constructor() {
+    super();
+    this.client = new AuthAdminServiceClient(
+      config.AUTH_SERVICE_URL,
+      credentials.createInsecure()
+    );
+  }
+
+  async profile(
+    request: AdminProfileRequest,
+    meta?: TokenContext
+  ): Promise<AdminProfileResponse> {
+    const metadata = new Metadata();
+    if (meta) {
+      metadata.set('userId', meta.userId);
+      metadata.set('email', meta.email);
+      metadata.set('role', meta.role);
+    }
+    return this.grpcCall(this.client.profile, request, metadata);
+  }
+}
