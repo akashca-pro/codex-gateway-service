@@ -1,6 +1,6 @@
 import { credentials, Metadata } from "@grpc/grpc-js";
 import { config } from "@/config";
-import { IAuthService } from "@/domain/auth_service/IAuth_services";
+import { I_User_Auth_Service } from "@/domain/auth_service/user/I_User_Auth_services";
 
 import {
     Auth_User_ServiceClient,
@@ -13,10 +13,10 @@ import {
     Change_Password_Request, Change_Password_Response,
     Refresh_Token_Request, Refresh_Token_Response
 } from '@akashcapro/codex-shared-utils';
-import { GrpcBaseService } from "../Grpc_Base_Service";
+import { GrpcBaseService } from "../../Grpc_Base_Service";
 
 
-export class Grpc_Auth_Service extends GrpcBaseService implements IAuthService {
+export class Grpc_User_Auth_Service extends GrpcBaseService implements I_User_Auth_Service {
     private client : Auth_User_ServiceClient;
 
     constructor(){

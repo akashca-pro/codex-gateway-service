@@ -9,7 +9,7 @@ import {
     Refresh_Token_Request, Refresh_Token_Response
 } from '@akashcapro/codex-shared-utils';
 
-export interface IAuthService {
+export interface I_User_Auth_Service {
   
   signup(req: Signup_Request): Promise<Signup_Response>;
 

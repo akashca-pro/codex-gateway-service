@@ -1,4 +1,4 @@
-import { IAuthService } from "@/domain/auth_service/IAuth_services";
+import { I_User_Auth_Service } from "@/domain/auth_service/user/I_User_Auth_services";
 import {
     Signup_Request, Signup_Response,
     Resend_Otp_Request, Resend_Otp_Response,
@@ -10,9 +10,9 @@ import {
     Refresh_Token_Request, Refresh_Token_Response
 } from '@akashcapro/codex-shared-utils';
 
-export class Auth_Use_Cases {
+export class User_Auth_Use_Cases {
   constructor(
-    private auth_service: IAuthService
+    private auth_service: I_User_Auth_Service
   ) {}
 
   async signup(data: Signup_Request): Promise<Signup_Response> {

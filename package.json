@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@akashcapro/codex-shared-utils": "^0.1.6",
+    "@akashcapro/codex-shared-utils": "^0.1.9",
     "@grpc/grpc-js": "^1.13.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

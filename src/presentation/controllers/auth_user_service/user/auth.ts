@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ServiceError } from "@grpc/grpc-js";
-import { Auth_Use_Cases } from "@/application/auth_user_service/auth_use_cases";
-import { Grpc_Auth_Service } from "@/infrastructure/grpc/auth_user_service/auth_services";
+import { User_Auth_Use_Cases } from "@/application/auth_user_service/user/user_auth_use_cases";
+import { Grpc_User_Auth_Service } from "@/infrastructure/grpc/auth_user_service/user/impl_user_auth_services";
 
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
@@ -9,14 +9,16 @@ import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 import { set_cookie } from "@/utility/set-cookie";
 
-const authUseCase = new Auth_Use_Cases(new Grpc_Auth_Service);
+const auth_use_case = new User_Auth_Use_Cases(
+    new Grpc_User_Auth_Service
+);
 
 export const auth_controller = {
     
     signup : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.signup(req.body);
+            const grpc_response = await auth_use_case.signup(req.body);
             return ResponseHandler.success(res, grpc_response.message , HTTP_STATUS.OK);
 
         } catch (error) {
@@ -30,7 +32,7 @@ export const auth_controller = {
     resend_otp : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.resend_otp(req.body);
+            const grpc_response = await auth_use_case.resend_otp(req.body);
             return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
         } catch (error) {
             const grpc_error = error as ServiceError;
@@ -43,7 +45,7 @@ export const auth_controller = {
     verify_otp : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.verify_otp(req.body);
+            const grpc_response = await auth_use_case.verify_otp(req.body);
 
             set_cookie(
                   res,
@@ -69,7 +71,7 @@ export const auth_controller = {
     login : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.login(req.body);
+            const grpc_response = await auth_use_case.login(req.body);
 
             set_cookie(
                   res,
@@ -96,7 +98,7 @@ export const auth_controller = {
     google_login : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.google_login(req.body);
+            const grpc_response = await auth_use_case.google_login(req.body);
             return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
         } catch (error) {
             const grpc_error = error as ServiceError;
@@ -109,7 +111,7 @@ export const auth_controller = {
     forgot_password : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.forgot_password(req.body);
+            const grpc_response = await auth_use_case.forgot_password(req.body);
             return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
         } catch (error) {
             const grpc_error = error as ServiceError;
@@ -122,7 +124,7 @@ export const auth_controller = {
     change_password : async (req : Request, res : Response) => {
 
         try {
-            const grpc_response = await authUseCase.change_password(req.body);
+            const grpc_response = await auth_use_case.change_password(req.body);
             return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK)
         } catch (error) {
             const grpc_error = error as ServiceError;
@@ -137,9 +139,9 @@ export const auth_controller = {
             const { user_id, email, role } = req;
 
             if (!user_id || !email || !role) 
-                return ResponseHandler.error(res, "Missing user identity in request", HTTP_STATUS.UNAUTHORIZED);
+                return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
 
-            const grpc_response = await authUseCase.refresh_token({user_id, email, role})
+            const grpc_response = await auth_use_case.refresh_token({user_id, email, role})
 
             set_cookie(
                   res,
