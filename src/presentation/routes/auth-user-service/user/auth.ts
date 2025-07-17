@@ -12,7 +12,7 @@ Router.post('/login',authController.login);
 Router.post('/login/google-login',authController.googleLogin);
 Router.post('/password/forgot/request',authController.forgotPassword);
 Router.post('/password/change',authController.changePassword);
-Router.post('/refresh-token',verifyRefreshToken,authController.refreshToken);
+Router.post('/refresh-token',verifyRefreshToken('user'),authController.refreshToken);
 
 
 export default Router

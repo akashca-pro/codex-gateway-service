@@ -10,12 +10,11 @@ import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 
+const profileUseCase = new AdminProfileUseCases(new GrpcAdminProfileService())
 
-export class ProfileController {
-    constructor(
-        private profileUseCase = new AdminProfileUseCases(new GrpcAdminProfileService())
-    ){}
-  public async profile(req: Request, res: Response) {
+export const profileController = {
+
+  profile : async (req: Request, res: Response) => {
     try {
       const { userId, email, role } = req;
 
@@ -24,7 +23,7 @@ export class ProfileController {
       }
 
       const metadata: TokenContext = { userId, email, role };
-      const grpcResponse = await this.profileUseCase.profile(req.body, metadata);
+      const grpcResponse = await profileUseCase.profile(req.body, metadata);
 
       return ResponseHandler.success(res, 'Load Profile Success', HTTP_STATUS.OK, {...grpcResponse});
     } catch (error) {

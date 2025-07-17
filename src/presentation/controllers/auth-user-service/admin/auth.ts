@@ -8,16 +8,13 @@ import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { ServiceError } from "@grpc/grpc-js";
 import { Request, Response } from "express";
 
-export class AuthController {
-  private readonly authUseCase: Admin_Auth_Use_Cases;
+const authUseCase = new Admin_Auth_Use_Cases(new GrpcAdminAuthService())
 
-  constructor() {
-    this.authUseCase = new Admin_Auth_Use_Cases(new GrpcAdminAuthService());
-  }
+export const authController = {
 
-  public login = async (req: Request, res: Response): Promise<Response> => {
+  login : async (req: Request, res: Response): Promise<Response> => {
     try {
-      const grpcResponse = await this.authUseCase.login(req.body);
+      const grpcResponse = await authUseCase.login(req.body);
 
       setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
@@ -32,9 +29,9 @@ export class AuthController {
           mapGrpcCodeToHttp(grpcError.code)
         );
     }
-  };
+  },
 
-  public refreshToken = async (req: Request, res: Response): Promise<Response> => {
+  refreshToken : async (req: Request, res: Response): Promise<Response> => {
     try {
         
       const { userId, email, role } = req ;
@@ -43,7 +40,7 @@ export class AuthController {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
 
-      const grpcResponse = await this.authUseCase.refreshToken({ userId, email, role });
+      const grpcResponse = await authUseCase.refreshToken({ userId, email, role });
 
       setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
 
@@ -57,5 +54,5 @@ export class AuthController {
           mapGrpcCodeToHttp(grpcError.code)
         );
     }
-  };
+  }
 }

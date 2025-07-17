@@ -11,7 +11,10 @@ const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
     return jwt.verify(token,secret) as CustomJwtPayload
 }
 
-export const verifyAccessToken = (req : Request, res : Response, next : NextFunction) =>{
+export const verifyAccessToken = (acceptedRole : string) => (
+    req : Request,
+    res : Response, 
+    next : NextFunction) =>{
 
     const token = req.cookies['accessToken']
 
@@ -25,9 +28,13 @@ export const verifyAccessToken = (req : Request, res : Response, next : NextFunc
             return ResponseHandler.error(res, 'Invalid Token payload', HTTP_STATUS.UNAUTHORIZED);
         }
 
+        if(decoded.role !== acceptedRole)
+            return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
+
         req.userId = decoded.userId;
         req.email = decoded.email;
         req.role = decoded.role;
+
         next();
         
     } catch (error) {
@@ -36,7 +43,10 @@ export const verifyAccessToken = (req : Request, res : Response, next : NextFunc
     }
 };
 
-export const verifyRefreshToken = (req : Request, res : Response, next : NextFunction) => {
+export const verifyRefreshToken = (acceptedRole : string) => (
+    req : Request,
+    res : Response,
+    next : NextFunction) => {
 
     const token = req.cookies['refreshToken'];
 
@@ -49,6 +59,9 @@ export const verifyRefreshToken = (req : Request, res : Response, next : NextFun
         if (!decoded || !decoded.userId || !decoded.email || !decoded.role) {
             return ResponseHandler.error(res, 'Invalid Token', HTTP_STATUS.UNAUTHORIZED);
         }
+
+        if(decoded.role !== acceptedRole)
+            return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
         req.userId = decoded.userId;
         req.email = decoded.email;
