@@ -4,7 +4,6 @@ import { verifyAccessToken } from '@/presentation/middlewares/jwt'
 
 const Router = express.Router();
 
-Router.use()
 
 Router.get('/profile', verifyAccessToken('admin'), profileController.profile)
 

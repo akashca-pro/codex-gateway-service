@@ -2,10 +2,14 @@ import express from 'express';
 import { authController } from '@/presentation/controllers/auth-user-service/user/auth';
 import { verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
+import { validateRequestBody } from '@/presentation/middlewares/validateRequest';
+import { signupSchema } from '@/infrastructure/validation/user.schema';
+
 const Router = express.Router();
 
 
-Router.post('/signup',authController.signup);
+
+Router.post('/signup', validateRequestBody(signupSchema), authController.signup);
 Router.post('/otp/resend-otp',authController.resendOtp);
 Router.post('/otp/verify-otp',authController.verifyOtp);
 Router.post('/login',authController.login);
