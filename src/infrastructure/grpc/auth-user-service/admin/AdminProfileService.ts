@@ -16,21 +16,21 @@ export class GrpcAdminProfileService extends GrpcBaseService implements IAdminPr
   constructor() {
     super();
     this.client = new AuthAdminServiceClient(
-      config.AUTH_SERVICE_URL,
+      config.GRPC_AUTH_SERVER_URL,
       credentials.createInsecure()
     );
   }
 
-  async profile(
+  profile = async (
     request: AdminProfileRequest,
     meta?: TokenContext
-  ): Promise<AdminProfileResponse> {
+  ): Promise<AdminProfileResponse> => {
     const metadata = new Metadata();
     if (meta) {
       metadata.set('userId', meta.userId);
       metadata.set('email', meta.email);
       metadata.set('role', meta.role);
     }
-    return this.grpcCall(this.client.profile, request, metadata);
+    return this.grpcCall(this.client.profile.bind(this.client), request, metadata);
   }
 }

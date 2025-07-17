@@ -4,8 +4,9 @@ import { ProfileController } from '@/presentation/controllers/auth-user-service/
 
 const Router = express.Router();
 
+const profileController = new ProfileController()
 
-Router.get('/profile', verifyAccessToken, ProfileController.profile);
+Router.get('/profile', verifyAccessToken, profileController.profile);
 
 
 export default Router;

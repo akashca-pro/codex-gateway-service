@@ -22,40 +22,59 @@ export class GrpcUserAuthService extends GrpcBaseService implements IUserAuthSer
   constructor() {
     super();
     this.client = new AuthUserServiceClient(
-      config.AUTH_SERVICE_URL,
+      config.GRPC_AUTH_SERVER_URL,
       credentials.createInsecure()
     );
   }
 
-  async signup(request: SignupRequest, metadata: Metadata = new Metadata()): Promise<SignupResponse> {
-    return this.grpcCall(this.client.signup, request, metadata);
+  signup = async (
+    request: SignupRequest, 
+    metadata: Metadata = new Metadata()
+  ): Promise<SignupResponse> => {
+    return this.grpcCall(this.client.signup.bind(this.client), request, metadata);
   }
 
-  async resendOtp(request: ResendOtpRequest, metadata: Metadata = new Metadata()): Promise<ResendOtpResponse> {
-    return this.grpcCall(this.client.resendOtp, request, metadata);
+  resendOtp = async (
+    request: ResendOtpRequest,
+     metadata: Metadata = new Metadata()
+    ): Promise<ResendOtpResponse> => {
+    return this.grpcCall(this.client.resendOtp.bind(this.client), request, metadata);
   }
 
-  async verifyOtp(request: VerifyOtpRequest, metadata: Metadata = new Metadata()): Promise<VerifyOtpResponse> {
-    return this.grpcCall(this.client.verifyOtp, request, metadata);
+  verifyOtp = async (
+    request: VerifyOtpRequest,
+     metadata: Metadata = new Metadata()
+    ): Promise<VerifyOtpResponse> => {
+    return this.grpcCall(this.client.verifyOtp.bind(this.client), request, metadata);
   }
 
-  async login(request: LoginRequest, metadata: Metadata = new Metadata()): Promise<LoginResponse> {
-    return this.grpcCall(this.client.login, request, metadata);
+  login = async (request: LoginRequest,
+     metadata: Metadata = new Metadata()
+    ): Promise<LoginResponse> => {
+    return this.grpcCall(this.client.login.bind(this.client), request, metadata);
   }
 
-  async googleLogin(request: GoogleLoginRequest, metadata: Metadata = new Metadata()): Promise<GoogleLoginResponse> {
-    return this.grpcCall(this.client.googleLogin, request, metadata);
+  googleLogin = async (request: GoogleLoginRequest,
+     metadata: Metadata = new Metadata()
+    ): Promise<GoogleLoginResponse> => {
+    return this.grpcCall(this.client.googleLogin.bind(this.client), request, metadata);
   }
 
-  async forgotPassword(request: ForgotPasswordRequest, metadata: Metadata = new Metadata()): Promise<ForgotPasswordResponse> {
-    return this.grpcCall(this.client.forgotPassword, request, metadata);
+  forgotPassword = async (
+    request: ForgotPasswordRequest, metadata: Metadata = new Metadata()
+  ): Promise<ForgotPasswordResponse> => {
+    return this.grpcCall(this.client.forgotPassword.bind(this.client), request, metadata);
   }
 
-  async changePassword(request: ChangePasswordRequest, metadata: Metadata = new Metadata()): Promise<ChangePasswordResponse> {
-    return this.grpcCall(this.client.changePassword, request, metadata);
+  changePassword = async (
+    request: ChangePasswordRequest, metadata: Metadata = new Metadata()
+  ): Promise<ChangePasswordResponse> => {
+    return this.grpcCall(this.client.changePassword.bind(this.client), request, metadata);
   }
 
-  async refreshToken(request: RefreshTokenRequest, metadata: Metadata = new Metadata()): Promise<RefreshTokenResponse> {
-    return this.grpcCall(this.client.refreshToken, request, metadata);
+  refreshToken = async (
+    request: RefreshTokenRequest, metadata: Metadata = new Metadata()
+  ): Promise<RefreshTokenResponse> => {
+    return this.grpcCall(this.client.refreshToken.bind(this.client), request, metadata);
   }
 }

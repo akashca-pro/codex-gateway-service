@@ -16,22 +16,22 @@ export class GrpcAdminAuthService extends GrpcBaseService implements IAdminAuthS
   constructor() {
     super();
     this.client = new AuthAdminServiceClient(
-      config.AUTH_SERVICE_URL,
+      config.GRPC_AUTH_SERVER_URL,
       credentials.createInsecure()
     );
   }
 
-  async login(
+  login = async (
     request: LoginRequest,
     metadata: Metadata = new Metadata()
-  ): Promise<LoginResponse> {
-    return this.grpcCall(this.client.login, request, metadata);
+  ): Promise<LoginResponse>  => {
+    return this.grpcCall(this.client.login.bind(this.client), request, metadata);
   }
 
-  async refreshToken(
+  refreshToken = async (
     request: RefreshTokenRequest,
     metadata: Metadata = new Metadata()
-  ): Promise<RefreshTokenResponse> {
-    return this.grpcCall(this.client.refreshToken, request, metadata);
+  ): Promise<RefreshTokenResponse> => {
+    return this.grpcCall(this.client.refreshToken.bind(this.client), request, metadata);
   }
 }

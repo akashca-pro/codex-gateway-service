@@ -19,12 +19,15 @@ export class GrpcUserProfileService extends GrpcBaseService implements IUserProf
     constructor(){
         super();
         this.client = new AuthUserServiceClient(
-            config.AUTH_SERVICE_URL,
+            config.GRPC_AUTH_SERVER_URL,
             credentials.createInsecure()
         )
     }
 
-    async profile(request : UserProfileRequest, meta? : TokenContext) : Promise<UserProfileResponse> {
+    profile = async(
+        request : UserProfileRequest,
+         meta? : TokenContext
+        ) : Promise<UserProfileResponse> => {
         const metadata = new Metadata();
 
         if(meta){
@@ -33,7 +36,7 @@ export class GrpcUserProfileService extends GrpcBaseService implements IUserProf
             metadata.set('role',meta.role);
         }
 
-        return this.grpcCall(this.client.profile, request, metadata)
+        return this.grpcCall(this.client.profile.bind(this.client), request, metadata)
     }
 
 }

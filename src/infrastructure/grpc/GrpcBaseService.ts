@@ -16,11 +16,10 @@ export class GrpcBaseService {
       method(
         request,
         metadata,
-        { deadline } as CallOptions,
         (error: ServiceError | null, response: Res) => {
           if (error) {
             logger.error(`gRPC error in ${method.name}: ${error.message}`);
-            return reject(error);
+            reject(error);
           }
           resolve(response);
         }

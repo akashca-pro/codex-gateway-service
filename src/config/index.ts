@@ -9,8 +9,7 @@ interface Config {
   JWT_REFRESH_TOKEN_SECRET: string;
   LOG_LEVEL: string;
   REDIS_URL: string;
-  AUTH_SERVICE_URL: string;
-
+  GRPC_AUTH_SERVER_URL : string;
 }
 
 export const config: Config = {
@@ -21,5 +20,5 @@ export const config: Config = {
   JWT_REFRESH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET || 'jwt_refresh_token_secret',
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
   REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
-  AUTH_SERVICE_URL: process.env.AUTH_SERVICE_URL || 'http://localhost:3001',
-};
+  GRPC_AUTH_SERVER_URL : process.env.GRPC_AUTH_SERVER_URL || 'localhost:50051'
+}

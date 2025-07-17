@@ -1,6 +1,6 @@
 import { Admin_Auth_Use_Cases } from "@/application/auth-user-service/admin/AdminAuthUseCases";
-import { Grpc_Admin_Auth_Service } from "@/infrastructure/grpc/auth-user-service/admin/AdminAuthService";
-import { set_cookie } from "@/utility/set-cookie";
+import { GrpcAdminAuthService } from "@/infrastructure/grpc/auth-user-service/admin/AdminAuthService";
+import { setCookie } from "@/utility/set-cookie";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
@@ -8,61 +8,46 @@ import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { ServiceError } from "@grpc/grpc-js";
 import { Request, Response } from "express";
 
+export class AuthController {
+  private readonly authUseCase: Admin_Auth_Use_Cases;
 
-const auth_admin_case = new Admin_Auth_Use_Cases(
-    new Grpc_Admin_Auth_Service
-)
+  constructor() {
+    this.authUseCase = new Admin_Auth_Use_Cases(new GrpcAdminAuthService());
+  }
 
-export const auth_controller = {
+  public login = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const grpcResponse = await this.authUseCase.login(req.body);
 
-    login : async (req : Request, res : Response) => {
+      setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
+      setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
 
-        try {
-            const grpc_response = await auth_admin_case.login(req.body)
-
-            set_cookie(
-                  res,
-                 'access_token',
-                  grpc_response.access_token,
-                  24 * 60 * 60 * 1000);
-
-            set_cookie(
-                  res,
-                 'refresh_token',
-                  grpc_response.refresh_token,
-                  7 * 24 * 60 * 60 * 1000);
-
-            return ResponseHandler.success(res, grpc_response.message, HTTP_STATUS.OK);
-            
-        } catch (error) {
-            const grpc_error = error as ServiceError;
-            logger.error(grpc_error.message);
-            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
-        }
-
-    },
-
-    refresh_token : async(req : Request, res : Response) => {
-        try {
-            const { user_id, email, role } = req;
-
-            if (!user_id || !email || !role) 
-                return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
-
-            const grpc_response = await auth_admin_case.refresh_token({user_id, email, role});
-
-            set_cookie(
-                  res,
-                 'access_token',
-                  grpc_response.access_token,
-                  24 * 60 * 60 * 1000);
-
-            return ResponseHandler.success(res,grpc_response.message);
-
-        } catch (error) {
-            const grpc_error = error as ServiceError;
-            logger.error(grpc_error.message);
-            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
-        }
+      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
+    } catch (error) {
+      const grpcError = error as ServiceError;
+      logger.error(grpcError.message);
+      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
     }
+  };
+
+  public refreshToken = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        
+      const { userId, email, role } = req ;
+
+      if (!userId || !email || !role) {
+        return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
+      }
+
+      const grpcResponse = await this.authUseCase.refreshToken({ userId, email, role });
+
+      setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
+
+      return ResponseHandler.success(res, grpcResponse.message);
+    } catch (error) {
+      const grpcError = error as ServiceError;
+      logger.error(grpcError.message);
+      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+    }
+  };
 }

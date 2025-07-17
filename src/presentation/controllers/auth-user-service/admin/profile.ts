@@ -1,37 +1,36 @@
-import { Admin_Profile_Use_Cases } from "@/application/auth-user-service/admin/AdminProfileUseCases";
-import { Grpc_Admin_Profile_Service } from "@/infrastructure/grpc/auth-user-service/admin/AdminProfileService";
-import { Token_Context } from "@/types/TokenContext";
-import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
-import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
+import { Request, Response } from "express";
+import { ServiceError } from "@grpc/grpc-js";
+
+import { AdminProfileUseCases } from "@/application/auth-user-service/admin/AdminProfileUseCases";
+import { GrpcAdminProfileService } from "@/infrastructure/grpc/auth-user-service/admin/AdminProfileService";
+import { TokenContext } from "@/types/TokenContext";
+
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { ServiceError } from "@grpc/grpc-js";
-import { Request, Response } from "express";
+import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
+import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 
 
-const profile_use_case = new Admin_Profile_Use_Cases(
-    new Grpc_Admin_Profile_Service
-)
+export class ProfileController {
+    constructor(
+        private profileUseCase = new AdminProfileUseCases(new GrpcAdminProfileService())
+    ){}
+  public async profile(req: Request, res: Response) {
+    try {
+      const { userId, email, role } = req;
 
+      if (!userId || !email || !role) {
+        return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
+      }
 
-export const profile_controller = {
-    profile : async (req : Request, res : Response) => {
+      const metadata: TokenContext = { userId, email, role };
+      const grpcResponse = await this.profileUseCase.profile(req.body, metadata);
 
-        try {
-            const { user_id, email, role } = req;
-
-            if (!user_id || !email || !role) 
-                return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
-        
-            const metadata: Token_Context = { user_id, email, role };
-            const grpc_response = await profile_use_case.profile(req.body, metadata)
-
-
-        } catch (error) {
-            const grpc_error = error as ServiceError;
-            logger.error(grpc_error.message);
-            return ResponseHandler.error(res, 'Internal server error', mapGrpcCodeToHttp(grpc_error.code));
-        }
-
+      return ResponseHandler.success(res, 'Load Profile Success', HTTP_STATUS.OK, {...grpcResponse});
+    } catch (error) {
+      const grpcError = error as ServiceError;
+      logger.error(grpcError.message);
+      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
     }
+  }
 }

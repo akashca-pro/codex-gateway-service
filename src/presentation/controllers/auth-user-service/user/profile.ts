@@ -9,10 +9,12 @@ import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 import { TokenContext } from "@/types/TokenContext";
 
-const userUseCase = new UserProfileUseCases(new GrpcUserProfileService());
 
 export class ProfileController {
-  static async profile(req: Request, res: Response) {
+  constructor(
+    private userUseCase = new UserProfileUseCases(new GrpcUserProfileService())
+  ){}
+  public async profile(req: Request, res: Response) {
     try {
       const { userId, email, role } = req;
 
@@ -21,7 +23,7 @@ export class ProfileController {
       }
 
       const metadata: TokenContext = { userId, email, role };
-      const grpcResponse = await userUseCase.profile(req.body, metadata);
+      const grpcResponse = await this.userUseCase.profile(req.body, metadata);
 
       return ResponseHandler.success(res, "Profile data loaded successfully", HTTP_STATUS.OK, {
         ...grpcResponse,

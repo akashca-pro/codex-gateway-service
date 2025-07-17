@@ -3,7 +3,7 @@ import { TokenContext } from "@/types/TokenContext";
 import { AdminProfileRequest, AdminProfileResponse } from "@akashcapro/codex-shared-utils";
 
 
-export class Admin_Profile_Use_Cases {
+export class AdminProfileUseCases {
 
     constructor(
         private profile_service : IAdminProfileService

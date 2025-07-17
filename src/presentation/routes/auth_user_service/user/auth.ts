@@ -1,17 +1,18 @@
 import express from 'express';
-import { AuthController } from '@/presentation/controllers/auth-user-service/user/auth';
+import { authController } from '@/presentation/controllers/auth-user-service/user/auth';
 import { verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
 const Router = express.Router();
 
-Router.post('/signup',AuthController.signup);
-Router.post('otp/resend-otp',AuthController.resendOtp);
-Router.post('otp/verify_otp',AuthController.verifyOtp);
-Router.post('login',AuthController.login);
-Router.post('login/google-login',AuthController.googleLogin);
-Router.post('password/forgot/request',AuthController.forgotPassword);
-Router.post('password/change',AuthController.changePassword);
-Router.post('refresh-token',verifyRefreshToken,AuthController.refreshToken);
+
+Router.post('/signup',authController.signup);
+Router.post('/otp/resend-otp',authController.resendOtp);
+Router.post('/otp/verify_otp',authController.verifyOtp);
+Router.post('/login',authController.login);
+Router.post('/login/google-login',authController.googleLogin);
+Router.post('/password/forgot/request',authController.forgotPassword);
+Router.post('/password/change',authController.changePassword);
+Router.post('/refresh-token',verifyRefreshToken,authController.refreshToken);
 
 
 export default Router
