@@ -26,7 +26,11 @@ export class AuthController {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   };
 
@@ -47,7 +51,11 @@ export class AuthController {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   };
 }

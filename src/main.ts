@@ -9,10 +9,10 @@ import { config } from '@/config';
 import cookieParser from 'cookie-parser';
 
 // Auth-User service
-import user_auth_routes from '@/presentation/routes/auth_user_service/user/auth'
-import user_profile_routes from '@/presentation/routes/auth_user_service/user/profile'
-import admin_auth_routes from '@/presentation/routes/auth_user_service/admin/auth'
-import admin_profile_routes from '@/presentation/routes/auth_user_service/admin/profile'
+import user_auth_routes from '@/presentation/routes/auth-user-service/user/auth'
+import user_profile_routes from '@/presentation/routes/auth-user-service/user/profile'
+import admin_auth_routes from '@/presentation/routes/auth-user-service/admin/auth'
+import admin_profile_routes from '@/presentation/routes/auth-user-service/admin/profile'
 
 const app = express();
 
@@ -35,8 +35,8 @@ app.get('/health', (req : Request, res : Response)=>{
 })
 
 // Route to Auth_user service
-app.use('/api/v1/auth/admin/',admin_auth_routes);
 app.use('/api/v1/auth/user/', user_auth_routes);
+app.use('/api/v1/auth/admin/',admin_auth_routes);
 app.use('/api/v1/user/', user_profile_routes);
 app.use('/api/v1/admin/',admin_profile_routes)
 

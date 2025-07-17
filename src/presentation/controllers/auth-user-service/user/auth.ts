@@ -14,13 +14,16 @@ const authUseCase = new UserAuthUseCases(new GrpcUserAuthService());
 export const authController = {
   signup: async (req: Request, res: Response) => {
     try {
-      console.log(req.body);
       const grpcResponse = await authUseCase.signup(req.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
@@ -31,7 +34,11 @@ export const authController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
@@ -44,20 +51,30 @@ export const authController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
   login: async (req: Request, res: Response) => {
     try {
       const grpcResponse = await authUseCase.login(req.body);
-      setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
-      setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
+      if(grpcResponse.accessToken && grpcResponse.refreshToken){
+        setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
+        setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
+      }
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
@@ -68,7 +85,11 @@ export const authController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
@@ -79,7 +100,11 @@ export const authController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
@@ -90,7 +115,11 @@ export const authController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   },
 
@@ -106,7 +135,11 @@ export const authController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      return ResponseHandler.error(
+        res,
+         grpcError.message || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   }
 };

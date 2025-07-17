@@ -13,7 +13,7 @@ const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
 
 export const verifyAccessToken = (req : Request, res : Response, next : NextFunction) =>{
 
-    const token = req.cookies['access_token']
+    const token = req.cookies['accessToken']
 
     if(!token)
         return ResponseHandler.error(res,'Token not found',HTTP_STATUS.UNAUTHORIZED)
@@ -38,7 +38,7 @@ export const verifyAccessToken = (req : Request, res : Response, next : NextFunc
 
 export const verifyRefreshToken = (req : Request, res : Response, next : NextFunction) => {
 
-    const token = req.cookies['refresh_token'];
+    const token = req.cookies['refreshToken'];
 
     if(!token)
         return ResponseHandler.error(res,'Token not found',HTTP_STATUS.UNAUTHORIZED);

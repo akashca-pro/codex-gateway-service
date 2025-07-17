@@ -7,7 +7,7 @@ const Router = express.Router();
 
 Router.post('/signup',authController.signup);
 Router.post('/otp/resend-otp',authController.resendOtp);
-Router.post('/otp/verify_otp',authController.verifyOtp);
+Router.post('/otp/verify-otp',authController.verifyOtp);
 Router.post('/login',authController.login);
 Router.post('/login/google-login',authController.googleLogin);
 Router.post('/password/forgot/request',authController.forgotPassword);
