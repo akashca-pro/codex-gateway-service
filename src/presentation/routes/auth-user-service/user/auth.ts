@@ -3,19 +3,18 @@ import { authController } from '@/presentation/controllers/auth-user-service/use
 import { verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
 import { validateRequestBody } from '@/presentation/middlewares/validateRequest';
-import { signupSchema } from '@/infrastructure/validation/user.schema';
+import { changePasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema } from '@/infrastructure/validation/user.schema';
 
 const Router = express.Router();
 
 
-
 Router.post('/signup', validateRequestBody(signupSchema), authController.signup);
-Router.post('/otp/resend-otp',authController.resendOtp);
-Router.post('/otp/verify-otp',authController.verifyOtp);
-Router.post('/login',authController.login);
-Router.post('/login/google-login',authController.googleLogin);
-Router.post('/password/forgot/request',authController.forgotPassword);
-Router.post('/password/change',authController.changePassword);
+Router.post('/otp/resend-otp', validateRequestBody(resendOtpSchema), authController.resendOtp);
+Router.post('/otp/verify-otp', validateRequestBody(verifyOtpSchema), authController.verifyOtp);
+Router.post('/login', validateRequestBody(userLoginSchema), authController.login);
+Router.post('/login/google-login', authController.googleLogin);
+Router.post('/password/forgot/request', validateRequestBody(forgotPasswordSchema), authController.forgotPassword);
+Router.post('/password/change', validateRequestBody(changePasswordSchema), authController.changePassword);
 Router.post('/refresh-token',verifyRefreshToken('user'),authController.refreshToken);
 
 

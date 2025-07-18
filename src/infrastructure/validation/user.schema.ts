@@ -1,4 +1,6 @@
-import { z } from 'zod';
+import {  z } from 'zod';
+
+// Auth
 
 export const signupSchema = z.object({
   username: z
@@ -40,8 +42,73 @@ export const signupSchema = z.object({
     .max(20)
 });
 
+export const resendOtpSchema = z.object({
+    email : z
+    .email('Invalid email address')
+    .min(5)
+    .max(255),
+})
 
-export type Signup_DTO = z.infer<typeof signupSchema>;
+export const verifyOtpSchema = z.object({
+    email : z
+    .email('Invalid email address')
+    .min(5)
+    .max(255),
+
+    otp : z
+    .number()
+    .min(6)
+    .max(6)
+})
+
+export const userLoginSchema = z.object({
+    email : z
+    .email('Invalid email address')
+    .min(5)
+    .max(255),
+
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(100)
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[@$!%*?&#]/, 'Password must contain at least one special character'),
+})
+
+export const forgotPasswordSchema = z.object({
+    email : z
+    .email('Invalid email address')
+    .min(5)
+    .max(255),
+})
+
+export const changePasswordSchema = z.object({
+    email : z
+    .email('Invalid email address')
+    .min(5)
+    .max(255),
+
+    Password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(100)
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[@$!%*?&#]/, 'Password must contain at least one special character'),
+
+    otp : z
+    .number()
+    .min(6)
+    .max(6)
+
+})
+
+
+
+
 
 
 
