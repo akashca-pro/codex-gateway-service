@@ -16,9 +16,9 @@ export const authController = {
     try {
       const grpcResponse = await authUseCase.login(req.body);
 
-      setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
+      setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
-
+      setCookie(res, "role","admin", 7 * 24 * 60 * 60 * 1000);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -42,9 +42,11 @@ export const authController = {
 
       const grpcResponse = await authUseCase.refreshToken({ userId, email, role });
 
-      setCookie(res, "accessToken", grpcResponse.accessToken, 24 * 60 * 60 * 1000);
+      setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
+      return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,{
+        accessToken : grpcResponse.accessToken,
+      });
 
-      return ResponseHandler.success(res, grpcResponse.message);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);

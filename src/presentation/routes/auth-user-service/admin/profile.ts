@@ -5,7 +5,7 @@ import { verifyAccessToken } from '@/presentation/middlewares/jwt'
 const Router = express.Router();
 
 
-Router.get('/profile', verifyAccessToken('admin'), profileController.profile)
+Router.get('/', verifyAccessToken('admin'), profileController.profile)
 
 
 export default Router

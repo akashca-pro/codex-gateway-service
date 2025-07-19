@@ -35,10 +35,10 @@ app.get('/health', (req : Request, res : Response)=>{
 })
 
 // Route to Auth_user service
-app.use('/api/v1/auth/user/', user_auth_routes);
-app.use('/api/v1/auth/admin/',admin_auth_routes);
-app.use('/api/v1/user/', user_profile_routes);
-app.use('/api/v1/admin/',admin_profile_routes)
+app.use('/api/v1/user/auth/', user_auth_routes);
+app.use('/api/v1/user/dashboard/', user_profile_routes);
+app.use('/api/v1/admin/auth/',admin_auth_routes);
+app.use('/api/v1/admin/dashboard/',admin_profile_routes)
 
 // 404 handler
 app.use((req : Request, res : Response, next : NextFunction)=>{

@@ -2,11 +2,11 @@ import { Response } from "express";
 
 export const setCookie = (
     res : Response,
-    token_name : string,
-    token : string, 
+    key : string,
+    value : string, 
     max_age : number) : void => {
 
-        res.cookie(token_name,token,{
+        res.cookie(key,value,{
             httpOnly : true,
             secure : true,
             sameSite : 'strict',
