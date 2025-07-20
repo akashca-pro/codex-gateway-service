@@ -48,7 +48,7 @@ export const authController = {
       setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
       setCookie(res, "role","user", 7 * 24 * 60 * 60 * 1000);
-      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
+      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
@@ -68,7 +68,7 @@ export const authController = {
         setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
         setCookie(res, "role","user", 7 * 24 * 60 * 60 * 1000);
       }
-      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
+      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
@@ -83,7 +83,7 @@ export const authController = {
   googleLogin: async (req: Request, res: Response) => {
     try {
       const grpcResponse = await authUseCase.googleLogin(req.body);
-      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
+      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
@@ -145,5 +145,19 @@ export const authController = {
           mapGrpcCodeToHttp(grpcError.code)
         );
     }
+  },
+
+  logout : async(req : Request, res : Response) => {
+      try {
+          res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+          });
+          return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);
+      } catch (error) {
+        return ResponseHandler.error(res,'Internal Server Error',HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      }
   }
+
 };

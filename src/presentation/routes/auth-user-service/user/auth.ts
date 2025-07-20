@@ -1,6 +1,6 @@
 import express from 'express';
 import { authController } from '@/presentation/controllers/auth-user-service/user/auth';
-import { verifyRefreshToken } from '@/presentation/middlewares/jwt';
+import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
 import { validateRequestBody } from '@/presentation/middlewares/validateRequest';
 import { changePasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema } from '@/infrastructure/validation/user.schema';
@@ -16,6 +16,6 @@ Router.post('/login/google-login', authController.googleLogin);
 Router.post('/password/forgot/request', validateRequestBody(forgotPasswordSchema), authController.forgotPassword);
 Router.post('/password/change', validateRequestBody(changePasswordSchema), authController.changePassword);
 Router.post('/refresh-token',verifyRefreshToken('user'),authController.refreshToken);
-
+Router.delete('/logout',verifyAccessToken('user'),authController.logout)
 
 export default Router

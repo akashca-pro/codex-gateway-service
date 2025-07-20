@@ -15,17 +15,17 @@ export const authController = {
   login : async (req: Request, res: Response): Promise<Response> => {
     try {
       const grpcResponse = await authUseCase.login(req.body);
-
       setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
       setCookie(res, "role","admin", 7 * 24 * 60 * 60 * 1000);
-      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
+      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK, grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
+      const errorMessage = grpcError.message?.split(":")[1]?.trim();
       return ResponseHandler.error(
         res,
-         grpcError.message || 'Internal Server Error',
+         errorMessage || 'Internal Server Error',
           mapGrpcCodeToHttp(grpcError.code)
         );
     }
@@ -56,5 +56,29 @@ export const authController = {
           mapGrpcCodeToHttp(grpcError.code)
         );
     }
+  },
+
+  logout : async(req : Request, res : Response) => {
+      try {
+          res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+          });
+          res.clearCookie("refreshToken", {
+            httpOnly : true,
+            secure : true,
+            sameSite : "strict"
+          })
+          res.clearCookie("role", {
+            httpOnly : true,
+            secure : true,
+            sameSite : "strict"
+          })
+          return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);
+      } catch (error) {
+        return ResponseHandler.error(res,'Internal Server Error',HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      }
   }
+
 }
