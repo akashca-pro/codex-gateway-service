@@ -16,6 +16,7 @@ Router.post('/login/google-login', authController.googleLogin);
 Router.post('/password/forgot/request', validateRequestBody(forgotPasswordSchema), authController.forgotPassword);
 Router.post('/password/change', validateRequestBody(changePasswordSchema), authController.changePassword);
 Router.post('/refresh-token',verifyRefreshToken('user'),authController.refreshToken);
-Router.delete('/logout',verifyAccessToken('user'),authController.logout)
+Router.delete('/logout',verifyAccessToken('user'),authController.logout);
+Router.get('/check-auth',verifyAccessToken('user'),authController.checkAuth); 
 
 export default Router

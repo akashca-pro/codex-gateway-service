@@ -55,10 +55,11 @@ export const verifyOtpSchema = z.object({
     .min(5)
     .max(255),
 
-    otp : z
-    .number()
-    .min(6)
-    .max(6)
+  otp: z
+    .string()
+    .min(6, "OTP must be 6 digits")
+    .max(6, "OTP must be 6 digits")
+    .regex(/^\d+$/, "OTP must contain only numbers"),
 })
 
 export const userLoginSchema = z.object({
@@ -99,10 +100,11 @@ export const changePasswordSchema = z.object({
     .regex(/[0-9]/, 'Password must contain at least one number')
     .regex(/[@$!%*?&#]/, 'Password must contain at least one special character'),
 
-    otp : z
-    .number()
-    .min(6)
-    .max(6)
+  otp: z
+    .string()
+    .min(6, "OTP must be 6 digits")
+    .max(6, "OTP must be 6 digits")
+    .regex(/^\d+$/, "OTP must contain only numbers"),
 
 })
 

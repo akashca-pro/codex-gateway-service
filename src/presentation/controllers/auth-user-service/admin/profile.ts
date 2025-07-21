@@ -29,7 +29,12 @@ export const profileController = {
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
-      return ResponseHandler.error(res, "Internal server error", mapGrpcCodeToHttp(grpcError.code));
+      const errorMessage = grpcError.message?.split(":")[1]?.trim();
+      return ResponseHandler.error(
+        res,
+         errorMessage || 'Internal Server Error',
+          mapGrpcCodeToHttp(grpcError.code)
+        );
     }
   }
 }

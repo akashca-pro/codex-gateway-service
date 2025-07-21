@@ -9,6 +9,7 @@ const Router = express.Router();
 Router.post('/login', validateRequestBody(adminLoginSchema), authController.login);
 Router.post('/refresh-token',verifyRefreshToken('admin'),authController.refreshToken);
 Router.delete('/logout', verifyAccessToken('admin'),authController.logout);
+Router.get('/check-auth',verifyAccessToken('admin'),authController.checkAuth);
 
 
 export default Router
