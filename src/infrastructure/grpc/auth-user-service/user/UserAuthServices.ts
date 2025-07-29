@@ -8,9 +8,9 @@ import {
   ResendOtpRequest, ResendOtpResponse,
   VerifyOtpRequest, VerifyOtpResponse,
   LoginRequest, LoginResponse,
-  GoogleLoginRequest, GoogleLoginResponse,
+  OAuthLoginRequest, OAuthLoginResponse,
   ForgotPasswordRequest, ForgotPasswordResponse,
-  ChangePasswordRequest, ChangePasswordResponse,
+  ResetPasswordRequest, ResetPasswordResponse,
   RefreshTokenRequest, RefreshTokenResponse
 } from '@akashcapro/codex-shared-utils';
 
@@ -54,10 +54,10 @@ export class GrpcUserAuthService extends GrpcBaseService implements IUserAuthSer
     return this.grpcCall(this.client.login.bind(this.client), request, metadata);
   }
 
-  googleLogin = async (request: GoogleLoginRequest,
+  oAuthLogin = async (request: OAuthLoginRequest,
      metadata: Metadata = new Metadata()
-    ): Promise<GoogleLoginResponse> => {
-    return this.grpcCall(this.client.googleLogin.bind(this.client), request, metadata);
+    ): Promise<OAuthLoginResponse> => {
+    return this.grpcCall(this.client.oAuthLogin.bind(this.client), request, metadata);
   }
 
   forgotPassword = async (
@@ -66,10 +66,10 @@ export class GrpcUserAuthService extends GrpcBaseService implements IUserAuthSer
     return this.grpcCall(this.client.forgotPassword.bind(this.client), request, metadata);
   }
 
-  changePassword = async (
-    request: ChangePasswordRequest, metadata: Metadata = new Metadata()
-  ): Promise<ChangePasswordResponse> => {
-    return this.grpcCall(this.client.changePassword.bind(this.client), request, metadata);
+  resetPassword = async (
+    request: ResetPasswordRequest, metadata: Metadata = new Metadata()
+  ): Promise<ResetPasswordResponse> => {
+    return this.grpcCall(this.client.resetPassword.bind(this.client), request, metadata);
   }
 
   refreshToken = async (

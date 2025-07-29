@@ -15,6 +15,7 @@ export const authController = {
   signup: async (req: Request, res: Response) => {
     try {
       const grpcResponse = await authUseCase.signup(req.body);
+      console.log(grpcResponse)
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -86,9 +87,9 @@ export const authController = {
     }
   },
 
-  googleLogin: async (req: Request, res: Response) => {
+  oAuthLogin: async (req: Request, res: Response) => {
     try {
-      const grpcResponse = await authUseCase.googleLogin(req.body);
+      const grpcResponse = await authUseCase.oAuthLogin(req.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -118,9 +119,9 @@ export const authController = {
     }
   },
 
-  changePassword: async (req: Request, res: Response) => {
+  resetPassword: async (req: Request, res: Response) => {
     try {
-      const grpcResponse = await authUseCase.changePassword(req.body);
+      const grpcResponse = await authUseCase.resetPassword(req.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;

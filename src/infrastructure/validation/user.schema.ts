@@ -85,7 +85,7 @@ export const forgotPasswordSchema = z.object({
     .max(255),
 })
 
-export const changePasswordSchema = z.object({
+export const resetPasswordSchema = z.object({
     email : z
     .email('Invalid email address')
     .min(5)

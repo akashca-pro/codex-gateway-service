@@ -5,9 +5,9 @@ import {
   ResendOtpRequest, ResendOtpResponse,
   VerifyOtpRequest, VerifyOtpResponse,
   LoginRequest, LoginResponse,
-  GoogleLoginRequest, GoogleLoginResponse,
+  OAuthLoginRequest, OAuthLoginResponse,
   ForgotPasswordRequest, ForgotPasswordResponse,
-  ChangePasswordRequest, ChangePasswordResponse,
+  ResetPasswordRequest, ResetPasswordResponse,
   RefreshTokenRequest, RefreshTokenResponse
 } from '@akashcapro/codex-shared-utils';
 
@@ -32,16 +32,16 @@ export class UserAuthUseCases {
     return this.authService.verifyOtp(data);
   }
 
-  async googleLogin(data: GoogleLoginRequest): Promise<GoogleLoginResponse> {
-    return this.authService.googleLogin(data);
+  async oAuthLogin(data: OAuthLoginRequest): Promise<OAuthLoginResponse> {
+    return this.authService.oAuthLogin(data);
   }
 
   async forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
     return this.authService.forgotPassword(data);
   }
 
-  async changePassword(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
-    return this.authService.changePassword(data);
+  async resetPassword(data: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+    return this.authService.resetPassword(data);
   }
 
   async refreshToken(data: RefreshTokenRequest): Promise<RefreshTokenResponse> {

@@ -28,7 +28,7 @@ export const verifyAccessToken = (acceptedRole : string) => (
             return ResponseHandler.error(res, 'Invalid Token payload', HTTP_STATUS.UNAUTHORIZED);
         }
 
-        if(decoded.role !== acceptedRole)
+        if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
         req.userId = decoded.userId;
@@ -60,7 +60,7 @@ export const verifyRefreshToken = (acceptedRole : string) => (
             return ResponseHandler.error(res, 'Invalid Token', HTTP_STATUS.UNAUTHORIZED);
         }
 
-        if(decoded.role !== acceptedRole)
+        if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
         req.userId = decoded.userId;

@@ -3,9 +3,9 @@ import {
   ResendOtpRequest, ResendOtpResponse,
   VerifyOtpRequest, VerifyOtpResponse,
   LoginRequest, LoginResponse,
-  GoogleLoginRequest, GoogleLoginResponse,
+  OAuthLoginRequest, OAuthLoginResponse,
   ForgotPasswordRequest, ForgotPasswordResponse,
-  ChangePasswordRequest, ChangePasswordResponse,
+  ResetPasswordRequest, ResetPasswordResponse,
   RefreshTokenRequest, RefreshTokenResponse
 } from '@akashcapro/codex-shared-utils';
 
@@ -19,11 +19,11 @@ export interface IUserAuthService {
 
   login(req: LoginRequest): Promise<LoginResponse>;
 
-  googleLogin(req: GoogleLoginRequest): Promise<GoogleLoginResponse>;
+  oAuthLogin(req: OAuthLoginRequest): Promise<OAuthLoginResponse>;
 
   forgotPassword(req: ForgotPasswordRequest): Promise<ForgotPasswordResponse>;
 
-  changePassword(req: ChangePasswordRequest): Promise<ChangePasswordResponse>;
+  resetPassword(req: ResetPasswordRequest): Promise<ResetPasswordResponse>;
 
   refreshToken(req: RefreshTokenRequest): Promise<RefreshTokenResponse>;
 

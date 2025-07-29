@@ -16,7 +16,6 @@ export const profileController = {
 
   profile : async (req: Request, res: Response) => {
     try {
-      console.log(req);
       const { userId, email, role } = req;
 
       if (!userId || !email || !role) {
