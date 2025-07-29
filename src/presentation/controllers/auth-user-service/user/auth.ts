@@ -8,6 +8,7 @@ import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 import { setCookie } from "@/utility/set-cookie";
+import redis from "@/config/redis";
 
 const authUseCase = new UserAuthUseCases(new GrpcUserAuthService());
 
@@ -158,11 +159,18 @@ export const authController = {
 
   logout : async(req : Request, res : Response) => {
       try {
+
+          const now = Math.floor(Date.now() / 1000);
+          const ttl = (req.tokenExp as number) - now;
+
+          await redis.set(`blacklist:${req.tokenId}`, "1", "EX", ttl);
+        
           res.clearCookie("accessToken", {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
           });
+
           return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);
       } catch (error) {
         return ResponseHandler.error(res,'Internal Server Error',HTTP_STATUS.INTERNAL_SERVER_ERROR);

@@ -23,9 +23,9 @@ class RedisClient {
     }
 
     public static setupEventListeners() : void {
-        RedisClient.instance.on('connect',()=>{
+        RedisClient.instance.on('ready',()=>{
             RedisClient.isConnected = true;
-            logger.info('connect to Redis');
+            logger.info('Redis is ready');
         })
 
     RedisClient.instance.on('error', (error) => {

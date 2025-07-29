@@ -15,7 +15,7 @@ interface Config {
 export const config: Config = {
   SERVICE_NAME: require('../../package.json').name,
   DEFAULT_GRPC_TIMEOUT : Number(process.env.DEFAULT_GRPC_TIMEOUT) || 5000,
-  PORT: Number(process.env.PORT) || 3000,
+  PORT: Number(process.env.PORT) || 4000,
   JWT_ACCESS_TOKEN_SECRET : process.env.JWT_ACCESS_TOKEN_SECRET || 'jwt_access_token_secret',
   JWT_REFRESH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET || 'jwt_refresh_token_secret',
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
