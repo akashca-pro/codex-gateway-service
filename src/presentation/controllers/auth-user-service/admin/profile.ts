@@ -9,12 +9,15 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
+import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
 
 const profileUseCase = new AdminProfileUseCases(new GrpcAdminProfileService())
 
 export const profileController = {
 
   profile : async (req: Request, res: Response) => {
+      const startTime = Date.now(); // for latency
+      const method = 'admin_profile'
     try {
       const { userId, email, role } = req;
 
@@ -22,9 +25,8 @@ export const profileController = {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
 
-      const metadata: TokenContext = { userId, email, role };
-      const grpcResponse = await profileUseCase.profile(req.body, metadata);
-
+      const grpcResponse = await profileUseCase.profile({ userId, email });
+      grpcMetricsCollector(method,'success',startTime); 
       return ResponseHandler.success(res, 'Load Profile Success', HTTP_STATUS.OK, {...grpcResponse});
     } catch (error) {
       const grpcError = error as ServiceError;

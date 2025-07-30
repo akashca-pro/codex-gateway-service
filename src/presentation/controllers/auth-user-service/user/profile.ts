@@ -7,6 +7,7 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
+import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
 
 const userUseCase = new UserProfileUseCases(
   new GrpcUserProfileService()
@@ -15,6 +16,8 @@ const userUseCase = new UserProfileUseCases(
 export const profileController = {
 
   profile : async (req: Request, res: Response) => {
+      const startTime = Date.now(); // for latency
+      const method = 'user_profile'
     try {
       const { userId, email, role } = req;
 
@@ -23,13 +26,14 @@ export const profileController = {
       }
 
       const grpcResponse = await userUseCase.profile({userId , email});
-
+      grpcMetricsCollector(method,'success',startTime); 
       return ResponseHandler.success(res, "Profile data loaded successfully", HTTP_STATUS.OK, {
         ...grpcResponse,
       });
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
+      grpcMetricsCollector(method,grpcError.message,startTime); 
       return ResponseHandler.error(
         res,
          grpcError.message || 'Internal Server Error',

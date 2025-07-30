@@ -1,4 +1,5 @@
 import { Admin_Auth_Use_Cases } from "@/application/auth-user-service/admin/AdminAuthUseCases";
+import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
 import { GrpcAdminAuthService } from "@/infrastructure/grpc/auth-user-service/admin/AdminAuthService";
 import { setCookie } from "@/utility/set-cookie";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
@@ -13,16 +14,20 @@ const authUseCase = new Admin_Auth_Use_Cases(new GrpcAdminAuthService())
 export const authController = {
 
   login : async (req: Request, res: Response): Promise<Response> => {
+      const startTime = Date.now(); // for latency
+      const method = 'admin_login'
     try {
       const grpcResponse = await authUseCase.login(req.body);
       setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
       setCookie(res, "role","admin", 7 * 24 * 60 * 60 * 1000);
+      grpcMetricsCollector(method,grpcResponse.message,startTime); 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK, grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
       const errorMessage = grpcError.message?.split(":")[1]?.trim();
+      grpcMetricsCollector(method,grpcError.message,startTime); 
       return ResponseHandler.error(
         res,
          errorMessage || 'Internal Server Error',
@@ -32,16 +37,16 @@ export const authController = {
   },
 
   refreshToken : async (req: Request, res: Response): Promise<Response> => {
+      const startTime = Date.now(); // for latency
+      const method = 'admin_refresh_token'
     try {
         
       const { userId, email, role } = req ;
-
       if (!userId || !email || !role) {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
-
       const grpcResponse = await authUseCase.refreshToken({ userId, email, role });
-
+      grpcMetricsCollector(method,grpcResponse.message,startTime); 
       setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,{
         accessToken : grpcResponse.accessToken,
@@ -51,6 +56,7 @@ export const authController = {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
       const errorMessage = grpcError.message?.split(":")[1]?.trim();
+      grpcMetricsCollector(method,grpcError.message,startTime); 
       return ResponseHandler.error(
         res,
          errorMessage || 'Internal Server Error',
