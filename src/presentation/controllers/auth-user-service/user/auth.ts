@@ -82,7 +82,11 @@ export const authController = {
       const startTime = Date.now(); // for latency
       const method = 'user_login'
     try {
-      const grpcResponse = await authUseCase.login(req.body);
+      const grpcResponse = await authUseCase.login({
+        email : req.body.email,
+        password : req.body.password,
+        role : 'USER'
+      });
       if(grpcResponse.accessToken && grpcResponse.refreshToken){
         setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
         setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
@@ -194,9 +198,11 @@ export const authController = {
       try {
 
           const now = Math.floor(Date.now() / 1000);
-          const ttl = (req.tokenExp as number) - now;
+          const accessTokenTtl = (req.accessTokenExp as number) - now;
+          const refreshTokenTtl = (req.refreshTokenExp as number) - now;
 
-          await redis.set(`blacklist:${req.tokenId}`, "1", "EX", ttl);
+          await redis.set(`blacklistAccessToken:${req.accessTokenId}`, "1", "EX", accessTokenTtl);
+          await redis.set(`blacklistRefreshToken:${req.refreshTokenId}`, "1", "EX" , refreshTokenTtl)
         
           res.clearCookie("accessToken", {
             httpOnly: true,
@@ -204,22 +210,22 @@ export const authController = {
             sameSite: "strict",
           });
 
+          res.clearCookie("refreshToken", {
+            httpOnly : true,
+            secure : true,
+            sameSite : "strict"
+          })
+
+          res.clearCookie("role",{
+            httpOnly : true,
+            secure : true,
+            sameSite : "strict"
+          })
+
           return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);
       } catch (error) {
         return ResponseHandler.error(res,'Internal Server Error',HTTP_STATUS.INTERNAL_SERVER_ERROR);
       }
   },
-
-  checkAuth : async (req : Request, res : Response) => {
-      try {
-        return ResponseHandler.success(res,'Authenticated',HTTP_STATUS.OK,{
-          userId : req.userId,
-          email : req.email,
-          role : req.role
-        });
-      } catch (error) {
-        return ResponseHandler.error(res,'Internal Server Error',HTTP_STATUS.INTERNAL_SERVER_ERROR);
-      }
-  }
 
 };

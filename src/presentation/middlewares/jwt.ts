@@ -32,7 +32,7 @@ export const verifyAccessToken = (acceptedRole : string) => (
         if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
-        redis.get(`blacklist:${decoded.tokenId}`)
+        redis.get(`blacklistAccessToken:${decoded.tokenId}`)
             .then((result)=>{
                 if(result){
                     return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
@@ -42,8 +42,8 @@ export const verifyAccessToken = (acceptedRole : string) => (
         req.userId = decoded.userId;
         req.email = decoded.email;
         req.role = decoded.role;
-        req.tokenId = decoded.tokenId;
-        req.tokenExp = decoded.exp;
+        req.accessTokenId = decoded.tokenId;
+        req.accessTokenExp = decoded.exp;
 
         next();
         
@@ -73,9 +73,18 @@ export const verifyRefreshToken = (acceptedRole : string) => (
         if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
+        redis.get(`blacklistRefreshToken:${decoded.tokenId}`)
+            .then((result)=>{
+                if(result){
+                    return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
+                }
+        })
+
         req.userId = decoded.userId;
         req.email = decoded.email;
         req.role = decoded.role;
+        req.refreshTokenId = decoded.tokenId;
+        req.refreshTokenExp = decoded.exp;
         next();
 
     } catch (error) {

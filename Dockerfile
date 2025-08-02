@@ -1,4 +1,4 @@
-
+#stage 1 : build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -11,6 +11,18 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000 50051
+#stage 2 : runtime
 
-CMD ["node", "dist/server.js"]
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/dist /app
+
+COPY --from=builder /app/node_modules /app/node_modules
+
+COPY --from=builder /app/.env /app
+
+EXPOSE 4000 9101 50051 5432 6379
+
+CMD [ "node" , "index.js" ]

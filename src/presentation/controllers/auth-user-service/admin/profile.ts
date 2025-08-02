@@ -3,7 +3,6 @@ import { ServiceError } from "@grpc/grpc-js";
 
 import { AdminProfileUseCases } from "@/application/auth-user-service/admin/AdminProfileUseCases";
 import { GrpcAdminProfileService } from "@/infrastructure/grpc/auth-user-service/admin/AdminProfileService";
-import { TokenContext } from "@/types/TokenContext";
 
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";

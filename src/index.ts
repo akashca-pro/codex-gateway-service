@@ -13,6 +13,7 @@ import user_auth_routes from '@/presentation/routes/auth-user-service/user/auth'
 import user_profile_routes from '@/presentation/routes/auth-user-service/user/profile'
 import admin_auth_routes from '@/presentation/routes/auth-user-service/admin/auth'
 import admin_profile_routes from '@/presentation/routes/auth-user-service/admin/profile'
+import { startMetricsServer } from './config/metrics';
 
 const app = express();
 
@@ -59,9 +60,11 @@ app.use((err : Error, req : Request, res : Response, next : NextFunction) => {
 
 const startServer = () => {
     try {
+        
         app.listen(config.PORT,()=>{
             logger.info(`${config.SERVICE_NAME} running on port ${config.PORT}`);
         })
+        startMetricsServer(config.METRICS_PORT)
     } catch (error) {
         logger.error('Failed to start server : ',error);
         process.exit(1);

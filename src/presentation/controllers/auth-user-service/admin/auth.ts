@@ -17,7 +17,12 @@ export const authController = {
       const startTime = Date.now(); // for latency
       const method = 'admin_login'
     try {
-      const grpcResponse = await authUseCase.login(req.body);
+      const grpcResponse = await authUseCase.login({
+        email : req.body.email,
+        password : req.body.password,
+        role : 'ADMIN'
+      });
+
       setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
       setCookie(res, "role","admin", 7 * 24 * 60 * 60 * 1000);
