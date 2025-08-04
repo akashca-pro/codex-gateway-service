@@ -136,7 +136,7 @@ export const authController = {
       const { email, name , imageUrl, sub } = await verifyGoogleToken(req.body.oAuthId);
 
       if(imageUrl){
-        const result = await uploadImageUrlToCloudinary(imageUrl,name!);
+        const result = await uploadImageUrlToCloudinary(imageUrl,name!.replace(/\s+/g, "_").toLowerCase());
         avatarPublicId = result.public_id;
       }
       
