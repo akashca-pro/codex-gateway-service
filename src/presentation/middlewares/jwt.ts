@@ -23,7 +23,7 @@ export const verifyAccessToken = (acceptedRole : string) => (
         return ResponseHandler.error(res,'Token not found',HTTP_STATUS.UNAUTHORIZED)
 
     try {
-        const decoded = verifyJwt(token, config.JWT_ACCESS_TOKEN_SECRET);
+        const decoded = verifyJwt(token, config.JWT_ACCESS_TOKEN_SECRET as string);
 
         if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
             return ResponseHandler.error(res, 'Invalid Token payload', HTTP_STATUS.UNAUTHORIZED);
@@ -64,7 +64,7 @@ export const verifyRefreshToken = (acceptedRole : string) => (
         return ResponseHandler.error(res,'Token not found',HTTP_STATUS.UNAUTHORIZED);
 
     try {
-        const decoded = verifyJwt(token, config.JWT_REFRESH_TOKEN_SECRET);
+        const decoded = verifyJwt(token, config.JWT_REFRESH_TOKEN_SECRET as string);
 
         if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
             return ResponseHandler.error(res, 'Invalid Token', HTTP_STATUS.UNAUTHORIZED);

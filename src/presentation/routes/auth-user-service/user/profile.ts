@@ -7,4 +7,5 @@ const Router = express.Router();
 Router.get('/profile', verifyAccessToken('user'), profileController.profile);
 
 
+
 export default Router;

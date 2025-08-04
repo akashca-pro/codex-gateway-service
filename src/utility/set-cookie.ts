@@ -1,15 +1,17 @@
 import { Response } from "express";
+import ms from "ms";
 
 export const setCookie = (
     res : Response,
     key : string,
     value : string, 
-    max_age : number) : void => {
+    maxAge : ms.StringValue
+    ) : void => {
 
         res.cookie(key,value,{
             httpOnly : true,
             secure : true,
             sameSite : 'strict',
-            maxAge : max_age
+            maxAge : ms(maxAge)
         })
 }

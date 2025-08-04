@@ -1,4 +1,3 @@
-import { TokenContext } from '@/types/TokenContext'
 import {
 
     UserProfileRequest,
@@ -9,6 +8,6 @@ import {
 
 export interface IUserProfileService {
 
-    profile : (req : UserProfileRequest, context? : TokenContext) => Promise<UserProfileResponse>
+    profile : (req : UserProfileRequest) => Promise<UserProfileResponse>
 
 }

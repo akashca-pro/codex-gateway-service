@@ -1,4 +1,5 @@
 import { Admin_Auth_Use_Cases } from "@/application/auth-user-service/admin/AdminAuthUseCases";
+import { config } from "@/config";
 import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
 import { GrpcAdminAuthService } from "@/infrastructure/grpc/auth-user-service/admin/AdminAuthService";
 import { setCookie } from "@/utility/set-cookie";
@@ -8,6 +9,7 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { ServiceError } from "@grpc/grpc-js";
 import { Request, Response } from "express";
+import ms from "ms";
 
 const authUseCase = new Admin_Auth_Use_Cases(new GrpcAdminAuthService())
 
@@ -23,9 +25,9 @@ export const authController = {
         role : 'ADMIN'
       });
 
-      setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
-      setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
-      setCookie(res, "role","admin", 7 * 24 * 60 * 60 * 1000);
+        setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, "role","admin", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK, grpcResponse.userInfo);
     } catch (error) {
@@ -51,8 +53,11 @@ export const authController = {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
       const grpcResponse = await authUseCase.refreshToken({ userId, email, role });
+      
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
-      setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
+
+      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,{
         accessToken : grpcResponse.accessToken,
       });

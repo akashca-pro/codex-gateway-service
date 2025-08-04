@@ -16,7 +16,7 @@ export class GrpcAdminProfileService extends GrpcBaseService implements IAdminPr
   constructor() {
     super();
     this.client = new AuthAdminServiceClient(
-      config.GRPC_AUTH_SERVER_URL,
+      config.GRPC_AUTH_SERVER_URL!,
       credentials.createInsecure()
     );
   }

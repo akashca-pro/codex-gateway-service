@@ -10,6 +10,10 @@ import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
 import { setCookie } from "@/utility/set-cookie";
 import redis from "@/config/redis";
 import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
+import { config } from "@/config";
+import ms from "ms";
+import { verifyGoogleToken } from "@/utility/googleVerifier";
+import { uploadImageUrlToCloudinary } from "@/utility/cloudinary/uploadImageToCloudinary";
 
 const authUseCase = new UserAuthUseCases(new GrpcUserAuthService());
 
@@ -18,14 +22,17 @@ export const authController = {
   signup: async (req: Request, res: Response) => {
       const startTime = Date.now(); // for latency
       const method = 'user_signup'
+
     try {
       const grpcResponse = await authUseCase.signup(req.body);
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
       const errorMessage = grpcError.message?.split(":")[1]?.trim();
+
       grpcMetricsCollector(method,grpcError.message,startTime); 
       return ResponseHandler.error(
         res,
@@ -38,9 +45,11 @@ export const authController = {
   resendOtp: async (req: Request, res: Response) => {
       const startTime = Date.now(); // for latency
       const method = 'user_resend_otp'
+
     try {
       const grpcResponse = await authUseCase.resendOtp(req.body);
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -58,16 +67,21 @@ export const authController = {
   verifyOtp: async (req: Request, res: Response) => {
       const startTime = Date.now(); // for latency
       const method = 'user_verify_otp'
+
     try {
       const grpcResponse = await authUseCase.verifyOtp(req.body);
-      setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
-      setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
-      setCookie(res, "role","user", 7 * 24 * 60 * 60 * 1000);
+
+      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
+
       const errorMessage = grpcError.message?.split(":")[1]?.trim();
       grpcMetricsCollector(method,grpcError.message,startTime); 
       return ResponseHandler.error(
@@ -81,20 +95,23 @@ export const authController = {
   login: async (req: Request, res: Response) => {
       const startTime = Date.now(); // for latency
       const method = 'user_login'
+      
     try {
       const grpcResponse = await authUseCase.login({
         email : req.body.email,
         password : req.body.password,
         role : 'USER'
       });
+
       if(grpcResponse.accessToken && grpcResponse.refreshToken){
-        setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
-        setCookie(res, "refreshToken", grpcResponse.refreshToken, 7 * 24 * 60 * 60 * 1000);
-        setCookie(res, "role","user", 7 * 24 * 60 * 60 * 1000);
+        setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+
         grpcMetricsCollector(method,grpcResponse.message,startTime); 
         return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
       }else{
-        return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.ACCEPTED,'not-verified');
+        return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.ACCEPTED,'Not-verified');
       }
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -113,8 +130,29 @@ export const authController = {
       const startTime = Date.now(); // for latency
       const method = 'user_o_auth_login'
     try {
-      const grpcResponse = await authUseCase.oAuthLogin(req.body);
+
+      let avatarPublicId = null;
+
+      const { email, name , imageUrl, sub } = await verifyGoogleToken(req.body.oAuthId);
+
+      if(imageUrl){
+        const result = await uploadImageUrlToCloudinary(imageUrl,name!);
+        avatarPublicId = result.public_id;
+      }
+      
+      const grpcResponse = await authUseCase.oAuthLogin({
+        email : email!,
+        firstName : name!,
+        oAuthId : sub,
+        avatar : avatarPublicId || ''
+      });
+
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
+      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -134,7 +172,9 @@ export const authController = {
       const method = 'user_forgot_password'
     try {
       const grpcResponse = await authUseCase.forgotPassword(req.body);
+
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -154,7 +194,9 @@ export const authController = {
       const method = 'user_reset_password'
     try {
       const grpcResponse = await authUseCase.resetPassword(req.body);
+
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
@@ -178,8 +220,11 @@ export const authController = {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
       const grpcResponse = await authUseCase.refreshToken({ userId, email, role });
-      setCookie(res, "accessToken", grpcResponse.accessToken, 1 * 60 * 60 * 1000);
+
+      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
+
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       const grpcError = error as ServiceError;

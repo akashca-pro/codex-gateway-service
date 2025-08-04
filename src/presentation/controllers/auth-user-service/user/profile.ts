@@ -19,26 +19,41 @@ export const profileController = {
       const startTime = Date.now(); // for latency
       const method = 'user_profile'
     try {
-      const { userId, email, role } = req;
+      const { userId, email } = req;
 
-      if (!userId || !email || !role) {
-        return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
-      }
+      const grpcResponse = await userUseCase.profile({
+        userId : (userId as string),
+        email  : (email as string) });
 
-      const grpcResponse = await userUseCase.profile({userId , email});
       grpcMetricsCollector(method,'success',startTime); 
+
       return ResponseHandler.success(res, "Profile data loaded successfully", HTTP_STATUS.OK, {
         ...grpcResponse,
       });
     } catch (error) {
       const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
+
+      logger.error(grpcError.message,error);
       grpcMetricsCollector(method,grpcError.message,startTime); 
+      
       return ResponseHandler.error(
         res,
          grpcError.message || 'Internal Server Error',
           mapGrpcCodeToHttp(grpcError.code)
         );
     }
+  },
+
+  updateProfile : async (req : Request, res : Response) => {
+
+      const startTime = Date.now(); // for latency
+      const method = 'user_update_profile'
+
+    try {
+      
+    } catch (error) {
+      
+    }
+
   }
 }

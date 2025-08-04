@@ -22,7 +22,7 @@ export class GrpcUserAuthService extends GrpcBaseService implements IUserAuthSer
   constructor() {
     super();
     this.client = new AuthUserServiceClient(
-      config.GRPC_AUTH_SERVER_URL,
+      config.GRPC_AUTH_SERVER_URL!,
       credentials.createInsecure()
     );
   }

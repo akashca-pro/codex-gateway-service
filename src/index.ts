@@ -1,7 +1,6 @@
 import express,{Request, Response, NextFunction} from 'express';
 import dotenv from 'dotenv'
 dotenv.config();
-import { limiter } from '@/presentation/middlewares/rate-limiter';
 import helmet from 'helmet';
 import cors from 'cors'
 import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
@@ -25,9 +24,8 @@ app.use(helmet());
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
+  methods: ['GET', 'POST', 'PUT','PATCH','DELETE', 'OPTIONS'],
 }));
-
-app.use(limiter);
 
 // Request logging
 app.use((req : Request, res : Response, next : NextFunction)=>{
@@ -64,7 +62,7 @@ const startServer = () => {
         app.listen(config.PORT,()=>{
             logger.info(`${config.SERVICE_NAME} running on port ${config.PORT}`);
         })
-        startMetricsServer(config.METRICS_PORT)
+        startMetricsServer(config.METRICS_PORT!)
     } catch (error) {
         logger.error('Failed to start server : ',error);
         process.exit(1);

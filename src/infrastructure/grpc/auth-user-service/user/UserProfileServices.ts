@@ -19,7 +19,7 @@ export class GrpcUserProfileService extends GrpcBaseService implements IUserProf
     constructor(){
         super();
         this.client = new AuthUserServiceClient(
-            config.GRPC_AUTH_SERVER_URL,
+            config.GRPC_AUTH_SERVER_URL!,
             credentials.createInsecure()
         )
     }
@@ -31,7 +31,7 @@ export class GrpcUserProfileService extends GrpcBaseService implements IUserProf
         const metadata = new Metadata();
 
         if(meta){
-            metadata.set('user_id',meta.userId);
+            metadata.set('userId',meta.userId);
             metadata.set('email',meta.email);
             metadata.set('role',meta.role);
         }
