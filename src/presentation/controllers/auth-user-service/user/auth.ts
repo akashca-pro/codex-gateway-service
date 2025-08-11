@@ -26,13 +26,11 @@ export const authController = {
     try {
       const grpcResponse = await authUseCase.signup(req.body);
       grpcMetricsCollector(method,grpcResponse.message,startTime); 
-
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       const grpcError = error as ServiceError;
       logger.error(grpcError.message);
       const errorMessage = grpcError.message?.split(":")[1]?.trim();
-
       grpcMetricsCollector(method,grpcError.message,startTime); 
       return ResponseHandler.error(
         res,
