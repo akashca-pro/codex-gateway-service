@@ -1,6 +1,6 @@
 import { credentials, Metadata } from "@grpc/grpc-js";
 import { config } from "@/config";
-import { IUserProfileService } from '@/domain/auth-service/User/IUserProfileservices'
+import { IUserProfileService } from '@/infrastructure/grpc/auth-user-service/interfaces/User/IUserProfileservices'
 
 import {
 

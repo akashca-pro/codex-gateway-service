@@ -1,4 +1,4 @@
-import { IAdminAuthService } from "@/domain/auth-service/admin/IAdminAuthServices";
+import { IAdminAuthService } from "@/infrastructure/grpc/auth-user-service/interfaces/admin/IAdminAuthServices";
 import { LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse } from "@akashcapro/codex-shared-utils";
 
 export class Admin_Auth_Use_Cases {

@@ -1,6 +1,6 @@
 import { credentials, Metadata } from "@grpc/grpc-js";
 import { config } from "@/config";
-import { IAdminProfileService } from "@/domain/auth-service/admin/IAdminProfileService";
+import { IAdminProfileService } from "@/infrastructure/grpc/auth-user-service/interfaces/admin/IAdminProfileService";
 
 import { 
   AuthAdminServiceClient,

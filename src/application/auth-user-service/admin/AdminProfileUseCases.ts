@@ -1,4 +1,4 @@
-import { IAdminProfileService } from "@/domain/auth-service/admin/IAdminProfileService";
+import { IAdminProfileService } from "@/infrastructure/grpc/auth-user-service/interfaces/admin/IAdminProfileService";
 import { AdminProfileRequest, AdminProfileResponse } from "@akashcapro/codex-shared-utils";
 
 
