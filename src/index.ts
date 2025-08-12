@@ -6,13 +6,12 @@ import cors from 'cors'
 import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
 import { config } from '@/config';
 import cookieParser from 'cookie-parser';
-
-// Auth-User service
-import user_auth_routes from '@/presentation/routes/auth-user-service/user/auth'
-import user_profile_routes from '@/presentation/routes/auth-user-service/user/profile'
-import admin_auth_routes from '@/presentation/routes/auth-user-service/admin/auth'
-import admin_profile_routes from '@/presentation/routes/auth-user-service/admin/profile'
 import { startMetricsServer } from './config/metrics';
+
+// Routes
+
+import { userRouter } from './presentation/routes/user';
+import { adminRouter } from './presentation/routes/admin';
 
 const app = express();
 
@@ -39,10 +38,8 @@ app.get('/health', (req : Request, res : Response)=>{
 })
 
 // Route to Auth_user service
-app.use('/api/v1/user/auth/', user_auth_routes);
-app.use('/api/v1/user/dashboard/', user_profile_routes);
-app.use('/api/v1/admin/auth/',admin_auth_routes);
-app.use('/api/v1/admin/dashboard/',admin_profile_routes)
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/admin',adminRouter);
 
 // 404 handler
 app.use((req : Request, res : Response, next : NextFunction)=>{

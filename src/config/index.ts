@@ -17,6 +17,7 @@ interface Config {
   CLOUDINARY_CLOUD_NAME : string | undefined;
   CLOUDINARY_API_KEY : string | undefined;
   CLOUDINARY_API_SECRET : string | undefined;
+  GRPC_PROBLEM_SERVICE_URL : string | undefined;
 }
 
 export const config: Config = {
@@ -35,4 +36,5 @@ export const config: Config = {
   CLOUDINARY_API_KEY : process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET : process.env.CLOUDINARY_API_SECRET,
   CLOUDINARY_CLOUD_NAME : process.env.CLOUDINARY_CLOUD_NAME,
+  GRPC_PROBLEM_SERVICE_URL : process.env.GRPC_PROBLEM_SERVICE_URL,
 }
