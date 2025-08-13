@@ -1,4 +1,4 @@
-import express,{Request, Response, NextFunction} from 'express';
+import express,{Request, Response} from 'express';
 import dotenv from 'dotenv'
 dotenv.config();
 import helmet from 'helmet';
@@ -12,6 +12,8 @@ import { startMetricsServer } from './config/metrics';
 
 import { userRouter } from './presentation/routes/user';
 import { adminRouter } from './presentation/routes/admin';
+import { globalErrorHandler, notFound } from '@/util/errorHandlers'
+import { metricsMiddleware } from './helper/metricsMiddleware';
 
 const app = express();
 
@@ -20,38 +22,29 @@ app.use(express.urlencoded({extended : true}));
 app.use(cookieParser())
 app.use(helmet());
 
+// metrics middleware
+app.use(metricsMiddleware);
+
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT','PATCH','DELETE', 'OPTIONS'],
 }));
 
-// Request logging
-app.use((req : Request, res : Response, next : NextFunction)=>{
-    logger.debug(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    next()
-})
-
 // Health check endpoint
 app.get('/health', (req : Request, res : Response)=>{
     res.status(200).json({ status : 'OK' });
 })
 
-// Route to Auth_user service
+// Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/admin',adminRouter);
 
-// 404 handler
-app.use((req : Request, res : Response, next : NextFunction)=>{
-    logger.warn(`Resource not found : ${req.method} ${req.url} `)
-    res.status(404).json({ message : 'Resource not found' });
-})
+// 404
+app.use(notFound);
 
-// Error Handling middleware
-app.use((err : Error, req : Request, res : Response, next : NextFunction) => {
-    logger.error('Unhandled error', err);
-    res.status(500).json({ message : 'Internal server error' });
-})
+// Global error handler.
+app.use(globalErrorHandler);
 
 const startServer = () => {
     try {

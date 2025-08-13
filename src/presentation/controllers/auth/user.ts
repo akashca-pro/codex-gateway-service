@@ -1,132 +1,74 @@
-import { Request, Response } from "express";
-import { ServiceError } from "@grpc/grpc-js";
-import { UserAuthUseCases } from "@/application/auth-user/user/UserAuthUseCases";
+import { NextFunction, Request, Response } from "express";
 import { GrpcUserAuthService } from "@/infra/grpc/auth-user-service/user/UserAuthServices";
-
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
-import logger from "@akashcapro/codex-shared-utils/dist/utils/logger";
-import { setCookie } from "@/utility/set-cookie";
+import { setCookie } from "@/util/set-cookie";
 import redis from "@/config/redis";
-import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
 import { config } from "@/config";
 import ms from "ms";
-import { verifyGoogleToken } from "@/utility/googleVerifier";
-import { uploadImageUrlToCloudinary } from "@/utility/cloudinary/uploadImageToCloudinary";
+import { verifyGoogleToken } from "@/util/googleVerifier";
+import { uploadImageUrlToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
 
-const authUseCase = new UserAuthUseCases(new GrpcUserAuthService());
+const grpcClient = new GrpcUserAuthService();
 
 export const authController = {
 
-  signup: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_signup'
-
+  signup: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await authUseCase.signup(req.body);
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
+      const grpcResponse = await grpcClient.signup(req.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error);
     }
   },
 
-  resendOtp: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_resend_otp'
-
+  resendOtp: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await authUseCase.resendOtp(req.body);
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
-
+      const grpcResponse = await grpcClient.resendOtp(req.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error);
     }
   },
 
-  verifyOtp: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_verify_otp'
-
+  verifyOtp: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await authUseCase.verifyOtp(req.body);
+      const grpcResponse = await grpcClient.verifyOtp(req.body);
 
       setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
       setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
 
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
-
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error);
     }
   },
 
-  login: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_login'
-      
+  login: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await authUseCase.login({
+      const grpcResponse = await grpcClient.login({
         email : req.body.email,
         password : req.body.password,
         role : 'USER'
       });
 
       if(grpcResponse.accessToken && grpcResponse.refreshToken){
+
         setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
         setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
         setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
 
-        grpcMetricsCollector(method,grpcResponse.message,startTime); 
         return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
       }else{
         return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.ACCEPTED,'Not-verified');
       }
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error);
     }
   },
 
-  oAuthLogin: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_o_auth_login'
+  oAuthLogin: async (req: Request, res: Response, next : NextFunction) => {
     try {
 
       let avatarPublicId = null;
@@ -138,14 +80,12 @@ export const authController = {
         avatarPublicId = result.public_id;
       }
       
-      const grpcResponse = await authUseCase.oAuthLogin({
+      const grpcResponse = await grpcClient.oAuthLogin({
         email : email!,
         firstName : name!,
         oAuthId : sub,
         avatar : avatarPublicId || ''
       });
-
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
 
       setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
@@ -153,91 +93,46 @@ export const authController = {
 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error)
     }
   },
 
-  forgotPassword: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_forgot_password'
+  forgotPassword: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await authUseCase.forgotPassword(req.body);
+      const grpcResponse = await grpcClient.forgotPassword(req.body);
+      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
+    } catch (error) {
+      next(error);
+    }
+  },
 
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
+  resetPassword: async (req: Request, res: Response, next : NextFunction) => {
+    try {
+      const grpcResponse = await grpcClient.resetPassword(req.body);
 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error);
     }
   },
 
-  resetPassword: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_reset_password'
-    try {
-      const grpcResponse = await authUseCase.resetPassword(req.body);
-
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
-
-      return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
-    } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
-    }
-  },
-
-  refreshToken: async (req: Request, res: Response) => {
-      const startTime = Date.now(); // for latency
-      const method = 'user_refresh_token'
+  refreshToken: async (req: Request, res: Response, next : NextFunction) => {
     try {
       const { userId, email, role } = req;
       if (!userId || !email || !role) {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
-      const grpcResponse = await authUseCase.refreshToken({ userId, email, role });
+      const grpcResponse = await grpcClient.refreshToken({ userId, email, role });
 
       setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
 
-      grpcMetricsCollector(method,grpcResponse.message,startTime); 
-
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
-      const grpcError = error as ServiceError;
-      logger.error(grpcError.message);
-      const errorMessage = grpcError.message?.split(":")[1]?.trim();
-      grpcMetricsCollector(method,grpcError.message,startTime); 
-      return ResponseHandler.error(
-        res,
-         errorMessage || 'Internal Server Error',
-          mapGrpcCodeToHttp(grpcError.code)
-        );
+      next(error);
     }
   },
 
-  logout : async(req : Request, res : Response) => {
+  logout : async(req : Request, res : Response, next : NextFunction) => {
       try {
 
           const now = Math.floor(Date.now() / 1000);
@@ -267,7 +162,7 @@ export const authController = {
 
           return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);
       } catch (error) {
-        return ResponseHandler.error(res,'Internal Server Error',HTTP_STATUS.INTERNAL_SERVER_ERROR);
+        next(error);
       }
   },
 

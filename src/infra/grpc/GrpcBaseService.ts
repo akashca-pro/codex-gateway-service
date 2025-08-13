@@ -18,7 +18,6 @@ export class GrpcBaseService {
         metadata,
         (error: ServiceError | null, response: Res) => {
           if (error) {
-            logger.error(`gRPC error in ${method.name}: ${error.message}`);
             reject(error);
           }
           resolve(response);
