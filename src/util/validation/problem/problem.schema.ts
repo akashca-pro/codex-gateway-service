@@ -32,10 +32,6 @@ export const createProblemSchema = z.object({
 });
 
 export const getProblemSchema = z.object({
-    Id : z
-    .string()
-    .optional(),
-
     title : z
     .string()
     .trim()

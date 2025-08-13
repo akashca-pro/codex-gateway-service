@@ -1,6 +1,8 @@
 
 export enum ProblemSuccessType {
 
-    ProblemCreated = 'Problem created Successfully'
+    ProblemCreated = 'Problem created Successfully',
+
+    ProblemDetailsLoaded = 'Problem details loaded successfully'
 
 }
