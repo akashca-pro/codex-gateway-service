@@ -3,7 +3,7 @@ import { authController } from '@/presentation/controllers/auth/user';
 import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
 import { validateRequestBody } from '@/presentation/middlewares/validateRequest';
-import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/infra/validation/user.schema';
+import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/util/validation/auth/user.schema';
 import { limiter } from '@/presentation/middlewares/rate-limiter';
 
 export const userAuthRouter = express.Router();

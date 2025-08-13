@@ -2,7 +2,7 @@ import express from 'express';
 import { authController } from '@/presentation/controllers/auth/admin'
 import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middlewares/jwt';
 import { validateRequestBody } from '@/presentation/middlewares/validateRequest';
-import { adminLoginSchema } from '@/infra/validation/admin.schema';
+import { adminLoginSchema } from '@/util/validation/auth/admin.schema';
 
 export const adminAuthRouter = express.Router();
 
