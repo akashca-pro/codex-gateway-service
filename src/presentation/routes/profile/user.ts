@@ -4,4 +4,7 @@ import { profileController } from '@/presentation/controllers/profile/user';
 
 export const userProfileRouter = express.Router();
 
-userProfileRouter.get('/', verifyAccessToken('user'), profileController.profile);
+userProfileRouter.get(
+    '/', 
+    verifyAccessToken('user'),
+    profileController.profile);

@@ -8,5 +8,5 @@ export const adminRouter = express.Router();
 
 adminRouter.use('/auth',adminAuthRouter);
 adminRouter.use('/profile',adminProfileRouter);
-adminRouter.use('/problem',adminProblemRouter)
+adminRouter.use('/problem',adminProblemRouter);
 adminRouter.use('/dashboard',adminDashboardRouter);

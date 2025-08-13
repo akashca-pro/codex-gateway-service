@@ -5,5 +5,8 @@ import { verifyAccessToken } from '@/presentation/middlewares/jwt'
 export const adminProfileRouter = express.Router();
 
 
-adminProfileRouter.get('/', verifyAccessToken('admin'), profileController.profile)
+adminProfileRouter.get(
+    '/', 
+    verifyAccessToken('admin'), 
+    profileController.profile);
 

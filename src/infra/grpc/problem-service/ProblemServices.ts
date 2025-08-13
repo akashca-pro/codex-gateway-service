@@ -1,6 +1,5 @@
 import { AddSolutionCodeRequest, AddTestCaseRequest, BulkUploadTestCasesRequest, CreateProblemRequest, GetProblemRequest, ListProblemRequest, ListProblemResponse, Problem, ProblemServiceClient, RemoveSolutionCodeRequest, RemoveTestCaseRequest, UpdateBasicProblemDetailsRequest, UpdateSolutionCodeRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 import { GrpcBaseService } from "../GrpcBaseService";
-import { IGrpcProblemService } from "./interfaces/IProblemServices";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
 import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
@@ -11,7 +10,7 @@ import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google
  * @class
  * @implements {IGrpcProblemService}
  */
-class GrpcProblemService extends GrpcBaseService implements IGrpcProblemService {
+class GrpcProblemService extends GrpcBaseService {
 
     #_client : ProblemServiceClient
 
