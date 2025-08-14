@@ -32,7 +32,7 @@ export const globalErrorHandler = (
         url: originalUrl,
         ip,
         message: err instanceof Error ? err.message : String(err),
-        stack: err instanceof Error ? pe.render(new Error(err.stack)) : undefined
+        // stack: err instanceof Error ? pe.render(new Error(err.stack)) : undefined
     });
 
     const startTime = Date.now();

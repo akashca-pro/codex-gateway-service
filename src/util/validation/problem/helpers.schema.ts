@@ -77,14 +77,14 @@ export const ExampleSchema = z.object({
 // StarterCode
 export const StarterCodeSchema = z.object({
   Id: NonEmpty.min(1,'Id is required'),
-  language: NonEmpty, // Could be normalized like Difficulty
+  language: LanguageSchemaEnum,
   code: NonEmpty
 });
 
 // SolutionCode
 export const SolutionCodeSchema = z.object({
   Id: NonEmpty.min(1,'Id is required'),
-  language: NonEmpty, // normalizeEnum(Language) if enum
+  language: LanguageSchemaEnum,
   code: NonEmpty.min(1,'Code is required'),
   executionTime: z.coerce.number().min(0, "Execution time must be >= 0"),
   memoryTaken: z.coerce.number().min(0, "Memory taken must be >= 0")
