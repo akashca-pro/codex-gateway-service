@@ -80,19 +80,35 @@ export const listProblemRequest = z.object({
 })
 
 export const UpdateBasicProblemDetailsSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   questionId: NonEmpty.optional(),
+
   title: NonEmpty.optional(),
+
   description: NonEmpty
   .min(20, "Description must be at least 20 characters")
   .max(2000, "Description must not exceed 2000 characters")
   .optional(),
+
   difficulty: DifficultySchemaEnum.optional(),
+
   active: z.boolean().optional(),
-  tags: z.array(NonEmpty).nonempty("At least one tag is required").optional(),
-  constraints: z.array(NonEmpty).optional(),
-  examples: z.array(ExampleSchema).optional(),
-  starterCodes: z.array(StarterCodeSchema).optional()
+
+  tags: z.array(NonEmpty)
+  .nonempty("At least one tag is required")
+  .optional()
+  .default([]),
+
+  constraints: z.array(NonEmpty)
+  .optional()
+  .default([]),
+
+  examples: z.array(ExampleSchema)
+  .optional()
+  .default([]),
+  
+  starterCodes: z.array(StarterCodeSchema)
+  .optional()
+  .default([])
 });   
 
 export const AddTestCaseSchema = z.object({

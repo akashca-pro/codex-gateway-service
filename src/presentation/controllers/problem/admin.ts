@@ -3,15 +3,13 @@ import grpcClient from '@/infra/grpc/problem-service/ProblemServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import { ProblemSuccessType } from "@/enums/problem/SuccessTypes.enum";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { CustomError } from "@/util/customError";
-import { ProblemErrorTypes } from "@/enums/problem/ErrorTypes.enum";
+import { UpdateBasicProblemDetailsRequest as GrpcUpdateDTO } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 
 export const adminProblemController = {
 
     createProblem : async (req : Request, res : Response, next : NextFunction) => {
 
-        try {
-                       
+        try {                    
             const result = await grpcClient.createProblem({
                 questionId : req.body.questionId,
                 title : req.body.title,
@@ -34,8 +32,7 @@ export const adminProblemController = {
 
     getProblem : async (req : Request, res : Response, next : NextFunction) => {
 
-        try {
-            
+        try {      
             const problemId = req.params.problemId
 
             const result = await grpcClient.getProblem({ Id : problemId });
@@ -46,6 +43,36 @@ export const adminProblemController = {
                 HTTP_STATUS.OK,
                 result
             )
+
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    updateBasicProblemDetails : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { problemId } = req.params;
+
+            const dto : GrpcUpdateDTO = {
+                Id : problemId,
+                ...(req.body.questionId ? { questionId: req.body.questionId } : {}),
+                ...(req.body.title ? { title: req.body.title } : {}),
+                ...(req.body.description ? { description: req.body.description } : {}),
+                ...(req.body.difficulty ? { difficulty: req.body.difficulty } : {}),
+                ...(req.body.active !== undefined ? { active: req.body.active } : {}),
+                tags : req.body?.tags ?? [],
+                constraints : req.body?.constraints ?? [],
+                examples : req.body?.examples ?? [],
+                starterCodes : req.body?.starterCodes ?? []
+            }
+
+           await grpcClient.updateBasicProblemDetails(dto);
+    
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.ProblemBasicDetailsUpdated,
+                HTTP_STATUS.OK,
+            );
 
         } catch (error) {
             next(error);
