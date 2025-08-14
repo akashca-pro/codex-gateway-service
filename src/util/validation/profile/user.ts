@@ -1,4 +1,5 @@
 import z from "zod"
+import { CountrySchema } from "../helper.schema"
 
 export const updateProfileSchema = z.object({
   username: z
@@ -20,10 +21,7 @@ export const updateProfileSchema = z.object({
     .regex(/^[a-zA-Z]+$/, 'Last name must contain only letters')
     .optional(),
 
-  country: z
-    .string()
-    .min(3, 'Country name must be at least 3 characters')
-    .max(20),
+  country: CountrySchema,
 
   preferredLanguage : z
     .string()

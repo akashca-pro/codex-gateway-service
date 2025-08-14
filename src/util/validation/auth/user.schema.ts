@@ -1,4 +1,5 @@
 import {  z } from 'zod';
+import { CountrySchema } from '@/util/validation/helper.schema';
 
 // Auth
 
@@ -36,10 +37,7 @@ export const signupSchema = z.object({
     .regex(/[0-9]/, 'Password must contain at least one number')
     .regex(/[@$!%*?&#]/, 'Password must contain at least one special character'),
 
-  country: z
-    .string()
-    .min(3, 'Country name must be at least 3 characters')
-    .max(20)
+  country: CountrySchema
 });
 
 export const resendOtpSchema = z.object({
