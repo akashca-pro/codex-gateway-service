@@ -2,7 +2,7 @@ import express from 'express';
 import { authController } from '@/presentation/controllers/auth/user';
 import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
-import { validateRequestBody } from '@/presentation/middlewares/validateRequest';
+import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/util/validation/auth/user.schema';
 import { limiter } from '@/presentation/middlewares/rate-limiter';
 
@@ -11,31 +11,31 @@ export const userAuthRouter = express.Router();
 userAuthRouter.use(limiter);
 
 userAuthRouter.post('/signup', 
-    validateRequestBody(signupSchema),
+    validateRequest(signupSchema),
     authController.signup);
 
 userAuthRouter.post('/otp/resend-otp', 
-    validateRequestBody(resendOtpSchema), 
+    validateRequest(resendOtpSchema), 
     authController.resendOtp);
 
 userAuthRouter.post('/otp/verify-otp', 
-    validateRequestBody(verifyOtpSchema), 
+    validateRequest(verifyOtpSchema), 
     authController.verifyOtp);
 
 userAuthRouter.post('/login', 
-    validateRequestBody(userLoginSchema), 
+    validateRequest(userLoginSchema), 
     authController.login);
 
 userAuthRouter.post('/login/google-login',
-    validateRequestBody(userGoogleLoginSchema), 
+    validateRequest(userGoogleLoginSchema), 
     authController.oAuthLogin);
 
 userAuthRouter.post('/password/forgot/request', 
-    validateRequestBody(forgotPasswordSchema), 
+    validateRequest(forgotPasswordSchema), 
     authController.forgotPassword);
 
 userAuthRouter.post('/password/change', 
-    validateRequestBody(resetPasswordSchema), 
+    validateRequest(resetPasswordSchema), 
     authController.resetPassword);
 
 userAuthRouter.post('/refresh-token',

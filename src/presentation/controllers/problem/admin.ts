@@ -3,7 +3,7 @@ import grpcClient from '@/infra/grpc/problem-service/ProblemServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import { ProblemSuccessType } from "@/enums/problem/SuccessTypes.enum";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { UpdateBasicProblemDetailsRequest as GrpcUpdateDTO } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, ListProblemRequest, StarterCode } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 
 export const adminProblemController = {
 
@@ -43,6 +43,28 @@ export const adminProblemController = {
                 HTTP_STATUS.OK,
                 result
             )
+
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    listProblem : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { page, limit, difficulty, tag, active, search, questionId } = req.body;
+
+            const dto : ListProblemRequest = {
+                page, limit, difficulty, tag, active, search, questionId
+            }
+
+            const result = await grpcClient.listProblems(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.ProblemsLoaded,
+                HTTP_STATUS.OK,
+                result
+            );
 
         } catch (error) {
             next(error);

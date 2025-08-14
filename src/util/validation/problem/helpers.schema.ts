@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-enum Difficult {
+export enum Difficulty {
     EASY = 'easy',
     MEDIUM = 'medium',
     HARD = 'hard'
 }
 
-enum TestCaseCollectionType {
+export enum TestCaseCollectionType {
     RUN = "run",
     SUBMIT = "submit"
 }
@@ -21,10 +21,10 @@ const testCaseCollectionTypeMap : Record<TestCaseCollectionType, number> = {
     [TestCaseCollectionType.SUBMIT] : 2,
 };
 
-const difficultyCodeMap: Record<Difficult, number> = {
-  [Difficult.EASY]: 1,
-  [Difficult.MEDIUM]: 2,
-  [Difficult.HARD]: 3
+const difficultyCodeMap: Record<Difficulty, number> = {
+  [Difficulty.EASY]: 1,
+  [Difficulty.MEDIUM]: 2,
+  [Difficulty.HARD]: 3
 };
 
 const languageMap : Record<Language,number> = {
@@ -39,9 +39,9 @@ export const NonEmpty = z.string().trim().min(1, "Value cannot be empty");
 export const DifficultySchemaEnum = z
   .string('Difficulty is required')
   .transform((val) => val.toLowerCase().trim()) // normalize case/space
-  .refine((val) => Object.values(Difficult).includes(val as Difficult),
+  .refine((val) => Object.values(Difficulty).includes(val as Difficulty),
     'Invalid difficulty value')
-  .transform((val) => difficultyCodeMap[val as Difficult]);
+  .transform((val) => difficultyCodeMap[val as Difficulty]);
 
 // language enum
 export const LanguageSchemaEnum = z

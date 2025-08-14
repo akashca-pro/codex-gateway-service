@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DifficultySchemaEnum, ExampleSchema, NonEmpty, SolutionCodeSchema, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
+import { DifficultySchemaEnum, NonEmpty, SolutionCodeSchema, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
 export const createProblemSchema = z.object({
@@ -28,7 +28,7 @@ export const createProblemSchema = z.object({
         .max(5, 'You can specify up to 5 tags')
 });
 
-export const getProblemSchema = z.object({
+export const getProblemQuerySchema = z.object({
     title : StrictString('Title')
     .trim()
     .min(3,'Title must be atleast 5 characters long')
@@ -37,6 +37,30 @@ export const getProblemSchema = z.object({
 
     questionId : StrictString('QuestionId')
     .optional(),
+
+    page: z.coerce
+      .number( "Page must be a number")
+      .int()
+      .min(1, "Page must be at least 1")
+      .default(1),
+
+    limit: z.coerce
+      .number("Limit must be a number")
+      .int()
+      .min(1, "Limit must be at least 1")
+      .max(100, "Limit must not exceed 100")
+      .default(5),
+
+    difficulty: DifficultySchemaEnum.optional(),
+
+    tag: z.string().trim().optional(),
+
+    active: z.coerce
+      .boolean("Active must be a boolean")
+      .default(true)
+      .optional(),
+
+    search: z.string().trim().optional(),
 })
 
 export const listProblemRequest = z.object({

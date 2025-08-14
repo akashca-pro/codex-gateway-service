@@ -1,4 +1,4 @@
-import CountryCode from '@akashcapro/codex-shared-utils/enums/countryCode.enum'
+import CountryCode from '@akashcapro/codex-shared-utils/dist/enums/countryCode.enum'
 import { z } from "zod";
 
 export const StrictString = (fieldName: string = "Field") => z

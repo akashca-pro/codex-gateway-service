@@ -3,12 +3,15 @@ import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { Request, Response, NextFunction } from "express";
 import { ZodObject, ZodRawShape } from "zod";
 
-export const validateRequestBody = (schema: ZodObject<ZodRawShape>, options?: { requireFile?: boolean }) => (
+type RequestPart = "body" | "query" | "params"
+
+export const validateRequest = (schema: ZodObject<ZodRawShape> , part : RequestPart = "body") => (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const result = schema.safeParse(req.body);
+  
+  const result = schema.safeParse(req[part]);
 
   if (!result.success) {
     const formattedErrors = result.error.issues.map((issue) => ({
@@ -24,36 +27,36 @@ export const validateRequestBody = (schema: ZodObject<ZodRawShape>, options?: { 
     );
   }
 
-  // If file validation is required (i.e., for multipart)
-  if (options?.requireFile) {
-    if (!req.file || req.file.fieldname !== "avatar") {
-      return ResponseHandler.error(
-        res,
-        "Missing or invalid avatar file",
-        HTTP_STATUS.BAD_REQUEST,
-        [{ field: "avatar", message: "Avatar file is required" }]
-      );
-    }
+  req.body = result.data;
 
-    if (!req.file.mimetype.startsWith("image/")) {
-      return ResponseHandler.error(
-        res,
-        "Invalid file type",
-        HTTP_STATUS.BAD_REQUEST,
-        [{ field: "avatar", message: "Only image files are allowed" }]
-      );
-    }
+  next();
+};
 
-    if (req.file.size > 5 * 1024 * 1024) {
-      return ResponseHandler.error(
-        res,
-        "File too large",
-        HTTP_STATUS.BAD_REQUEST,
-        [{ field: "avatar", message: "Max file size is 5MB" }]
-      );
-    }
+interface FileValidationOptions {
+  fieldName: string;
+  maxSizeMB?: number;
+  allowedMimeTypes?: string[];
+}
+
+export const validateFile = (options: FileValidationOptions) => (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { fieldName, maxSizeMB = 5, allowedMimeTypes = ["image/"] } = options;
+
+
+  if (!req.file || req.file.fieldname !== fieldName) {
+    return ResponseHandler.error(res, `Missing or invalid ${fieldName} file`, HTTP_STATUS.BAD_REQUEST);
   }
 
-  req.body = result.data;
+  if (!allowedMimeTypes.some(type => req?.file?.mimetype.startsWith(type))) {
+    return ResponseHandler.error(res, "Invalid file type", HTTP_STATUS.BAD_REQUEST);
+  }
+
+  if (req.file.size > maxSizeMB * 1024 * 1024) {
+    return ResponseHandler.error(res, `File too large, max size is ${maxSizeMB}MB`, HTTP_STATUS.BAD_REQUEST);
+  }
+
   next();
 };
