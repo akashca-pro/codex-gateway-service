@@ -161,12 +161,12 @@ export const RemoveSolutionCodeSchema = z.object({
   solutionCodeId: NonEmpty.min(1,'Solution code id is required'),
 });
 
-export const ProblemIdParamSchema = z.object({
+export const ProblemIdParamsSchema = z.object({
   problemId: z
     .string('Problem Id is required')
 });
 
-export const UpdateSolutionCodeParams = z.object({
+export const SolutionCodeParamsSchema = z.object({
   problemId: z
     .string('Problem Id is required'),
   solutionCodeId : z

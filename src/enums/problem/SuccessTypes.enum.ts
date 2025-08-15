@@ -1,22 +1,24 @@
 
 export enum ProblemSuccessType {
 
-    ProblemCreated = 'Problem created Successfully',
+    ProblemCreated = 'New problem created',
 
-    ProblemDetailsLoaded = 'Problem details loaded successfully',
+    ProblemDetailsLoaded = 'Problem details loaded',
 
     ProblemBasicDetailsUpdated = 'Problem basic details updated',
 
-    ProblemsLoaded = 'Problems loaded successfully.',
+    ProblemsLoaded = 'Problems loaded.',
 
-    TestCaseAdded = 'Testcase added successfully',
+    TestCaseAdded = 'Testcase added',
 
-    MultipleTestCasesAdded = 'Multiple testcases added successfully',
+    MultipleTestCasesAdded = 'Multiple testcases added',
 
-    RemovedTestCase = 'Removed testcase successfully',
+    RemovedTestCase = 'Testcase Removed',
 
     SolutionCodeAdded = 'Solution code added successfully',
 
     SolutionCodeUpdated = 'Solution code updated',
+
+    SolutionCodeRemoved = 'Solution code removed'
 
 }

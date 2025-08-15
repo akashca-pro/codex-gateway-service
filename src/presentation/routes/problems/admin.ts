@@ -1,9 +1,12 @@
 import { adminProblemController as controller } from '@/presentation/controllers/problem/admin';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { ProblemIdParamSchema, AddTestCaseSchema, createProblemSchema, 
+import { 
+    AddTestCaseSchema, createProblemSchema, 
     getProblemQuerySchema, UpdateBasicProblemDetailsSchema, 
-    BulkUploadTestCasesSchema,RemoveTestCaseParamSchema,RemoveTestCaseQuerySchema, 
-    UpdateSolutionCodeParams, AddSolutionCodeSchema,UpdateSolutionCodeSchema, 
+    BulkUploadTestCasesSchema,RemoveTestCaseParamSchema,
+    RemoveTestCaseQuerySchema, AddSolutionCodeSchema,
+    UpdateSolutionCodeSchema,ProblemIdParamsSchema,
+    SolutionCodeParamsSchema, 
 } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
@@ -26,14 +29,14 @@ adminProblemRouter.post(
 // Get problem details.
 adminProblemRouter.get(
     '/:problemId',
-    validateRequest(ProblemIdParamSchema,'params'),
+    validateRequest(ProblemIdParamsSchema,'params'),
     controller.getProblem
 )
 
 // Update basic problem details.
 adminProblemRouter.patch(
     '/:problemId/update',
-    validateRequest(ProblemIdParamSchema,'params'),
+    validateRequest(ProblemIdParamsSchema,'params'),
     validateRequest(UpdateBasicProblemDetailsSchema),
     controller.updateBasicProblemDetails
 )
@@ -41,7 +44,7 @@ adminProblemRouter.patch(
 // Add test case.
 adminProblemRouter.post(
     '/:problemId/testCases/add',
-    validateRequest(ProblemIdParamSchema,'params'),
+    validateRequest(ProblemIdParamsSchema,'params'),
     validateRequest(AddTestCaseSchema),
     controller.addTestCase
 )
@@ -49,7 +52,7 @@ adminProblemRouter.post(
 // Bulk upload testcase.
 adminProblemRouter.post(
     '/:problemId/testCases/bulkUpload',
-    validateRequest(ProblemIdParamSchema,'params'),
+    validateRequest(ProblemIdParamsSchema,'params'),
     validateRequest(BulkUploadTestCasesSchema),
     controller.bulkUploadTestCase
 )
@@ -65,7 +68,7 @@ adminProblemRouter.delete(
 // Add solution code.
 adminProblemRouter.post(
     '/:problemId/solutionCodes/add',
-    validateRequest(ProblemIdParamSchema,'params'),
+    validateRequest(ProblemIdParamsSchema,'params'),
     validateRequest(AddSolutionCodeSchema),
     controller.addSolutioncode
 )
@@ -73,7 +76,14 @@ adminProblemRouter.post(
 // Update solution code.
 adminProblemRouter.patch(
     '/:problemId/solutionCodes/:solutionCodeId/update',
-    validateRequest(UpdateSolutionCodeParams,'params'),
+    validateRequest(SolutionCodeParamsSchema,'params'),
     validateRequest(UpdateSolutionCodeSchema),
     controller.updateSolutionCode
+)
+
+// Remove solution code.
+adminProblemRouter.delete(
+    '/:problemId/solutionCodes/:solutionCodeId/remove',
+    validateRequest(SolutionCodeParamsSchema,'params'),
+    controller.removeSolutionCode
 )
