@@ -14,8 +14,8 @@ export const authController = {
     try {
 
       const grpcResponse = await grpcClient.login({
-      email : req.body.email,
-      password : req.body.password,
+      email : req.validated?.body.email,
+      password : req.validated?.body.password,
       role : 'ADMIN'
       })
         

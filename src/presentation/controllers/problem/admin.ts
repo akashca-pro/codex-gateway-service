@@ -13,13 +13,16 @@ export const adminProblemController = {
 
     createProblem : async (req : Request, res : Response, next : NextFunction) => {
 
-        try {                    
+        try {           
+            
+            const { questionId, title, description, difficulty, tags } = req.validated?.body
+            
             const result = await grpcClient.createProblem({
-                questionId : req.body.questionId,
-                title : req.body.title,
-                description : req.body.description,
-                difficulty : req.body.difficulty,
-                tags : req.body.tags
+                questionId,
+                title,
+                tags,
+                description,
+                difficulty
             });
 
             return ResponseHandler.success(
@@ -37,7 +40,7 @@ export const adminProblemController = {
     getProblem : async (req : Request, res : Response, next : NextFunction) => {
 
         try {      
-            const problemId = req.params.problemId
+            const problemId = req.validated?.params.problemId
 
             const result = await grpcClient.getProblem({ Id : problemId });
 
@@ -55,7 +58,7 @@ export const adminProblemController = {
 
     listProblem : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { page, limit, difficulty, tag, active, search, questionId } = req.body;
+            const { page, limit, difficulty, tag, active, search, questionId } = req.validated?.body;
 
             const dto : ListProblemRequest = {
                 page, limit, difficulty, tag, active, search, questionId
@@ -77,19 +80,21 @@ export const adminProblemController = {
 
     updateBasicProblemDetails : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { problemId } = req.params;
+            const { problemId } = req.validated?.params;
+            const { questionId, title, description, difficulty,
+                 active, tags, constraints, examples, starterCodes } = req.validated?.body;
 
             const dto : GrpcUpdateDTO = {
                 Id : problemId,
-                ...(req.body.questionId ? { questionId: req.body.questionId } : {}),
-                ...(req.body.title ? { title: req.body.title } : {}),
-                ...(req.body.description ? { description: req.body.description } : {}),
-                ...(req.body.difficulty ? { difficulty: req.body.difficulty } : {}),
-                ...(req.body.active !== undefined ? { active: req.body.active } : {}),
-                tags : req.body?.tags ?? [],
-                constraints : req.body?.constraints ?? [],
-                examples : req.body?.examples ?? [],
-                starterCodes : req.body?.starterCodes ?? []
+                ...(questionId ? { questionId: questionId } : {}),
+                ...(title ? { title: title } : {}),
+                ...(description ? { description: description } : {}),
+                ...(difficulty ? { difficulty: difficulty } : {}),
+                ...(active !== undefined ? { active: active } : {}),
+                tags : tags ?? [],
+                constraints : constraints ?? [],
+                examples : examples ?? [],
+                starterCodes : starterCodes ?? []
             }
 
            await grpcClient.updateBasicProblemDetails(dto);

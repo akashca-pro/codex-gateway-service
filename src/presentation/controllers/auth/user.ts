@@ -15,7 +15,7 @@ export const authController = {
 
   signup: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.signup(req.body);
+      const grpcResponse = await grpcClient.signup(req.validated?.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       next(error);
@@ -24,7 +24,7 @@ export const authController = {
 
   resendOtp: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.resendOtp(req.body);
+      const grpcResponse = await grpcClient.resendOtp(req.validated?.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       next(error);
@@ -33,7 +33,7 @@ export const authController = {
 
   verifyOtp: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.verifyOtp(req.body);
+      const grpcResponse = await grpcClient.verifyOtp(req.validated?.body);
 
       setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
       setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
@@ -73,7 +73,7 @@ export const authController = {
 
       let avatarPublicId = null;
 
-      const { email, name , imageUrl, sub } = await verifyGoogleToken(req.body.oAuthId);
+      const { email, name , imageUrl, sub } = await verifyGoogleToken(req.validated?.body.oAuthId);
 
       if(imageUrl){
         const result = await uploadImageUrlToCloudinary(imageUrl,name!.replace(/\s+/g, "_").toLowerCase());
@@ -99,7 +99,7 @@ export const authController = {
 
   forgotPassword: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.forgotPassword(req.body);
+      const grpcResponse = await grpcClient.forgotPassword(req.validated?.body);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       next(error);
@@ -108,7 +108,7 @@ export const authController = {
 
   resetPassword: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.resetPassword(req.body);
+      const grpcResponse = await grpcClient.resetPassword(req.validated?.body);
 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
