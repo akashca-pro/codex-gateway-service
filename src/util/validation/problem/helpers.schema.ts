@@ -82,6 +82,6 @@ export const StarterCodeSchema = z.object({
 export const SolutionCodeSchema = z.object({
   language: LanguageSchemaEnum,
   code: NonEmpty.min(1,'Code is required'),
-  executionTime: z.coerce.number().min(0, "Execution time must be >= 0"),
-  memoryTaken: z.coerce.number().min(0, "Memory taken must be >= 0")
+  executionTime: z.coerce.number('Execution time required'),
+  memoryTaken: z.coerce.number('MemoryTaken required')
 });

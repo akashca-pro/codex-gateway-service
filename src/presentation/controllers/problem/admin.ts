@@ -4,6 +4,7 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import { ProblemSuccessType } from "@/enums/problem/SuccessTypes.enum";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { 
+    AddSolutionCodeRequest,
     AddTestCaseRequest, 
     BulkUploadTestCasesRequest, 
     UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
@@ -182,6 +183,29 @@ export const adminProblemController = {
         } catch (error) {
             next(error);
         }
-    }
+    },
 
+    addSolutioncode : async (req : Request, res : Response, next : NextFunction) => {
+
+        try {
+            const { problemId } = req.validated?.params;
+            const { solutionCode } = req.validated?.body;
+
+            const dto : AddSolutionCodeRequest = {
+                Id : problemId,
+                solutionCode 
+            }
+
+            await grpcClient.addSolutionCode(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.SolutionCodeAdded,
+                HTTP_STATUS.OK
+            );
+
+        } catch (error) {
+            next(error);
+        }
+    }
 }

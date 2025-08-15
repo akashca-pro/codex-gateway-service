@@ -4,7 +4,8 @@ import { ProblemIdParamSchema, AddTestCaseSchema, createProblemSchema,
     getProblemQuerySchema, UpdateBasicProblemDetailsSchema, 
     BulkUploadTestCasesSchema,
     RemoveTestCaseParamSchema,
-    RemoveTestCaseQuerySchema
+    RemoveTestCaseQuerySchema,
+    AddSolutionCodeSchema
 } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
@@ -56,9 +57,17 @@ adminProblemRouter.post(
 )
 
 // Remove test case.
-adminProblemRouter.patch(
+adminProblemRouter.delete(
     '/:problemId/testCases/:testCaseId/remove',
     validateRequest(RemoveTestCaseParamSchema,'params'),
     validateRequest(RemoveTestCaseQuerySchema,'query'),
     controller.removeTestCase
+)
+
+// Add solution code.
+adminProblemRouter.post(
+    '/:problemId/solutionCodes/add',
+    validateRequest(ProblemIdParamSchema,'params'),
+    validateRequest(AddSolutionCodeSchema),
+    controller.addSolutioncode
 )

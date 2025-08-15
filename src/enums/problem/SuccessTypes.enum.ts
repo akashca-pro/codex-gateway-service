@@ -13,6 +13,8 @@ export enum ProblemSuccessType {
 
     MultipleTestCasesAdded = 'Multiple testcases added successfully',
 
-    RemovedTestCase = 'Removed testcase successfully'
+    RemovedTestCase = 'Removed testcase successfully',
+
+    SolutionCodeAdded = 'Solution code added successfully'
 
 }
