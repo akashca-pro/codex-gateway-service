@@ -137,10 +137,14 @@ export const BulkUploadTestCasesSchema = z.object({
   testCase: z.array(TestCaseSchema).nonempty("At least one test case is required")
 });
 
-export const RemoveTestCaseSchema = z.object({
+export const RemoveTestCaseParamSchema = z.object({
+  problemId: NonEmpty.min(1,'ProblemId is required'),
   testCaseId: NonEmpty.min(1,'Test caseId is required'),
-  testCaseCollectionType: TestCaseCollectionTypeEnum
 });
+
+export const RemoveTestCaseQuerySchema = z.object({
+  testCaseCollectionType: TestCaseCollectionTypeEnum
+})
 
 export const AddSolutionCodeSchema = z.object({
   solutionCode: SolutionCodeSchema

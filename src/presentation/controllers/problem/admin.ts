@@ -7,7 +7,8 @@ import {
     AddTestCaseRequest, 
     BulkUploadTestCasesRequest, 
     UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
-    ListProblemRequest 
+    ListProblemRequest, 
+    RemoveTestCaseRequest
 } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 
 export const adminProblemController = {
@@ -154,6 +155,30 @@ export const adminProblemController = {
                 ProblemSuccessType.MultipleTestCasesAdded,
                 HTTP_STATUS.OK
             )
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    removeTestCase : async (req : Request, res : Response, next : NextFunction) => {
+
+        try {
+            const { problemId, testCaseId } = req.validated?.params; 
+            const { testCaseCollectionType } = req.validated?.query;
+            
+            const dto : RemoveTestCaseRequest = {
+                Id : problemId,
+                testCaseId,
+                testCaseCollectionType
+            }
+            await grpcClient.removeTestCase(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.RemovedTestCase,
+                HTTP_STATUS.OK
+            );
+
         } catch (error) {
             next(error);
         }

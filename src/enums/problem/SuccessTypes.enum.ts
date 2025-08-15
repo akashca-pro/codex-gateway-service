@@ -11,6 +11,8 @@ export enum ProblemSuccessType {
 
     TestCaseAdded = 'Testcase added successfully',
 
-    MultipleTestCasesAdded = 'Multiple testcases added successfully'
+    MultipleTestCasesAdded = 'Multiple testcases added successfully',
+
+    RemovedTestCase = 'Removed testcase successfully'
 
 }
