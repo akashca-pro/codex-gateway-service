@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DifficultySchemaEnum, NonEmpty, SolutionCodeSchema, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
+import { codeSchema, DifficultySchemaEnum, LanguageSchemaEnum, NonEmpty, SolutionCodeSchema, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
 export const createProblemSchema = z.object({
@@ -151,8 +151,10 @@ export const AddSolutionCodeSchema = z.object({
 });
 
 export const UpdateSolutionCodeSchema = z.object({
-  solutionCodeId: NonEmpty.min(1,'Solution code id is required'),
-  solutionCode: SolutionCodeSchema
+  language : LanguageSchemaEnum.optional(),
+  code : codeSchema.optional(),
+  executionTime: z.coerce.number('Execution time required').optional(),
+  memoryTaken: z.coerce.number('MemoryTaken required').optional()
 });
 
 export const RemoveSolutionCodeSchema = z.object({
@@ -163,3 +165,10 @@ export const ProblemIdParamSchema = z.object({
   problemId: z
     .string('Problem Id is required')
 });
+
+export const UpdateSolutionCodeParams = z.object({
+  problemId: z
+    .string('Problem Id is required'),
+  solutionCodeId : z
+    .string('Solution Id is required')
+})

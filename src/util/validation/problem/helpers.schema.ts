@@ -78,10 +78,20 @@ export const StarterCodeSchema = z.object({
   code: NonEmpty
 });
 
+// code field in solution code
+export const codeSchema = z
+  .string( "Code field is required" )
+  .min(1, "Code field cannot be empty")
+  .max(10000, "Code exceeds maximum allowed length (10,000 characters)")
+  .regex(
+    /^(?!.*<script\b)(?!.*[`$|&]{2,})(?!.*rm\s+-rf)(?!.*eval\().[\s\S]{1,10000}$/,
+    "Code contains potentially unsafe patterns (e.g., <script>, eval(), rm -rf, or shell injection)"
+);
+
 // SolutionCode
 export const SolutionCodeSchema = z.object({
   language: LanguageSchemaEnum,
-  code: NonEmpty.min(1,'Code is required'),
+  code: codeSchema,
   executionTime: z.coerce.number('Execution time required'),
   memoryTaken: z.coerce.number('MemoryTaken required')
 });

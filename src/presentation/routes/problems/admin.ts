@@ -2,10 +2,8 @@ import { adminProblemController as controller } from '@/presentation/controllers
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { ProblemIdParamSchema, AddTestCaseSchema, createProblemSchema, 
     getProblemQuerySchema, UpdateBasicProblemDetailsSchema, 
-    BulkUploadTestCasesSchema,
-    RemoveTestCaseParamSchema,
-    RemoveTestCaseQuerySchema,
-    AddSolutionCodeSchema
+    BulkUploadTestCasesSchema,RemoveTestCaseParamSchema,RemoveTestCaseQuerySchema, 
+    UpdateSolutionCodeParams, AddSolutionCodeSchema,UpdateSolutionCodeSchema, 
 } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
@@ -70,4 +68,12 @@ adminProblemRouter.post(
     validateRequest(ProblemIdParamSchema,'params'),
     validateRequest(AddSolutionCodeSchema),
     controller.addSolutioncode
+)
+
+// Update solution code.
+adminProblemRouter.patch(
+    '/:problemId/solutionCodes/:solutionCodeId/update',
+    validateRequest(UpdateSolutionCodeParams,'params'),
+    validateRequest(UpdateSolutionCodeSchema),
+    controller.updateSolutionCode
 )

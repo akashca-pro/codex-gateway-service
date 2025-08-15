@@ -9,7 +9,8 @@ import {
     BulkUploadTestCasesRequest, 
     UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
     ListProblemRequest, 
-    RemoveTestCaseRequest
+    RemoveTestCaseRequest,
+    UpdateSolutionCodeRequest
 } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 
 export const adminProblemController = {
@@ -123,8 +124,6 @@ export const adminProblemController = {
                 testCase
             }
 
-            console.log(dto);
-
             await grpcClient.addTestCase(dto);
 
             return ResponseHandler.success(
@@ -201,6 +200,35 @@ export const adminProblemController = {
             return ResponseHandler.success(
                 res,
                 ProblemSuccessType.SolutionCodeAdded,
+                HTTP_STATUS.OK
+            );
+
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    updateSolutionCode : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { problemId, solutionCodeId } = req.validated?.params;
+            const { code, language, executionTime, memoryTaken } = req.validated?.body;
+            
+            const dto : UpdateSolutionCodeRequest = {
+                Id : problemId,
+                solutionCodeId,
+                solutionCode : {
+                    code,
+                    language,
+                    executionTime,
+                    memoryTaken
+                }
+            }
+            
+            await grpcClient.updateSolutionCode(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.SolutionCodeUpdated,
                 HTTP_STATUS.OK
             );
 

@@ -15,6 +15,8 @@ export enum ProblemSuccessType {
 
     RemovedTestCase = 'Removed testcase successfully',
 
-    SolutionCodeAdded = 'Solution code added successfully'
+    SolutionCodeAdded = 'Solution code added successfully',
+
+    SolutionCodeUpdated = 'Solution code updated',
 
 }
