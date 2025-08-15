@@ -7,6 +7,8 @@ export enum ProblemSuccessType {
 
     ProblemBasicDetailsUpdated = 'Problem basic details updated',
 
-    ProblemsLoaded = 'Problems loaded successfully.'
+    ProblemsLoaded = 'Problems loaded successfully.',
+
+    TestCaseAdded = 'Testcase added successfully'
 
 }

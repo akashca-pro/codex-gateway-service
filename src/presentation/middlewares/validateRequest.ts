@@ -27,7 +27,11 @@ export const validateRequest = (schema: ZodObject<ZodRawShape> , part : RequestP
     );
   }
 
-  req.body = result.data;
+  req.validated = {
+    body : part === 'body' ? result.data : req.validated?.body,
+    params : part === 'params' ? result.data : req.validated?.params,
+    query : part === 'query' ? result.data : req.validated?.query
+  }
 
   next();
 };

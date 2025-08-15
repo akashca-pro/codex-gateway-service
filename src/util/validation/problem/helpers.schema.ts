@@ -61,14 +61,12 @@ export const TestCaseCollectionTypeEnum = z
 
 // TestCase
 export const TestCaseSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   input: NonEmpty.min(1, "Test case input is required"),
   output: NonEmpty.min(1, "Test case output is required")
 });
 
 // Example
 export const ExampleSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   input: NonEmpty.min(1,'Input is required'),
   output: NonEmpty.min(1,'Output is required'),
   explanation: NonEmpty.min(1,'Explanation is required'),
@@ -76,14 +74,12 @@ export const ExampleSchema = z.object({
 
 // StarterCode
 export const StarterCodeSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   language: LanguageSchemaEnum,
   code: NonEmpty
 });
 
 // SolutionCode
 export const SolutionCodeSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   language: LanguageSchemaEnum,
   code: NonEmpty.min(1,'Code is required'),
   executionTime: z.coerce.number().min(0, "Execution time must be >= 0"),

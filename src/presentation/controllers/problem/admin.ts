@@ -3,7 +3,11 @@ import grpcClient from '@/infra/grpc/problem-service/ProblemServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import { ProblemSuccessType } from "@/enums/problem/SuccessTypes.enum";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, ListProblemRequest, StarterCode } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { 
+    AddTestCaseRequest, 
+    UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
+    ListProblemRequest 
+} from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 
 export const adminProblemController = {
 
@@ -99,5 +103,33 @@ export const adminProblemController = {
         } catch (error) {
             next(error);
         }
-    }
+    },
+
+    addTestCase : async (req : Request, res :Response, next : NextFunction) => {
+        try {
+
+            const { problemId } = req.validated?.params;
+            const { testCaseCollectionType, testCase } = req.validated?.body;
+
+            const dto : AddTestCaseRequest = {
+                Id : problemId,
+                testCaseCollectionType,
+                testCase
+            }
+
+            console.log(dto);
+
+            await grpcClient.addTestCase(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.TestCaseAdded,
+                HTTP_STATUS.OK
+            );
+            
+        } catch (error) {
+            next(error);
+        }
+    },
+
 }

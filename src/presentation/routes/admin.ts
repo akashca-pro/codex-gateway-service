@@ -7,7 +7,24 @@ import { verifyAccessToken } from '../middlewares/jwt';
 
 export const adminRouter = express.Router();
 
-adminRouter.use('/auth',adminAuthRouter);
-adminRouter.use('/profile',verifyAccessToken('admin'),adminProfileRouter);
-adminRouter.use('/problems',verifyAccessToken('admin'),adminProblemRouter);
-adminRouter.use('/dashboard',verifyAccessToken('admin'),adminDashboardRouter);
+adminRouter.use(
+    '/auth',
+    adminAuthRouter
+);
+
+adminRouter.use(
+    '/profile',
+    verifyAccessToken('admin'),
+    adminProfileRouter
+);
+
+adminRouter.use(
+    '/problems',
+    // verifyAccessToken('admin'),
+    adminProblemRouter
+);
+
+adminRouter.use('/dashboard',
+    verifyAccessToken('admin'),
+    adminDashboardRouter
+);

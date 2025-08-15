@@ -128,35 +128,34 @@ export const UpdateBasicProblemDetailsSchema = z.object({
 });   
 
 export const AddTestCaseSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   testCaseCollectionType: TestCaseCollectionTypeEnum,
   testCase: TestCaseSchema
 });
 
 export const BulkUploadTestCasesSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   testCaseCollectionType: TestCaseCollectionTypeEnum,
   testCase: z.array(TestCaseSchema).nonempty("At least one test case is required")
 });
 
 export const RemoveTestCaseSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   testCaseId: NonEmpty.min(1,'Test caseId is required'),
   testCaseCollectionType: TestCaseCollectionTypeEnum
 });
 
 export const AddSolutionCodeSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   solutionCode: SolutionCodeSchema
 });
 
 export const UpdateSolutionCodeSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   solutionCodeId: NonEmpty.min(1,'Solution code id is required'),
   solutionCode: SolutionCodeSchema
 });
 
 export const RemoveSolutionCodeSchema = z.object({
-  Id: NonEmpty.min(1,'Id is required'),
   solutionCodeId: NonEmpty.min(1,'Solution code id is required'),
+});
+
+export const ProblemIdParamSchema = z.object({
+  problemId: z
+    .string('Problem Id is required')
 });
