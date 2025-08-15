@@ -5,6 +5,7 @@ import { ProblemSuccessType } from "@/enums/problem/SuccessTypes.enum";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { 
     AddTestCaseRequest, 
+    BulkUploadTestCasesRequest, 
     UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
     ListProblemRequest 
 } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
@@ -14,7 +15,6 @@ export const adminProblemController = {
     createProblem : async (req : Request, res : Response, next : NextFunction) => {
 
         try {           
-            
             const { questionId, title, description, difficulty, tags } = req.validated?.body
             
             const result = await grpcClient.createProblem({
@@ -58,7 +58,7 @@ export const adminProblemController = {
 
     listProblem : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { page, limit, difficulty, tag, active, search, questionId } = req.validated?.body;
+            const { page, limit, difficulty, tag, active, search, questionId } = req.validated?.query;
 
             const dto : ListProblemRequest = {
                 page, limit, difficulty, tag, active, search, questionId
@@ -112,7 +112,6 @@ export const adminProblemController = {
 
     addTestCase : async (req : Request, res :Response, next : NextFunction) => {
         try {
-
             const { problemId } = req.validated?.params;
             const { testCaseCollectionType, testCase } = req.validated?.body;
 
@@ -136,5 +135,28 @@ export const adminProblemController = {
             next(error);
         }
     },
+
+    bulkUploadTestCase : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { problemId } = req.validated?.params;
+            const { testCaseCollectionType, testCase } = req.validated?.body;
+
+            const dto : BulkUploadTestCasesRequest = {
+                Id : problemId,
+                testCase,
+                testCaseCollectionType
+            }
+
+            await grpcClient.bulkUploadTestCases(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.MultipleTestCasesAdded,
+                HTTP_STATUS.OK
+            )
+        } catch (error) {
+            next(error);
+        }
+    }
 
 }
