@@ -20,7 +20,7 @@ adminRouter.use(
 
 adminRouter.use(
     '/problems',
-    // verifyAccessToken('admin'),
+    verifyAccessToken('admin'),
     adminProblemRouter
 );
 

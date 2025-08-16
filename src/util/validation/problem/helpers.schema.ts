@@ -88,10 +88,3 @@ export const codeSchema = z
     "Code contains potentially unsafe patterns (e.g., <script>, eval(), rm -rf, or shell injection)"
 );
 
-// SolutionCode
-export const SolutionCodeSchema = z.object({
-  language: LanguageSchemaEnum,
-  code: codeSchema,
-  executionTime: z.coerce.number('Execution time required'),
-  memoryTaken: z.coerce.number('MemoryTaken required')
-});

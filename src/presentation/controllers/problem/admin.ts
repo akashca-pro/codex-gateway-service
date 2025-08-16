@@ -189,11 +189,17 @@ export const adminProblemController = {
 
         try {
             const { problemId } = req.validated?.params;
-            const { solutionCode } = req.validated?.body;
+            const { Id, code, executionTime, language, memoryTaken } = req.validated?.body;
 
             const dto : AddSolutionCodeRequest = {
                 Id : problemId,
-                solutionCode 
+                solutionCode : {
+                    Id,
+                    code,
+                    executionTime,
+                    language,
+                    memoryTaken
+                }
             }
 
             await grpcClient.addSolutionCode(dto);

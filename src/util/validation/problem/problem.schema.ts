@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { codeSchema, DifficultySchemaEnum, LanguageSchemaEnum, NonEmpty, SolutionCodeSchema, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
+import { codeSchema, DifficultySchemaEnum, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
 export const createProblemSchema = z.object({
@@ -147,7 +147,10 @@ export const RemoveTestCaseQuerySchema = z.object({
 })
 
 export const AddSolutionCodeSchema = z.object({
-  solutionCode: SolutionCodeSchema
+  language: LanguageSchemaEnum,
+  code: codeSchema,
+  executionTime: z.coerce.number('Execution time required'),
+  memoryTaken: z.coerce.number('MemoryTaken required')
 });
 
 export const UpdateSolutionCodeSchema = z.object({
