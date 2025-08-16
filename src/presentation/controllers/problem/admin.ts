@@ -62,10 +62,10 @@ export const adminProblemController = {
 
     listProblem : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { page, limit, difficulty, tag, active, search, questionId } = req.validated?.query;
+            const { page, limit, difficulty, tags, active, search, questionId } = req.validated?.query;
 
             const dto : ListProblemRequest = {
-                page, limit, difficulty, tag, active, search, questionId
+                page, limit, difficulty, tags, active, search, questionId
             }
 
             const result = await grpcClient.listProblems(dto);

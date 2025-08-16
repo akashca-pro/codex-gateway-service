@@ -1,6 +1,6 @@
 import { publicProblemController as controller } from '@/presentation/controllers/problem/public';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { getProblemQuerySchema, ProblemIdParamsSchema } from '@/util/validation/problem/problem.schema';
+import { getProblemlistQuerySchema, ProblemIdParamsSchema } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
 export const publicProblemRouter = express.Router();
@@ -8,7 +8,7 @@ export const publicProblemRouter = express.Router();
 // List problems
 publicProblemRouter.get(
     '/',
-    validateRequest(getProblemQuerySchema,'query'),
+    validateRequest(getProblemlistQuerySchema,'query'),
     controller.listProblem
 )
 

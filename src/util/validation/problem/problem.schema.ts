@@ -28,7 +28,7 @@ export const createProblemSchema = z.object({
         .max(5, 'You can specify up to 5 tags')
 });
 
-export const getProblemQuerySchema = z.object({
+export const getProblemlistQuerySchema = z.object({
     title : StrictString('Title')
     .trim()
     .min(3,'Title must be atleast 5 characters long')
@@ -53,7 +53,9 @@ export const getProblemQuerySchema = z.object({
 
     difficulty: DifficultySchemaEnum.optional(),
 
-    tag: z.string().trim().optional(),
+    tags: z.array(z.string().trim())
+    .optional()
+    .default([]),
 
     active: z.coerce
       .boolean("Active must be a boolean")
@@ -61,38 +63,6 @@ export const getProblemQuerySchema = z.object({
       .optional(),
 
     search: z.string().trim().optional(),
-})
-
-export const listProblemRequest = z.object({
-    page : z
-    .number('Page is required')
-    .int("Page must be an integer")
-    .min(1, "Page must be greater than or equal to 1"),
-
-    limit : z
-    .number('Limit is required')
-    .int("Limit must be an integer")
-    .min(1, "Limit must be greater than or equal to 1")
-    .max(100, "Limit must not exceed 100"),
-
-    difficulty: DifficultySchemaEnum.optional(),
-
-    tag: StrictString('Tag')
-      .trim()
-      .min(2, "Tag must be at least 2 characters long")
-      .max(30, "Tag must not exceed 10 characters")
-      .optional(),
-
-    active: z.boolean("Active must be a boolean").optional(),
-
-    search: StrictString('Search')
-      .trim()
-      .min(1, "Search must be at least 1 character long")
-      .max(100, "Search must not exceed 100 characters")
-      .optional(),
-    
-    questionId: StrictString('QuestionId')
-      .optional(),
 })
 
 export const UpdateBasicProblemDetailsSchema = z.object({

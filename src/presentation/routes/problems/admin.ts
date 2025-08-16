@@ -2,7 +2,7 @@ import { adminProblemController as controller } from '@/presentation/controllers
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { 
     AddTestCaseSchema, createProblemSchema, 
-    getProblemQuerySchema, UpdateBasicProblemDetailsSchema, 
+    getProblemlistQuerySchema, UpdateBasicProblemDetailsSchema, 
     BulkUploadTestCasesSchema,RemoveTestCaseParamSchema,
     RemoveTestCaseQuerySchema, AddSolutionCodeSchema,
     UpdateSolutionCodeSchema,ProblemIdParamsSchema,
@@ -15,7 +15,7 @@ export const adminProblemRouter = express.Router();
 // List problems.
 adminProblemRouter.get(
     '/',
-    validateRequest(getProblemQuerySchema,'query'),
+    validateRequest(getProblemlistQuerySchema,'query'),
     controller.listProblem
 )
 

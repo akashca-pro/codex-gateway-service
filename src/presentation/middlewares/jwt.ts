@@ -7,6 +7,7 @@ import { CustomJwtPayload } from '@akashcapro/codex-shared-utils'
 import ResponseHandler from '@akashcapro/codex-shared-utils/dist/utils/response_handler';
 import HTTP_STATUS from '@akashcapro/codex-shared-utils/dist/utils/status_code';
 import redis from '@/config/redis';
+import { REDIS_KEY_PREFIX } from '@/config/redis/keyPrefix';
 
 const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
     return jwt.verify(token,secret) as CustomJwtPayload
@@ -32,7 +33,7 @@ export const verifyAccessToken = (acceptedRole : string) => (
         if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
-        redis.get(`blacklistAccessToken:${decoded.tokenId}`)
+        redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`)
             .then((result)=>{
                 if(result){
                     return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
@@ -73,7 +74,7 @@ export const verifyRefreshToken = (acceptedRole : string) => (
         if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
-        redis.get(`blacklistRefreshToken:${decoded.tokenId}`)
+        redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_REFRESH_TOKEN}${decoded.tokenId}`)
             .then((result)=>{
                 if(result){
                     return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);

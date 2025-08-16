@@ -8,6 +8,7 @@ import { config } from "@/config";
 import ms from "ms";
 import { verifyGoogleToken } from "@/util/googleVerifier";
 import { uploadImageUrlToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
+import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 
 const grpcClient = new GrpcUserAuthService();
 
@@ -139,8 +140,8 @@ export const authController = {
           const accessTokenTtl = (req.accessTokenExp as number) - now;
           const refreshTokenTtl = (req.refreshTokenExp as number) - now;
 
-          await redis.set(`blacklistAccessToken:${req.accessTokenId}`, "1", "EX", accessTokenTtl);
-          await redis.set(`blacklistRefreshToken:${req.refreshTokenId}`, "1", "EX" , refreshTokenTtl)
+          await redis.set(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${req.accessTokenId}`, "1", "EX", accessTokenTtl);
+          await redis.set(`${REDIS_KEY_PREFIX.BLACKLIST_REFRESH_TOKEN}${req.refreshTokenId}`, "1", "EX" , refreshTokenTtl)
         
           res.clearCookie("accessToken", {
             httpOnly: true,
