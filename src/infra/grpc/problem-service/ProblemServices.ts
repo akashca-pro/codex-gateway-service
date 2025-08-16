@@ -1,4 +1,4 @@
-import { AddSolutionCodeRequest, AddTestCaseRequest, BulkUploadTestCasesRequest, CreateProblemRequest, GetProblemRequest, ListProblemRequest, ListProblemResponse, Problem, ProblemServiceClient, RemoveSolutionCodeRequest, RemoveTestCaseRequest, UpdateBasicProblemDetailsRequest, UpdateSolutionCodeRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { AddSolutionCodeRequest, AddTestCaseRequest, BulkUploadTestCasesRequest, CreateProblemRequest, GetProblemPublicResponse, GetProblemRequest, ListProblemRequest, ListProblemResponse, Problem, ProblemServiceClient, RemoveSolutionCodeRequest, RemoveTestCaseRequest, UpdateBasicProblemDetailsRequest, UpdateSolutionCodeRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
@@ -108,6 +108,15 @@ class GrpcProblemService extends GrpcBaseService {
     ) : Promise<Empty> => {
         return this.grpcCall(
             this.#_client.removeSolutionCode.bind(this.#_client),
+            request
+        );
+    }
+
+    getProblemForPublic = async (
+        request : GetProblemRequest
+    ) : Promise<GetProblemPublicResponse> => {
+        return this.grpcCall(
+            this.#_client.getProblemForPublic.bind(this.#_client),
             request
         );
     }

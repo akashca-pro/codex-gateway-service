@@ -14,6 +14,7 @@ import { userRouter } from './presentation/routes/user';
 import { adminRouter } from './presentation/routes/admin';
 import { globalErrorHandler, notFound } from '@/util/errorHandlers'
 import { metricsMiddleware } from './helper/metricsMiddleware';
+import { publicRouter } from './presentation/routes/public';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.get('/health', (req : Request, res : Response)=>{
 // Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/admin',adminRouter);
+app.use('/api/v1/public',publicRouter);
 
 // 404
 app.use(notFound);
