@@ -57,10 +57,16 @@ export const getProblemlistQuerySchema = z.object({
     .optional()
     .default([]),
 
-    active: z.coerce
-      .boolean("Active must be a boolean")
-      .default(true)
-      .optional(),
+    active : z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        if (val.toLowerCase() === "false") return false;
+        if (val.toLowerCase() === "true") return true;
+      }
+      return val;
+    },
+    z.boolean('Active must be boolean').optional()
+    ),
 
     search: z.string().trim().optional(),
 })

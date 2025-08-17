@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { config } from '.';
+import { config } from '@/config';
 import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
 
 class RedisClient {
