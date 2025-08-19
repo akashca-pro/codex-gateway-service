@@ -45,9 +45,8 @@ export const adminProblemController = {
 
         try {      
             const problemId = req.validated?.params.problemId
-
             const result = await grpcClient.getProblem({ Id : problemId });
-
+            
             return ResponseHandler.success(
                 res,
                 ProblemSuccessType.ProblemDetailsLoaded,
@@ -87,13 +86,13 @@ export const adminProblemController = {
             const { problemId } = req.validated?.params;
             const { questionId, title, description, difficulty,
                  active, tags, constraints, examples, starterCodes } = req.validated?.body;
-
+                
             const dto : GrpcUpdateDTO = {
                 Id : problemId,
                 ...(questionId ? { questionId: questionId } : {}),
                 ...(title ? { title: title } : {}),
                 ...(description ? { description: description } : {}),
-                ...(difficulty ? { difficulty: difficulty } : {}),
+                ...(difficulty ? { difficulty: difficulty } : {}), 
                 ...(active !== undefined ? { active: active } : {}),
                 tags : tags ?? [],
                 constraints : constraints ?? [],

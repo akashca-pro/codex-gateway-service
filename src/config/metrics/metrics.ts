@@ -2,30 +2,17 @@ import client from 'prom-client';
 
 client.collectDefaultMetrics();
 
-export const grpcRequestCounter = new client.Counter({
-    name : 'grpc_requests_total',
-    help : 'Total number of gRPC requests',
-    labelNames : ['method','status']
-})
-
-export const grpcLatency = new client.Histogram({
-  name: 'grpc_request_duration_ms',
-  help: 'Duration of gRPC requests in ms',
-  labelNames: ['method', 'status'],
-  buckets: [10, 50, 100, 300, 500, 1000, 2000]
-});
-
 export const httpRequestCounter = new client.Counter({
-  name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status'],
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status"],
 });
 
 export const httpRequestDuration = new client.Histogram({
-  name: 'http_request_duration_ms',
-  help: 'Duration of HTTP requests in ms',
-  labelNames: ['method', 'route', 'status'],
-  buckets: [5, 20, 50, 100, 300, 500, 1000]
+  name: "http_request_duration_ms",
+  help: "Duration of HTTP requests in ms",
+  labelNames: ["method", "route", "status"],
+  buckets: [10, 50, 100, 300, 500, 1000, 2000],
 });
 
 export const register = client.register

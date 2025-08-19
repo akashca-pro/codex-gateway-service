@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { codeSchema, DifficultySchemaEnum, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
+import { codeSchema, DifficultySchemaEnum, ExampleSchema, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
 export const createProblemSchema = z.object({
@@ -85,7 +85,7 @@ export const UpdateBasicProblemDetailsSchema = z.object({
 
   active: z.boolean().optional(),
 
-  tags: z.array(StrictString('Tags'))
+  tags: z.array(StrictString('Tags').min(1).max(20))
   .nonempty("At least one tag is required")
   .optional()
   .default([]),
@@ -94,7 +94,7 @@ export const UpdateBasicProblemDetailsSchema = z.object({
   .optional()
   .default([]),
 
-  examples: z.array(NonEmpty)
+  examples: z.array(ExampleSchema)
   .optional()
   .default([]),
 

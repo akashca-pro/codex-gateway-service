@@ -6,7 +6,6 @@ import { isGrpcError } from "./grpcErrorCheck";
 import { mapGrpcCodeToHttp } from "@akashcapro/codex-shared-utils";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import PrettyError from "pretty-error";
-import { grpcMetricsCollector } from "@/helper/grpcMetricsCollector";
 
 export const notFound = (req : Request,res : Response) => {
     logger.error(`Resource not found : ${req.method} ${req.url} `);
@@ -34,11 +33,6 @@ export const globalErrorHandler = (
         message: err instanceof Error ? err.message : String(err),
         // stack: err instanceof Error ? pe.render(new Error(err.stack)) : undefined
     });
-
-    const startTime = Date.now();
-    const methodName = `${req.method}_${req.path}`;
-
-    grpcMetricsCollector(methodName,res.statusCode.toString() || '500', startTime);
 
     if(isGrpcError(err)){
         const statusCode = mapGrpcCodeToHttp(err.code) || HTTP_STATUS.INTERNAL_SERVER_ERROR;

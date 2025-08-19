@@ -21,8 +21,6 @@ COPY --from=builder /app/dist /app
 
 COPY --from=builder /app/node_modules /app/node_modules
 
-COPY --from=builder /app/.env /app
-
 EXPOSE 4000 9101 50051 5432 6379
 
 CMD [ "node" , "index.js" ]

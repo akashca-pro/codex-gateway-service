@@ -13,7 +13,7 @@ import { startMetricsServer } from './config/metrics';
 import { userRouter } from './presentation/routes/user';
 import { adminRouter } from './presentation/routes/admin';
 import { globalErrorHandler, notFound } from '@/util/errorHandlers'
-import { metricsMiddleware } from './helper/metricsMiddleware';
+import { httpMetricsMiddleware } from './config/metrics/metricsMiddleware';
 import { publicRouter } from './presentation/routes/public';
 
 const app = express();
@@ -24,7 +24,7 @@ app.use(cookieParser())
 app.use(helmet());
 
 // metrics middleware
-app.use(metricsMiddleware);
+app.use(httpMetricsMiddleware);
 
 app.use(cors({
   origin: process.env.CLIENT_URL,
