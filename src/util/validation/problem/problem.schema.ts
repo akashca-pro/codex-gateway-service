@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { codeSchema, DifficultySchemaEnum, ExampleSchema, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
+import { codeSchema, DifficultySchemaEnum, escapeRegex, ExampleSchema, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
 export const createProblemSchema = z.object({
@@ -68,7 +68,11 @@ export const getProblemlistQuerySchema = z.object({
     z.boolean('Active must be boolean').optional()
     ),
 
-    search: z.string().trim().optional(),
+     search: z
+    .string()
+    .trim()
+    .optional()
+    .transform((val) => (val ? escapeRegex(val) : undefined)),
 })
 
 export const UpdateBasicProblemDetailsSchema = z.object({

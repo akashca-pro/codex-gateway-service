@@ -31,7 +31,7 @@ export const publicProblemController = {
         try {
             const { page, limit, difficulty, tags, active, search, questionId } = req.validated?.query;
             const dto : ListProblemRequest = {
-                page, limit, difficulty, tags, active, search, questionId
+                page, limit, difficulty, tags, active : true, search, questionId
             }
             const result = await grpcClient.listProblems(dto);
 

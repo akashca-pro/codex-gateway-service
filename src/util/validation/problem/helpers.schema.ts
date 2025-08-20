@@ -32,6 +32,9 @@ const languageMap : Record<Language,number> = {
     [Language.PYTHON] : 2
 }
 
+export function escapeRegex(input: string) {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 export const NonEmpty = z.string().trim().min(1, "Value cannot be empty");
 
