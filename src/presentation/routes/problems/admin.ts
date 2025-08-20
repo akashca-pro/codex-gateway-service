@@ -7,7 +7,8 @@ import {
     RemoveTestCaseQuerySchema, AddSolutionCodeSchema,
     UpdateSolutionCodeSchema,ProblemIdParamsSchema,
     SolutionCodeParamsSchema,
-    checkQuestionIdParamsSchema, 
+    checkQuestionIdQuerySchema,
+    checkTitleQuerySchema, 
 } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
@@ -22,9 +23,16 @@ adminProblemRouter.get(
 
 // Check question id availabilty.
 adminProblemRouter.get(
-    '/:questionId/checkQuestionId',
-    validateRequest(checkQuestionIdParamsSchema,'params'),
+    '/checkQuestionId',
+    validateRequest(checkQuestionIdQuerySchema,'query'),
     controller.checkQuestionId
+)
+
+// Check problem title availabilty.
+adminProblemRouter.get(
+    '/checkTitle',
+    validateRequest(checkTitleQuerySchema,'query'),
+    controller.checkTitle
 )
 
 // Create a new problem.

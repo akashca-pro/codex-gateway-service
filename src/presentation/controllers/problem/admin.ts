@@ -19,7 +19,7 @@ export const adminProblemController = {
     checkQuestionId : async (req : Request, res : Response, next : NextFunction) => {
 
         try {
-            const { questionId } = req.validated?.params;
+            const { questionId } = req.validated?.query;
 
            await grpcClient.checkQuestionIdAvailability({ questionId }); 
 
@@ -28,6 +28,25 @@ export const adminProblemController = {
                 ProblemSuccessType.QuestionIdAvailable,
                 HTTP_STATUS.OK
            );
+
+        } catch (error) {
+            next(error);
+        }
+
+    },
+
+    checkTitle : async (req : Request, res : Response, next : NextFunction) => {
+
+        try {
+            const { title } = req.validated?.query;
+
+            await grpcClient.checkTitleAvailablity({ title });
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.TitleAvailable,
+                HTTP_STATUS.OK
+            )
 
         } catch (error) {
             next(error);
@@ -80,9 +99,9 @@ export const adminProblemController = {
 
     listProblem : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { page, limit, difficulty, tags, active, search, questionId } = req.validated?.query;
+            const { page, limit, difficulty, tags, active, search, questionId, sort } = req.validated?.query;
             const dto : ListProblemRequest = {
-                page, limit, difficulty, tags, active, search, questionId
+                page, limit, difficulty, tags, active, search, questionId, sort
             }
 
             const result = await grpcClient.listProblems(dto);

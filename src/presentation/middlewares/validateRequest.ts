@@ -10,7 +10,6 @@ export const validateRequest = (schema: ZodObject<ZodRawShape> , part : RequestP
   res: Response,
   next: NextFunction
 ) => {
-  
   const result = schema.safeParse(req[part]);
 
   if (!result.success) {

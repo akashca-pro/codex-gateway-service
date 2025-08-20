@@ -2,9 +2,14 @@ import { z } from "zod";
 import { codeSchema, DifficultySchemaEnum, escapeRegex, ExampleSchema, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
-export const checkQuestionIdParamsSchema = z.object({
+export const checkQuestionIdQuerySchema = z.object({
     questionId : z
     .string('Question ID is required'),
+})
+
+export const checkTitleQuerySchema = z.object({
+    title : z
+    .string('Title is required'),
 })
 
 export const createProblemSchema = z.object({
@@ -73,11 +78,16 @@ export const getProblemlistQuerySchema = z.object({
     z.boolean('Active must be boolean').optional()
     ),
 
-     search: z
+    search: z
     .string()
     .trim()
     .optional()
     .transform((val) => (val ? escapeRegex(val) : undefined)),
+
+    sort : z
+    .string()
+    .trim()
+    .optional()
 })
 
 export const UpdateBasicProblemDetailsSchema = z.object({
