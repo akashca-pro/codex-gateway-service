@@ -6,7 +6,8 @@ import {
     BulkUploadTestCasesSchema,RemoveTestCaseParamSchema,
     RemoveTestCaseQuerySchema, AddSolutionCodeSchema,
     UpdateSolutionCodeSchema,ProblemIdParamsSchema,
-    SolutionCodeParamsSchema, 
+    SolutionCodeParamsSchema,
+    checkQuestionIdParamsSchema, 
 } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
@@ -17,6 +18,13 @@ adminProblemRouter.get(
     '/',
     validateRequest(getProblemlistQuerySchema,'query'),
     controller.listProblem
+)
+
+// Check question id availabilty.
+adminProblemRouter.get(
+    '/:questionId/checkQuestionId',
+    validateRequest(checkQuestionIdParamsSchema,'params'),
+    controller.checkQuestionId
 )
 
 // Create a new problem.

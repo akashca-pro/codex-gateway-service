@@ -19,6 +19,8 @@ export enum ProblemSuccessType {
 
     SolutionCodeUpdated = 'Solution code updated',
 
-    SolutionCodeRemoved = 'Solution code removed'
+    SolutionCodeRemoved = 'Solution code removed',
+
+    QuestionIdAvailable = 'QuestionId is available'
 
 }

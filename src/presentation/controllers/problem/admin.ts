@@ -16,6 +16,25 @@ import {
 
 export const adminProblemController = {
 
+    checkQuestionId : async (req : Request, res : Response, next : NextFunction) => {
+
+        try {
+            const { questionId } = req.validated?.params;
+
+           await grpcClient.checkQuestionIdAvailability({ questionId }); 
+
+           return ResponseHandler.success(
+                res,
+                ProblemSuccessType.QuestionIdAvailable,
+                HTTP_STATUS.OK
+           );
+
+        } catch (error) {
+            next(error);
+        }
+
+    },
+
     createProblem : async (req : Request, res : Response, next : NextFunction) => {
 
         try {           

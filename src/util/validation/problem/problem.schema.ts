@@ -2,6 +2,11 @@ import { z } from "zod";
 import { codeSchema, DifficultySchemaEnum, escapeRegex, ExampleSchema, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
+export const checkQuestionIdParamsSchema = z.object({
+    questionId : z
+    .string('Question ID is required'),
+})
+
 export const createProblemSchema = z.object({
 
     questionId : z
