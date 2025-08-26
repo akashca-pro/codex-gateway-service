@@ -23,6 +23,8 @@ export enum ProblemSuccessType {
 
     QuestionIdAvailable = 'QuestionId is available',
 
-    TitleAvailable = 'Title is available'
+    TitleAvailable = 'Title is available',
+
+    CustomCodeRun = 'Custom code run processing'
 
 }

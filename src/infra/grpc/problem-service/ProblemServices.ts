@@ -5,10 +5,10 @@ import { credentials } from "@grpc/grpc-js";
 import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 
 /**
- * Class implementing the Grpc problem handler.
+ * Class implementing the problem grpc client call.
  * 
  * @class
- * @implements {IGrpcProblemService}
+ * @extends {GrpcBaseService}
  */
 class GrpcProblemService extends GrpcBaseService {
 

@@ -1,6 +1,8 @@
 import { ProblemSuccessType } from '@/enums/problem/SuccessTypes.enum';
 import grpcClient from '@/infra/grpc/problem-service/ProblemServices'
+import grpcCodeManageClient from '@/infra/grpc/code-manage-service/CodeManageService'
 import { GetProblemRequest, ListProblemRequest } from '@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem';
+import { CustomCodeExecRequest } from '@akashcapro/codex-shared-utils/dist/proto/compiled/internal/code_manage';
 import ResponseHandler from '@akashcapro/codex-shared-utils/dist/utils/response_handler';
 import HTTP_STATUS from '@akashcapro/codex-shared-utils/dist/utils/status_code';
 import { NextFunction, Request, Response } from "express";
@@ -44,6 +46,29 @@ export const publicProblemController = {
 
         } catch (error) {
             next(error);
+        }
+    },
+
+    customCodeRun : async (req : Request, res : Response, next : NextFunction) => {
+
+        try {
+            const { tempId, userCode, language } = req.validated?.body;
+            const dto : CustomCodeExecRequest = {
+                tempId,
+                userCode,
+                language
+            };
+
+            await grpcCodeManageClient.customCodeExec(dto);
+
+            return ResponseHandler.success(
+                res,
+                ProblemSuccessType.CustomCodeRun,
+                HTTP_STATUS.OK
+            );
+
+        } catch (error) {
+            next(error);   
         }
     }
 }
