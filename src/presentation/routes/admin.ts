@@ -10,6 +10,7 @@ export const adminRouter = express.Router();
 
 adminRouter.use(
     '/metrics',
+    // verifyAccessToken('admin'),
     adminMetricRouter
 );
 

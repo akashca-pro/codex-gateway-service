@@ -95,7 +95,7 @@ export const UpdateBasicProblemDetailsSchema = z.object({
 
   title: StrictString('Title').optional(),
 
-  description: StrictString('Description')
+  description: z.string('Description')
   .min(20, "Description must be at least 20 characters")
   .max(2000, "Description must not exceed 2000 characters")
   .optional(),
