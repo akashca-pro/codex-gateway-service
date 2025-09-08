@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { GrpcAdminProfileService } from "@/infra/grpc/auth-user-service/admin/AdminProfileService";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-
-const grpcClient = new GrpcAdminProfileService();
+import grpcClient from '@/infra/grpc/auth-user-service/admin/AdminServices'
 
 export const profileController = {
 

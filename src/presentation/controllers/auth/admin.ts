@@ -1,12 +1,10 @@
 import { config } from "@/config";
-import { GrpcAdminAuthService } from "@/infra/grpc/auth-user-service/admin/AdminAuthService";
 import { setCookie } from "@/util/set-cookie";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { NextFunction, Request, Response } from "express";
+import grpcClient from '@/infra/grpc/auth-user-service/admin/AdminServices'
 import ms from "ms";
-
-const grpcClient = new GrpcAdminAuthService();
 
 export const authController = {
 

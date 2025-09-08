@@ -1,7 +1,5 @@
 import { credentials, Metadata } from "@grpc/grpc-js";
 import { config } from "@/config";
-import { IUserAuthService } from "@/infra/grpc/auth-user-service/interfaces/User/IUserAuthServices";
-
 import {
   AuthUserServiceClient,
   SignupRequest, SignupResponse,
@@ -16,7 +14,7 @@ import {
 
 import { GrpcBaseService } from "../../GrpcBaseService";
 
-export class GrpcUserAuthService extends GrpcBaseService implements IUserAuthService {
+export class GrpcUserAuthService extends GrpcBaseService {
   private client: AuthUserServiceClient
 
   constructor() {

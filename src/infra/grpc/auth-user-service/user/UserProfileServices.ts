@@ -1,7 +1,5 @@
 import { credentials, Metadata } from "@grpc/grpc-js";
 import { config } from "@/config";
-import { IUserProfileService } from '@/infra/grpc/auth-user-service/interfaces/User/IUserProfileservices'
-
 import {
 
     AuthUserServiceClient,
@@ -12,7 +10,7 @@ import {
 import { GrpcBaseService } from "../../GrpcBaseService";
 import { TokenContext } from "@/types/TokenContext";
 
-export class GrpcUserProfileService extends GrpcBaseService implements IUserProfileService {
+export class GrpcUserProfileService extends GrpcBaseService {
 
     private client : AuthUserServiceClient;
 

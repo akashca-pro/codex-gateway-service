@@ -5,6 +5,7 @@ import { adminDashboardRouter } from './dashboard/admin';
 import { adminProblemRouter } from './problems/admin';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { adminMetricRouter } from './metrics/admin';
+import { adminUserRouter } from './user-management/admin';
 
 export const adminRouter = express.Router();
 
@@ -34,4 +35,10 @@ adminRouter.use(
 adminRouter.use('/dashboard',
     verifyAccessToken('admin'),
     adminDashboardRouter
+);
+
+adminRouter.use(
+  '/users',
+//   verifyAccessToken('admin'),
+  adminUserRouter 
 );
