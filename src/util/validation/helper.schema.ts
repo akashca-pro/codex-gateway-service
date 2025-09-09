@@ -1,4 +1,4 @@
-import CountryCode from '@akashcapro/codex-shared-utils/dist/enums/countryCode.enum'
+import { CountryCode, CountryNameToCode, isValidCountry } from '@akashcapro/codex-shared-utils/dist/enums/countryCode.enum'
 import { z } from "zod";
 
 export const StrictString = (fieldName: string = "Field") => z
@@ -11,9 +11,23 @@ export const StrictString = (fieldName: string = "Field") => z
     );
 
 export const CountrySchema = z
-    .string()
-    .trim()
-    .length(3, 'Invalid country code')
-    .transform((val) => val.toUpperCase())
-    .refine((val)=> Object.values(CountryCode).includes(val as CountryCode),
-    'Invalid country code');
+  .string()
+  .trim()
+  .transform((val) => {
+    const upper = val.toUpperCase();
+
+    if (isValidCountry(upper)) {
+      return upper as CountryCode;
+    }
+
+    const code = CountryNameToCode[val.toLowerCase()];
+    if (code) {
+      return code;
+    }
+
+    return val;
+  })
+  .refine(
+    (val) => isValidCountry(val),
+    "Invalid country code"
+  );

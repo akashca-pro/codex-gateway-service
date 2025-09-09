@@ -11,11 +11,12 @@ export class GrpcBaseService {
     metadata: Metadata = new Metadata()
   ): Promise<Res> {
     return new Promise((resolve, reject) => {
-      const deadline = new Date(Date.now() + config.DEFAULT_GRPC_TIMEOUT!); // e.g. 5000ms
-
+      const deadline = new Date(Date.now() + config.DEFAULT_GRPC_TIMEOUT!);
+      const callOptions : CallOptions = {deadline};
       method(
         request,
         metadata,
+        callOptions,
         (error: ServiceError | null, response: Res) => {
           if (error) {
             reject(error);

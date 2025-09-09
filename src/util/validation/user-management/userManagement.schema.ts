@@ -52,3 +52,11 @@ export const ListUsersQuerySchema = z.object({
     .enum(["GOOGLE", "LOCAL"])
     .optional(),
 })
+
+export const UserIdParamSchema = z.object({
+  userId : z.string()
+})
+
+export const ToggleBlockUserSchema = z.object({
+  block : z.boolean(),
+})

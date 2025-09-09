@@ -1,7 +1,8 @@
-import { AdminProfileRequest, AdminProfileResponse, AuthAdminServiceClient, ListUsersRequest, ListUsersResponse, LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse } from "@akashcapro/codex-shared-utils";
+import { AdminProfileRequest, AdminProfileResponse, AuthAdminServiceClient, BlockUserRequest, ListUsersRequest, ListUsersResponse, LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse } from "@akashcapro/codex-shared-utils";
 import { GrpcBaseService } from "../../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
+import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 
 /**
  * Class implementing the admin grpc client call.
@@ -43,6 +44,12 @@ class GrpcAdminService extends GrpcBaseService {
         request : ListUsersRequest
     ): Promise<ListUsersResponse> => {
         return this.grpcCall(this.#_client.listUsers.bind(this.#_client), request)
+    }
+
+    BlockUser = async(
+        request : BlockUserRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(this.#_client.blockUser.bind(this.#_client), request);
     }
 
 }
