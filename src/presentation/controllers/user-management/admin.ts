@@ -9,7 +9,7 @@ export const adminUserController = {
 
     listUsers : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { page, limit, search, sort, isArchived, isVerified, authProvider } = req.validated?.query;
+            const { page, limit, search, sort, isArchived, isVerified, isBlocked, authProvider } = req.validated?.query;
             const dto : ListUsersRequest = {
                 page,
                 limit,
@@ -17,6 +17,7 @@ export const adminUserController = {
                 sort,
                 isArchived,
                 isVerified,
+                isBlocked,
                 authProvider
             }
             const result = await grpcClient.listUsers(dto);
