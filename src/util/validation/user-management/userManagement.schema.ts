@@ -48,6 +48,17 @@ export const ListUsersQuerySchema = z.object({
     z.boolean('isVerified must be boolean').optional()
     ),
 
+    isBlocked : z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        if (val.toLowerCase() === "false") return false;
+        if (val.toLowerCase() === "true") return true;
+      }
+      return val;
+    },
+    z.boolean('isVerified must be boolean').optional()
+    ),
+
     authProvider: z
     .enum(["GOOGLE", "LOCAL"])
     .optional(),
