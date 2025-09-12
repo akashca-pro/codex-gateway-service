@@ -20,6 +20,6 @@ userRouter.use(
 
 userRouter.use(
     '/problems',
-    // verifyAccessToken('user'),
+    verifyAccessToken('user'),
     userProblemRouter
 )

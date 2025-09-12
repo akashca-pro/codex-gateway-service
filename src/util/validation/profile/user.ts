@@ -6,13 +6,15 @@ export const updateProfileSchema = z.object({
     .string()
     .min(3, 'Username must be at least 3 characters')
     .max(20, 'Username must not exceed 20 characters')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+    .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores')
+    .optional(),
 
   firstName: z
     .string()
     .min(2, 'First name must be at least 2 characters')
     .max(50, 'First name must be at most 50 characters')
-    .regex(/^[a-zA-Z]+$/, 'First name must contain only letters'),
+    .regex(/^[a-zA-Z]+$/, 'First name must contain only letters')
+    .optional(),
 
   lastName: z
     .string()
@@ -21,11 +23,12 @@ export const updateProfileSchema = z.object({
     .regex(/^[a-zA-Z]+$/, 'Last name must contain only letters')
     .optional(),
 
-  country: CountrySchema,
+  country: CountrySchema.optional(),
 
   preferredLanguage : z
     .string()
     .min(2, 'Preferred language field must be at least 2 characters')
     .max(15)
+    .optional(),
 
 })

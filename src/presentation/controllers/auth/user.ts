@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { GrpcUserAuthService } from "@/infra/grpc/auth-user-service/user/UserAuthServices";
+import grpcClient from '@/infra/grpc/auth-user-service/UserServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { setCookie } from "@/util/set-cookie";
@@ -9,8 +9,6 @@ import ms from "ms";
 import { verifyGoogleToken } from "@/util/googleVerifier";
 import { uploadImageUrlToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
-
-const grpcClient = new GrpcUserAuthService();
 
 export const authController = {
 

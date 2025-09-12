@@ -13,7 +13,7 @@ const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
     return jwt.verify(token,secret) as CustomJwtPayload
 }
 
-export const verifyAccessToken = (acceptedRole : string) => (
+export const verifyAccessToken = (acceptedRole : string) => async (
     req : Request,
     res : Response, 
     next : NextFunction) =>{
@@ -33,12 +33,19 @@ export const verifyAccessToken = (acceptedRole : string) => (
         if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
-        redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`)
-            .then((result)=>{
-                if(result){
-                    return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
-                }
-        })
+        // Check blacklist
+        const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
+        if (blacklisted) {
+            return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
+        }
+
+        // Check blocked user
+        if (req.path !== '/logout') {
+            const blocked = await redis.get(`${REDIS_KEY_PREFIX.USER_BLOCKED}:${decoded.userId}`);
+            if (blocked) {
+                return ResponseHandler.error(res, 'Account is blocked', HTTP_STATUS.FORBIDDEN);
+            }
+        }
 
         req.userId = decoded.userId;
         req.email = decoded.email;
@@ -54,7 +61,7 @@ export const verifyAccessToken = (acceptedRole : string) => (
     }
 };
 
-export const verifyRefreshToken = (acceptedRole : string) => (
+export const verifyRefreshToken = (acceptedRole : string) => async (
     req : Request,
     res : Response,
     next : NextFunction) => {
@@ -74,12 +81,11 @@ export const verifyRefreshToken = (acceptedRole : string) => (
         if(decoded.role !== acceptedRole.toUpperCase())
             return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
 
-        redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_REFRESH_TOKEN}${decoded.tokenId}`)
-            .then((result)=>{
-                if(result){
-                    return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
-                }
-        })
+        // Check blacklist
+        const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
+        if (blacklisted) {
+            return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
+        }
 
         req.userId = decoded.userId;
         req.email = decoded.email;

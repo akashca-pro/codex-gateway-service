@@ -11,7 +11,7 @@ export const adminRouter = express.Router();
 
 adminRouter.use(
     '/metrics',
-    // verifyAccessToken('admin'),
+    verifyAccessToken('admin'),
     adminMetricRouter
 );
 
@@ -28,7 +28,7 @@ adminRouter.use(
 
 adminRouter.use(
     '/problems',
-    // verifyAccessToken('admin'),
+    verifyAccessToken('admin'),
     adminProblemRouter
 );
 
@@ -39,6 +39,6 @@ adminRouter.use('/dashboard',
 
 adminRouter.use(
   '/users',
-//   verifyAccessToken('admin'),
+  verifyAccessToken('admin'),
   adminUserRouter 
 );

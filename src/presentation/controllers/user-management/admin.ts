@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import grpcClient from '@/infra/grpc/auth-user-service/admin/AdminServices'
+import grpcClient from '@/infra/grpc/auth-user-service/AdminServices'
 import { BlockUserRequest, ListUsersRequest } from "@akashcapro/codex-shared-utils";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import { AdminServiceSuccessType } from "@/enums/auth-user/AdminSuccessTypes.enum";

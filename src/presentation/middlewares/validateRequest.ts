@@ -48,18 +48,25 @@ export const validateFile = (options: FileValidationOptions) => (
 ) => {
   const { fieldName, maxSizeMB = 5, allowedMimeTypes = ["image/"] } = options;
 
+    if (!req.file) {
+      return next();
+    }
 
-  if (!req.file || req.file.fieldname !== fieldName) {
-    return ResponseHandler.error(res, `Missing or invalid ${fieldName} file`, HTTP_STATUS.BAD_REQUEST);
-  }
+    if (req.file.fieldname !== fieldName) {
+      return ResponseHandler.error(
+        res,
+        `Invalid file field. Expected "${fieldName}"`,
+        HTTP_STATUS.BAD_REQUEST
+      );
+    }
 
-  if (!allowedMimeTypes.some(type => req?.file?.mimetype.startsWith(type))) {
-    return ResponseHandler.error(res, "Invalid file type", HTTP_STATUS.BAD_REQUEST);
-  }
+    if (!allowedMimeTypes.some(type => req?.file?.mimetype.startsWith(type))) {
+      return ResponseHandler.error(res, "Invalid file type", HTTP_STATUS.BAD_REQUEST);
+    }
 
-  if (req.file.size > maxSizeMB * 1024 * 1024) {
-    return ResponseHandler.error(res, `File too large, max size is ${maxSizeMB}MB`, HTTP_STATUS.BAD_REQUEST);
-  }
+    if (req.file.size > maxSizeMB * 1024 * 1024) {
+      return ResponseHandler.error(res, `File too large, max size is ${maxSizeMB}MB`, HTTP_STATUS.BAD_REQUEST);
+    }
 
-  next();
+    next();
 };

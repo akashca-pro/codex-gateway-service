@@ -1,5 +1,5 @@
 import { AdminProfileRequest, AdminProfileResponse, AuthAdminServiceClient, BlockUserRequest, ListUsersRequest, ListUsersResponse, LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse } from "@akashcapro/codex-shared-utils";
-import { GrpcBaseService } from "../../GrpcBaseService";
+import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
 import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
