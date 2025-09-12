@@ -3,7 +3,8 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { uploadImageFileToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
 import grpcClient from '@/infra/grpc/auth-user-service/UserServices'
-import { UpdateProfileRequest } from "@akashcapro/codex-shared-utils";
+import { ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest, UpdateProfileRequest, VerifyNewEmailRequest, VerifyOtpRequest } from "@akashcapro/codex-shared-utils";
+import { UserSuccessTypes } from "@/enums/auth-user/UserSuccessTypes.enum";
 
 export const profileController = { 
 
@@ -53,7 +54,81 @@ export const profileController = {
           result.message,
           HTTP_STATUS.OK
         )
+    } catch (error) {
+      next(error);
+    }
+  },
 
+  changePass : async (req : Request, res : Response, next : NextFunction) => {
+    try {
+        const { currPass, newPass } = req.validated?.body;
+        const dto : ChangePasswordRequest = {
+          userId : req.userId!,
+          currPass,
+          newPass
+        }
+        await grpcClient.changePassword(dto);
+        return ResponseHandler.success(
+          res,
+          UserSuccessTypes.ChangePass,
+          HTTP_STATUS.OK
+        )
+    } catch (error) {
+      next(error);
+    }
+  },
+  
+  changeEmail : async (req : Request, res : Response, next : NextFunction) => {
+    try {
+      const { newEmail, password } = req.validated?.body;
+      const dto : ChangeEmailRequest = {
+        userId : req.userId!,
+        newEmail,
+        password
+      }
+      await grpcClient.changeEmail(dto);
+      return ResponseHandler.success(
+        res,
+        UserSuccessTypes.OtpIssued,
+        HTTP_STATUS.OK
+      )
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  verifyOtp : async (req : Request, res : Response, next : NextFunction) => {
+    try {
+        const { email, otp } = req.validated?.body;
+        const dto : VerifyNewEmailRequest = {
+          userId : req.userId!,
+          email,
+          otp
+        };
+        await grpcClient.verifyNewEmail(dto);
+        return ResponseHandler.success(
+          res,
+          UserSuccessTypes.ChangeEmail,
+          HTTP_STATUS.OK
+        )
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  deleteAccount : async (req : Request, res : Response, next : NextFunction) => {
+    try {
+      const { password } = req.validated?.body;
+      const dto : DeleteAccountRequest = {
+        userId : req.userId!,
+        password
+      }
+      await grpcClient.deleteAccount(dto);
+      return ResponseHandler.success(
+        res,
+        UserSuccessTypes.AccountDeleted,
+        HTTP_STATUS.OK
+      )
     } catch (error) {
       next(error);
     }

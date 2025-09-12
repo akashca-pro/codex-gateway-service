@@ -48,7 +48,7 @@ export const resendOtpSchema = z.object({
 })
 
 export const verifyOtpSchema = z.object({
-    email : z
+  email : z
     .email('Invalid email address')
     .min(5)
     .max(255),

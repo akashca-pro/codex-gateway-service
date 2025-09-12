@@ -1,7 +1,8 @@
-import { AuthUserServiceClient, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, OAuthLoginRequest, OAuthLoginResponse, RefreshTokenRequest, RefreshTokenResponse, ResendOtpRequest, ResendOtpResponse, ResetPasswordRequest, ResetPasswordResponse, SignupRequest, SignupResponse, UpdateProfileRequest, UpdateProfileResponse, UserProfileRequest, UserProfileResponse, VerifyOtpRequest, VerifyOtpResponse } from "@akashcapro/codex-shared-utils";
+import { AuthUserServiceClient, ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, OAuthLoginRequest, OAuthLoginResponse, RefreshTokenRequest, RefreshTokenResponse, ResendOtpRequest, ResendOtpResponse, ResetPasswordRequest, ResetPasswordResponse, SignupRequest, SignupResponse, UpdateProfileRequest, UpdateProfileResponse, UserProfileRequest, UserProfileResponse, VerifyNewEmailRequest, VerifyOtpRequest, VerifyOtpResponse } from "@akashcapro/codex-shared-utils";
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
+import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 
 
 /**
@@ -80,6 +81,30 @@ class GrpcUserService extends GrpcBaseService {
         request : UpdateProfileRequest
     ) : Promise<UpdateProfileResponse> => {
         return this.grpcCall(this.#_client.updateProfile.bind(this.#_client), request)
+    }
+
+    changeEmail = async(
+        request : ChangeEmailRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(this.#_client.changeEmail.bind(this.#_client), request)
+    }
+
+    verifyNewEmail = async(
+        request : VerifyNewEmailRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(this.#_client.verifyNewEmail.bind(this.#_client), request)
+    }
+
+    changePassword = async(
+        request : ChangePasswordRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(this.#_client.changePassword.bind(this.#_client), request)
+    }
+
+    deleteAccount = async(
+        request : DeleteAccountRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(this.#_client.deleteAccount.bind(this.#_client), request)
     }
 
 }
