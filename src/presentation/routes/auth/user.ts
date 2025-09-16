@@ -5,44 +5,79 @@ import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middleware
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/util/validation/auth/user.schema';
 import { limiter } from '@/presentation/middlewares/rate-limiter';
+import { emailSchema } from '@/util/validation/profile/user';
 
 export const userAuthRouter = express.Router();
 
 userAuthRouter.use(limiter);
 
-userAuthRouter.post('/signup', 
+// Register a new user and send otp for sign up verification.
+userAuthRouter.post(
+    '/signup', 
     validateRequest(signupSchema),
-    authController.signup);
+    authController.signup
+);
 
-userAuthRouter.post('/otp/resend-otp', 
+// Resend otp for sign up verification.
+userAuthRouter.post(
+    '/otp/resend-otp', 
     validateRequest(resendOtpSchema), 
-    authController.resendOtp);
+    authController.resendSignupOtp
+);
 
-userAuthRouter.post('/otp/verify-otp', 
+// Verify otp for signup.
+userAuthRouter.post(
+    '/otp/verify-otp', 
     validateRequest(verifyOtpSchema), 
-    authController.verifyOtp);
+    authController.verifyOtp
+);
 
-userAuthRouter.post('/login', 
+// Verify credentials and issue access and refresh token
+userAuthRouter.post(
+    '/login', 
     validateRequest(userLoginSchema), 
-    authController.login);
+    authController.login
+);
 
-userAuthRouter.post('/login/google-login',
+// Verify google token and signup/login user.
+userAuthRouter.post(
+    '/login/google-login',
     validateRequest(userGoogleLoginSchema), 
-    authController.oAuthLogin);
+    authController.oAuthLogin
+);
 
-userAuthRouter.post('/password/forgot/request', 
+// Send otp to email for reset password
+userAuthRouter.post(
+    '/password/forgot/request', 
     validateRequest(forgotPasswordSchema), 
-    authController.forgotPassword);
+    authController.forgotPassword
+);
 
-userAuthRouter.post('/password/change', 
+// Resend otp for reset password.
+userAuthRouter.post(
+    '/password/forgot/request/resend-otp',
+    validateRequest(emailSchema),
+    authController.resendForgotOtp
+)
+
+// Verify otp and change password.
+userAuthRouter.post(
+    '/password/forgot/change', 
     validateRequest(resetPasswordSchema), 
-    authController.resetPassword);
+    authController.resetPassword
+);
 
-userAuthRouter.post('/refresh-token',
+// Issue a new access token based on valid refresh token
+userAuthRouter.post(
+    '/refresh-token',
     verifyRefreshToken('user'),
-    authController.refreshToken);
+    authController.refreshToken
+);
 
-userAuthRouter.delete('/logout',
+// Logout the user.
+userAuthRouter.delete(
+    '/logout',
     verifyAccessToken('user'),
     verifyRefreshToken('user'),
-    authController.logout);
+    authController.logout
+);

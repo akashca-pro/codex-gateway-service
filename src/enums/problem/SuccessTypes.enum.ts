@@ -25,6 +25,4 @@ export enum ProblemSuccessType {
 
     TitleAvailable = 'Title is available',
 
-    CustomCodeRun = 'Custom code run processing'
-
 }

@@ -38,9 +38,9 @@ app.get('/health', (req : Request, res : Response)=>{
 })
 
 // Routes
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/admin',adminRouter);
-app.use('/api/v1/public',publicRouter);
+app.use('/api/v1/user', userRouter); // user auth and protected routes.
+app.use('/api/v1/admin',adminRouter); // admin auth and protected routes.
+app.use('/api/v1/public',publicRouter); // access without auth.
 
 // 404
 app.use(notFound);

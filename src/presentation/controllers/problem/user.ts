@@ -1,19 +1,20 @@
 import { NextFunction, Request, Response } from "express";
-import { RunCodeExecRequest, SubmitCodeExecRequest } from '@akashcapro/codex-shared-utils/dist/proto/compiled/internal/code_manage'
+import { RunCodeExecRequest, SubmitCodeExecRequest } from '@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage'
 import grpcClient from '@/infra/grpc/code-manage-service/CodeManageService'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import { CodeManageSuccessType } from "@/enums/codeManage/SuccessTypes.enum";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
+import { SubmitCodeResultRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage";
 
 export const userProblemController = {
 
     submitProblem : async (req : Request, res : Response, next : NextFunction) => {
         try {
             const { problemId } = req.validated?.params;
-            const { userId, language, userCode, country } = req.validated?.body;
+            const { language, userCode, country } = req.validated?.body;
             const dto : SubmitCodeExecRequest = {
                 problemId,
-                userId,
+                userId : req.userId!,
                 language,
                 userCode,
                 ...(country ? { country : country } : {})
@@ -33,39 +34,24 @@ export const userProblemController = {
         }
     },
 
-    runProblem : async (req : Request, res : Response, next : NextFunction) => {
-
+    submissionResult : async (req : Request, res : Response, next : NextFunction) => {
         try {
             const { problemId } = req.validated?.params;
-            const { userId, language, userCode, testCases } = req.validated?.body;
-
-            const dto : RunCodeExecRequest = {
+            const { submissionId } = req.validated?.body;
+            const dto : SubmitCodeResultRequest = {
                 problemId,
-                userId,
-                userCode,
-                language,
-                testCases
-            }
-
-            await grpcClient.runCodeExec(dto);
-
+                submissionId,
+                userId : req.userId!
+            };
+            const result = await grpcClient.submitCodeResult(dto);
             return ResponseHandler.success(
                 res,
-                CodeManageSuccessType.RunProblemCode,
-                HTTP_STATUS.OK
-            );
-
+                CodeManageSuccessType.SubmissionResultFetched,
+                HTTP_STATUS.OK,
+                result
+            )
         } catch (error) {
-            next(error);       
-        }
-    },
-
-    customCode : async (req : Request, res : Response, next : NextFunction) => {
-
-        try {
-            
-        } catch (error) {
-            next(error);   
+            next(error);
         }
     }
 }

@@ -7,17 +7,20 @@ import { userProblemRouter } from './problems/user';
 
 export const userRouter = express.Router();
 
+// Auth routes
 userRouter.use(
     '/auth', 
     userAuthRouter
 );
 
+// Profile routes
 userRouter.use(
     '/profile', 
     verifyAccessToken('user'), 
     userProfileRouter
 );
 
+// Problem routes
 userRouter.use(
     '/problems',
     verifyAccessToken('user'),

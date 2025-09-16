@@ -9,6 +9,9 @@ import ms from "ms";
 import { verifyGoogleToken } from "@/util/googleVerifier";
 import { uploadImageUrlToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
+import { ResendOtpRequest, ResetPasswordRequest, VerifyOtpRequest } from "@akashcapro/codex-shared-utils";
+import { OtpType } from "@/enums/auth-user/OtpType.enum";
+import { UserSuccessTypes } from "@/enums/auth-user/UserSuccessTypes.enum";
 
 export const authController = {
 
@@ -21,9 +24,14 @@ export const authController = {
     }
   },
 
-  resendOtp: async (req: Request, res: Response, next : NextFunction) => {
+  resendSignupOtp: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.resendOtp(req.validated?.body);
+      const { email } = req.validated?.body;
+      const dto : ResendOtpRequest = {
+        email,
+        otpType : OtpType.SIGNUP
+      }
+      const grpcResponse = await grpcClient.resendOtp(dto);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       next(error);
@@ -105,10 +113,33 @@ export const authController = {
     }
   },
 
+  resendForgotOtp : async (req : Request, res : Response, next : NextFunction) => {
+    try {
+      const { email } = req.validated?.body
+      const dto : ResendOtpRequest = {
+        email,
+        otpType : OtpType.FORGOT_PASS 
+      }
+      await grpcClient.resendOtp(dto);
+      return ResponseHandler.success(
+        res,
+        UserSuccessTypes.NewOtpIssued,
+        HTTP_STATUS.OK
+      )
+    } catch (error) {
+      next(error);
+    }
+  },
+
   resetPassword: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const grpcResponse = await grpcClient.resetPassword(req.validated?.body);
-
+      const { email, newPassword, otp } = req.validated?.body;
+      const dto : ResetPasswordRequest = {
+        email,
+        newPassword,
+        otp
+      }
+      const grpcResponse = await grpcClient.resetPassword(dto);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       next(error);

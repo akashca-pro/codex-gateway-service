@@ -3,8 +3,10 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { uploadImageFileToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
 import grpcClient from '@/infra/grpc/auth-user-service/UserServices'
-import { ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest, UpdateProfileRequest, VerifyNewEmailRequest, VerifyOtpRequest } from "@akashcapro/codex-shared-utils";
+import { ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest, 
+  ResendOtpRequest, UpdateProfileRequest, VerifyNewEmailRequest } from "@akashcapro/codex-shared-utils";
 import { UserSuccessTypes } from "@/enums/auth-user/UserSuccessTypes.enum";
+import { OtpType } from "@/enums/auth-user/OtpType.enum";
 
 export const profileController = { 
 
@@ -80,18 +82,36 @@ export const profileController = {
   
   changeEmail : async (req : Request, res : Response, next : NextFunction) => {
     try {
-      const { newEmail, password } = req.validated?.body;
-      const dto : ChangeEmailRequest = {
-        userId : req.userId!,
-        newEmail,
-        password
-      }
-      await grpcClient.changeEmail(dto);
-      return ResponseHandler.success(
-        res,
-        UserSuccessTypes.OtpIssued,
-        HTTP_STATUS.OK
-      )
+        const { newEmail, password } = req.validated?.body;
+        const dto : ChangeEmailRequest = {
+          userId : req.userId!,
+          newEmail,
+          password
+        }
+        await grpcClient.changeEmail(dto);
+        return ResponseHandler.success(
+          res,
+          UserSuccessTypes.OtpIssued,
+          HTTP_STATUS.OK
+        )
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  resendOtp : async (req : Request, res : Response, next : NextFunction) => {
+    try {
+        const { email } = req.validated?.body;
+        const dto : ResendOtpRequest = {
+          email,
+          otpType : OtpType.CHANGE_EMAIL
+        }
+        await grpcClient.resendOtp(dto);
+        return ResponseHandler.success(
+          res,
+          UserSuccessTypes.NewOtpIssued,
+          HTTP_STATUS.OK
+        )
     } catch (error) {
       next(error);
     }

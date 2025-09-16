@@ -3,6 +3,14 @@ import express from 'express';
 
 export const adminMetricRouter = express.Router();
 
-adminMetricRouter.get('/grpcMetrics',getGrpcMetrics)
+// Retrieve grpc request response metrics.
+adminMetricRouter.get(
+    '/grpcMetrics',
+    getGrpcMetrics
+);
 
-adminMetricRouter.get('/httpMetrics',gethttpMetrics)
+// Retrieve http request response metrics.
+adminMetricRouter.get(
+    '/httpMetrics',
+    gethttpMetrics
+);

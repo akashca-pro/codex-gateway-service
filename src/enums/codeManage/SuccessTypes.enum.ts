@@ -1,6 +1,6 @@
-
 export enum CodeManageSuccessType {
-    SubmissionCreated = 'Submission created',
-
-    RunProblemCode = 'Run problem code processing'
+  SubmissionCreated = 'Submission successfully created',
+  SubmissionResultFetched = 'Submission result retrieved',
+  CodeExecutionStarted = 'Code execution started',
+  CodeExecutionCompleted = 'Code executed successfully',
 }

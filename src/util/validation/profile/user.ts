@@ -69,6 +69,13 @@ export const changeEmailSchema = z.object({
     .regex(/[@$!%*?&#]/, 'Password must contain at least one special character'),
 })
 
+export const emailSchema = z.object({
+  email : z
+    .email('Invalid email address')
+    .min(5)
+    .max(255),
+})
+
 export const deleteAccountSchema = z.object({
   password : z
     .string()

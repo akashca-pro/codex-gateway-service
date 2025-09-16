@@ -1,23 +1,24 @@
 import express from 'express';
 import { userProblemController as controller } from '@/presentation/controllers/problem/user';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { submitCodeExecSchema } from '@/util/validation/code-exec/submit.schema';
-import { runCodeExecSchema } from '@/util/validation/code-exec/run.schema';
+import { submitCodeExecSchema, submitCodeResultSchema } from '@/util/validation/code-exec/submit.schema';
 import { ProblemIdParamsSchema } from '@/util/validation/problem/problem.schema';
 
 export const userProblemRouter = express.Router();
 
-// Submit code with problem
+// Submit code for the specific problem.
 userProblemRouter.post(
-    '/:problemId/submit',
+    '/:problemId/code/submit',
     validateRequest(ProblemIdParamsSchema,'params'),
     validateRequest(submitCodeExecSchema),
     controller.submitProblem
 );
 
-// Run code with problem
-userProblemRouter.post(
-    '/:problemId/run',
+// Retrieve submission result for the specific problem.
+userProblemRouter.get(
+    '/:problemId/code/submit/result',
     validateRequest(ProblemIdParamsSchema,'params'),
-    validateRequest(runCodeExecSchema),
-);
+    validateRequest(submitCodeResultSchema),
+    controller.submissionResult
+)
+

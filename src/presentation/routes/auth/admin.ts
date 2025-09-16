@@ -6,16 +6,19 @@ import { adminLoginSchema } from '@/util/validation/auth/admin.schema';
 
 export const adminAuthRouter = express.Router();
 
+// Verify credentials and issue access and refresh token.
 adminAuthRouter.post(
     '/login', 
     validateRequest(adminLoginSchema), 
     authController.login);
 
+// Verify Refresh token and issue new access token.
 adminAuthRouter.post(
     '/refresh-token',
     verifyRefreshToken('admin'),
     authController.refreshToken);
 
+// Clear access and refresh token.
 adminAuthRouter.delete(
     '/logout', 
     verifyAccessToken('admin'),

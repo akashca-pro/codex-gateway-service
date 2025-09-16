@@ -1,4 +1,4 @@
-import { CodeManageServiceClient, CustomCodeExecRequest, RunCodeExecRequest, SubmitCodeExecRequest, SubmitCodeExecResponse } from "@akashcapro/codex-shared-utils/dist/proto/compiled/internal/code_manage";
+import { CodeManageServiceClient, CustomCodeExecRequest, CustomCodeResultRequest, CustomCodeResultResponse, RunCodeExecRequest, RunCodeResultRequest, RunCodeResultResponse, SubmitCodeExecRequest, SubmitCodeExecResponse, SubmitCodeResultRequest, SubmitCodeResultResponse } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage";
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
@@ -46,6 +46,33 @@ class GrpcCodeManageService extends GrpcBaseService {
     ) : Promise<Empty> => {
         return this.grpcCall(
             this.#_client.customCodeExec.bind(this.#_client),
+            request
+        )
+    }
+
+    submitCodeResult = async (
+        request : SubmitCodeResultRequest
+    ) : Promise<SubmitCodeResultResponse> => {
+        return this.grpcCall(
+            this.#_client.submitCodeResult.bind(this.#_client),
+            request
+        )
+    }
+
+    runCodeResult =  async (
+        request : RunCodeResultRequest
+    ) : Promise<RunCodeResultResponse> => {
+        return this.grpcCall(
+            this.#_client.runCodeResult.bind(this.#_client),
+            request
+        )
+    }
+
+    customCodeResult = async (
+        request : CustomCodeResultRequest
+    ) : Promise<CustomCodeResultResponse> => {
+        return this.grpcCall(
+            this.#_client.customCodeResult.bind(this.#_client),
             request
         )
     }
