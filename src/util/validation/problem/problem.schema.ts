@@ -170,3 +170,20 @@ export const SolutionCodeParamsSchema = z.object({
   solutionCodeId : z
     .string('Solution Id is required')
 })
+
+export const TemplateCodeParamsSchema = z.object({
+  problemId: z
+    .string('Problem Id is required'),
+  templateCodeId : z
+    .string('TemplateCode Id is required'),
+})
+
+export const AddTemplateCodeSchema = z.object({
+    language : LanguageSchemaEnum,
+    wrappedCode : codeSchema,
+})
+
+export const UpdateTemplateCodeSchema = z.object({
+    language : LanguageSchemaEnum.optional(),
+    wrappedCode : codeSchema.optional(),
+})

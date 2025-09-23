@@ -25,4 +25,9 @@ export enum ProblemSuccessType {
 
     TitleAvailable = 'Title is available',
 
+    TemplateCodeAdded = 'Template code added',
+
+    TemplateCodeUpdated = 'Template code updated',
+
+    TemplateCodeRemoved = 'Template code removed'
 }

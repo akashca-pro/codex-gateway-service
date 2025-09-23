@@ -1,4 +1,4 @@
-import { AddSolutionCodeRequest, AddTestCaseRequest, BulkUploadTestCasesRequest, CheckProblemTitleRequest, CheckQuestionIdRequest, CreateProblemRequest, GetProblemPublicResponse, GetProblemRequest, ListProblemRequest, ListProblemResponse, Problem, ProblemServiceClient, RemoveSolutionCodeRequest, RemoveTestCaseRequest, UpdateBasicProblemDetailsRequest, UpdateSolutionCodeRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { AddSolutionCodeRequest, AddTemplateCodeRequest, AddTestCaseRequest, BulkUploadTestCasesRequest, CheckProblemTitleRequest, CheckQuestionIdRequest, CreateProblemRequest, GetProblemPublicResponse, GetProblemRequest, ListProblemRequest, ListProblemResponse, Problem, ProblemServiceClient, RemoveSolutionCodeRequest, RemoveTemplateCodeRequest, RemoveTestCaseRequest, UpdateBasicProblemDetailsRequest, UpdateSolutionCodeRequest, UpdateTemplateCodeRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
@@ -135,6 +135,33 @@ class GrpcProblemService extends GrpcBaseService {
     ) : Promise<Empty> => {
         return this.grpcCall(
             this.#_client.checkProblemTitle.bind(this.#_client),
+            request
+        )
+    }
+
+    addTemplateCode = async (
+        request : AddTemplateCodeRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(
+            this.#_client.addTemplateCode.bind(this.#_client),
+            request
+        )
+    }   
+
+    updateTemplateCode = async (
+        request : UpdateTemplateCodeRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(
+            this.#_client.updateTemplateCode.bind(this.#_client),
+            request
+        )
+    }
+
+    removeTemplateCode = async (
+        request : RemoveTemplateCodeRequest
+    ) : Promise<Empty> => {
+        return this.grpcCall(
+            this.#_client.removeTemplateCode.bind(this.#_client),
             request
         )
     }

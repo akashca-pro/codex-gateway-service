@@ -8,7 +8,10 @@ import {
     UpdateSolutionCodeSchema,ProblemIdParamsSchema,
     SolutionCodeParamsSchema,
     checkQuestionIdQuerySchema,
-    checkTitleQuerySchema, 
+    checkTitleQuerySchema,
+    TemplateCodeParamsSchema,
+    AddTemplateCodeSchema,
+    UpdateTemplateCodeSchema, 
 } from '@/util/validation/problem/problem.schema';
 import express from 'express';
 
@@ -102,4 +105,27 @@ adminProblemRouter.delete(
     '/:problemId/solutionCodes/:solutionCodeId/remove',
     validateRequest(SolutionCodeParamsSchema,'params'),
     controller.removeSolutionCode
+)
+
+// Add template code.
+adminProblemRouter.post(
+    '/:problemId/templateCodes/add',
+    validateRequest(ProblemIdParamsSchema, 'params'),
+    validateRequest(AddTemplateCodeSchema),
+    controller.addTemplateCode
+)
+
+// Update template code.
+adminProblemRouter.patch(
+    '/:problemId/templateCodes/:templateCodeId/update',
+    validateRequest(TemplateCodeParamsSchema, 'params'),
+    validateRequest(UpdateTemplateCodeSchema),
+    controller.updateTemplateCode
+)
+
+// Remove template code.
+adminProblemRouter.delete(
+    '/:problemId/templateCodes/:templateCodeId/remove',
+    validateRequest(TemplateCodeParamsSchema, 'params'),
+    controller.removeTemplateCode
 )

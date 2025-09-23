@@ -7,20 +7,33 @@ import { ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest,
   ResendOtpRequest, UpdateProfileRequest, VerifyNewEmailRequest } from "@akashcapro/codex-shared-utils";
 import { UserSuccessTypes } from "@/enums/auth-user/UserSuccessTypes.enum";
 import { OtpType } from "@/enums/auth-user/OtpType.enum";
+import redis from "@/config/redis";
+import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 
 export const profileController = { 
 
   profile : async (req: Request, res: Response, next : NextFunction) => {
     try {
       const { userId, email } = req;
-
+      const cached = await redis.get(`${REDIS_KEY_PREFIX.USER_PROFILE}${userId}`)
+      if(cached){
+        return ResponseHandler.success(
+          res,
+          UserSuccessTypes.ProfileDataLoaded,
+          HTTP_STATUS.OK,
+          JSON.parse(cached)
+        );
+      }
       const grpcResponse = await grpcClient.profile({
         userId : (userId as string),
         email  : (email as string) });
 
-      return ResponseHandler.success(res, "Profile data loaded successfully", HTTP_STATUS.OK, {
-        ...grpcResponse,
-      });
+      return ResponseHandler.success(
+        res, 
+        UserSuccessTypes.ProfileDataLoaded, 
+        HTTP_STATUS.OK, 
+        grpcResponse
+      );
     } catch (error) {
       next(error);
     }
