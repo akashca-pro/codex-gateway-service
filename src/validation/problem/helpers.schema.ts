@@ -14,6 +14,7 @@ export enum TestCaseCollectionType {
 export enum Language {
     JAVASCRIPT = 'javascript',
     PYTHON = 'python',
+    GO = 'go',
 }
 
 const testCaseCollectionTypeMap : Record<TestCaseCollectionType, number> = {
@@ -29,7 +30,8 @@ const difficultyCodeMap: Record<Difficulty, number> = {
 
 const languageMap : Record<Language,number> = {
     [Language.JAVASCRIPT] : 1,
-    [Language.PYTHON] : 2
+    [Language.PYTHON] : 2,
+    [Language.GO] : 3,
 }
 
 export function escapeRegex(input: string) {

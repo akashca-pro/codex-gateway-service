@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import grpcClient from '@/infra/grpc/auth-user-service/AdminServices'
+import grpcClient from '@/transport/grpc/auth-user-service/AdminServices'
 import { BlockUserRequest, ListUsersRequest } from "@akashcapro/codex-shared-utils";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
-import { AdminServiceSuccessType } from "@/enums/auth-user/AdminSuccessTypes.enum";
+import { USER_MODERATION_SUCCESS_TYPES } from "@/const/auth-user/UserModerationSuccessTypes.const";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 
 export const adminUserController = {
@@ -23,7 +23,7 @@ export const adminUserController = {
             const result = await grpcClient.listUsers(dto);
             return ResponseHandler.success(
                 res,
-                AdminServiceSuccessType.ListUserSuccess,
+                USER_MODERATION_SUCCESS_TYPES.LIST_USER_SUCCESS,
                 HTTP_STATUS.OK,
                 result
             );
@@ -44,7 +44,7 @@ export const adminUserController = {
             await grpcClient.BlockUser(dto);
             return ResponseHandler.success(
                 res,
-                AdminServiceSuccessType.BlockOrUnBlockSuccess,
+                USER_MODERATION_SUCCESS_TYPES.BLOCK_OR_UNBLOCK_SUCCESS,
                 HTTP_STATUS.OK
             )
         } catch (error) {

@@ -1,27 +1,27 @@
-import { CustomCodeExecRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/internal/code_manage";
+import { CustomCodeExecRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage";
 import { NextFunction, Request, Response } from "express";
-import grpcClient from '@/infra/grpc/code-manage-service/CodeManageService'
+import grpcClient from '@/transport/grpc/code-manage-service/CodeManageService'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
-import { CodeManageSuccessType } from "@/enums/codeManage/SuccessTypes.enum";
+import { CODE_MANAGE_SUCCESS_TYPE } from "@/const/codeManage/SuccessTypes.const";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { CustomCodeResultRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage";
+import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
+import redis from "@/config/redis";
 
 export const codepadController = {
 
     run : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { tempId } = req.validated?.params;
             const { userCode, language } = req.validated?.body;
             const dto : CustomCodeExecRequest = {
-                tempId,
                 userCode,
                 language
             }
-            await grpcClient.customCodeExec(dto);
+            const result = await grpcClient.customCodeExec(dto);
             return ResponseHandler.success(
                 res,
-                CodeManageSuccessType.CodeExecutionStarted,
-                HTTP_STATUS.OK
+                CODE_MANAGE_SUCCESS_TYPE.CODE_EXECUTION_STARTED,
+                HTTP_STATUS.OK,
+                result
             );
         } catch (error) {
             next(error);
@@ -30,16 +30,21 @@ export const codepadController = {
 
     result : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { tempId } = req.validated?.params
-            const dto : CustomCodeResultRequest = {
-                tempId
+            const { tempId } = req.validated?.params;
+            const cacheKey = `${REDIS_KEY_PREFIX.CUSTOM_CODE_NORMAL_CACHE}:${tempId}`
+            const cached = await redis.get(cacheKey);
+            if (!cached) {
+                return ResponseHandler.success(
+                    res,
+                    CODE_MANAGE_SUCCESS_TYPE.RESULT_STATUS,
+                    HTTP_STATUS.OK,
+                );
             }
-            const result = await grpcClient.customCodeResult(dto);
             return ResponseHandler.success(
                 res,
-                CodeManageSuccessType.CodeExecutionCompleted,
+                CODE_MANAGE_SUCCESS_TYPE.CODE_EXECUTION_COMPLETED,
                 HTTP_STATUS.OK,
-                result
+                JSON.parse(cached!)
             )
         } catch (error) {
             next(error);

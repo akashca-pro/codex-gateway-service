@@ -1,14 +1,13 @@
 import express from 'express';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { CustomCodeRunSchema, TempIdParamSchema } from '@/util/validation/code-exec/codepad.schema';
+import { CustomCodeRunSchema, TempIdParamSchema } from '@/validation/code-exec/codepad.schema';
 import { codepadController as controller } from '@/presentation/controllers/codepad/user'
 
 export const codepadRouter = express.Router();
 
 // Run custom code execution.
 codepadRouter.post(
-    '/code/:tempId/run',
-    validateRequest(TempIdParamSchema,'params'),
+    '/code/run',
     validateRequest(CustomCodeRunSchema),
     controller.run
 );

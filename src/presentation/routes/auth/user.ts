@@ -3,9 +3,10 @@ import { authController } from '@/presentation/controllers/auth/user';
 import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middlewares/jwt';
 
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/util/validation/auth/user.schema';
+import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/validation/auth/user.schema';
 import { limiter } from '@/presentation/middlewares/rate-limiter';
-import { emailSchema } from '@/util/validation/profile/user';
+import { emailSchema } from '@/validation/profile/user';
+import { APP_LABELS } from '@/const/labels.const';
 
 export const userAuthRouter = express.Router();
 
@@ -70,14 +71,14 @@ userAuthRouter.post(
 // Issue a new access token based on valid refresh token
 userAuthRouter.post(
     '/refresh-token',
-    verifyRefreshToken('user'),
+    verifyRefreshToken(APP_LABELS.USER),
     authController.refreshToken
 );
 
 // Logout the user.
 userAuthRouter.delete(
     '/logout',
-    verifyAccessToken('user'),
-    verifyRefreshToken('user'),
+    verifyAccessToken(APP_LABELS.USER),
+    verifyRefreshToken(APP_LABELS.USER),
     authController.logout
 );

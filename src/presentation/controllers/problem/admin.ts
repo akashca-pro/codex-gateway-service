@@ -1,17 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-import grpcClient from '@/infra/grpc/problem-service/ProblemServices'
+import grpcClient from '@/transport/grpc/problem-service/ProblemServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
-import { ProblemSuccessType } from "@/enums/problem/SuccessTypes.enum";
+import { PROBLEM_SUCCESS_TYPE } from "@/const/problem/SuccessTypes.const";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { 
     AddSolutionCodeRequest,
-    AddTemplateCodeRequest,
     AddTestCaseRequest, 
     BulkUploadTestCasesRequest, 
     UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
     ListProblemRequest, 
     RemoveSolutionCodeRequest, 
-    RemoveTemplateCodeRequest, 
     RemoveTestCaseRequest,
     UpdateSolutionCodeRequest,
     UpdateTemplateCodeRequest
@@ -25,7 +23,7 @@ export const adminProblemController = {
             await grpcClient.checkQuestionIdAvailability({ questionId }); 
             return ResponseHandler.success(
                     res,
-                    ProblemSuccessType.QuestionIdAvailable,
+                    PROBLEM_SUCCESS_TYPE.QUESTION_ID_AVAILABLE,
                     HTTP_STATUS.OK
             );
         } catch (error) {
@@ -39,7 +37,7 @@ export const adminProblemController = {
             await grpcClient.checkTitleAvailablity({ title });
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.TitleAvailable,
+                PROBLEM_SUCCESS_TYPE.TITLE_AVAILABLE,
                 HTTP_STATUS.OK
             );
         } catch (error) {
@@ -59,7 +57,7 @@ export const adminProblemController = {
             });
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.ProblemCreated,
+                PROBLEM_SUCCESS_TYPE.PROBLEM_CREATED,
                 HTTP_STATUS.OK,
                 result
             )
@@ -74,7 +72,7 @@ export const adminProblemController = {
             const result = await grpcClient.getProblem({ Id : problemId });
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.ProblemDetailsLoaded,
+                PROBLEM_SUCCESS_TYPE.PROBLEM_DETAILS_LOADED,
                 HTTP_STATUS.OK,
                 result
             )
@@ -92,7 +90,7 @@ export const adminProblemController = {
             const result = await grpcClient.listProblems(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.ProblemsLoaded,
+                PROBLEM_SUCCESS_TYPE.PROBLEMS_LOADED,
                 HTTP_STATUS.OK,
                 result
             );
@@ -121,7 +119,7 @@ export const adminProblemController = {
             await grpcClient.updateBasicProblemDetails(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.ProblemBasicDetailsUpdated,
+                PROBLEM_SUCCESS_TYPE.PROBLEM_BASIC_DETAILS_UPDATED,
                 HTTP_STATUS.OK,
             );
         } catch (error) {
@@ -141,7 +139,7 @@ export const adminProblemController = {
             await grpcClient.addTestCase(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.TestCaseAdded,
+                PROBLEM_SUCCESS_TYPE.TEST_CASE_ADDED,
                 HTTP_STATUS.OK
             );
         } catch (error) {
@@ -161,7 +159,7 @@ export const adminProblemController = {
             await grpcClient.bulkUploadTestCases(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.MultipleTestCasesAdded,
+                PROBLEM_SUCCESS_TYPE.MULTIPLE_TEST_CASES_ADDED,
                 HTTP_STATUS.OK
             )
         } catch (error) {
@@ -181,7 +179,7 @@ export const adminProblemController = {
             await grpcClient.removeTestCase(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.RemovedTestCase,
+                PROBLEM_SUCCESS_TYPE.REMOVED_TEST_CASE,
                 HTTP_STATUS.OK
             );
         } catch (error) {
@@ -206,7 +204,7 @@ export const adminProblemController = {
             await grpcClient.addSolutionCode(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.SolutionCodeAdded,
+                PROBLEM_SUCCESS_TYPE.SOLUTION_CODE_ADDED,
                 HTTP_STATUS.OK
             );
         } catch (error) {
@@ -231,7 +229,7 @@ export const adminProblemController = {
             await grpcClient.updateSolutionCode(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.SolutionCodeUpdated,
+                PROBLEM_SUCCESS_TYPE.SOLUTION_CODE_UPDATED,
                 HTTP_STATUS.OK
             );
         } catch (error) {
@@ -249,29 +247,7 @@ export const adminProblemController = {
             await grpcClient.removeSolutionCode(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.SolutionCodeRemoved,
-                HTTP_STATUS.OK
-            );
-        } catch (error) {
-            next(error);
-        }
-    },
-
-    addTemplateCode : async (req : Request, res : Response, next : NextFunction) => {
-        try {
-            const { problemId } = req.validated?.params;
-            const { language, wrappedCode } = req.validated?.body; 
-            const dto : AddTemplateCodeRequest = {
-                Id : problemId,
-                templateCode : {
-                    language,
-                    wrappedCode
-                }
-            }
-            await grpcClient.addTemplateCode(dto);
-            return ResponseHandler.success(
-                res,
-                ProblemSuccessType.TemplateCodeAdded,
+                PROBLEM_SUCCESS_TYPE.SOLUTION_CODE_REMOVED,
                 HTTP_STATUS.OK
             );
         } catch (error) {
@@ -294,29 +270,11 @@ export const adminProblemController = {
             await grpcClient.updateTemplateCode(dto);
             return ResponseHandler.success(
                 res,
-                ProblemSuccessType.TemplateCodeUpdated,
+                PROBLEM_SUCCESS_TYPE.TEMPLATE_CODE_UPDATED,
                 HTTP_STATUS.OK
             ); 
         } catch (error) {
             next(error);
         }
     },
-
-    removeTemplateCode : async (req : Request, res : Response,  next : NextFunction) => {
-        try {
-            const { problemId, templateCodeId } = req.validated?.params;
-            const dto : RemoveTemplateCodeRequest = {
-                Id : problemId,
-                templateCodeId
-            }
-            await grpcClient.removeTemplateCode(dto);
-            return ResponseHandler.success(
-                res,
-                ProblemSuccessType.TemplateCodeRemoved,
-                HTTP_STATUS.OK
-            ); 
-        } catch (error) {
-            next(error);
-        }
-    }
 }

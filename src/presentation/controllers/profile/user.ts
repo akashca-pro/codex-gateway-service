@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { uploadImageFileToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
-import grpcClient from '@/infra/grpc/auth-user-service/UserServices'
+import grpcClient from '@/transport/grpc/auth-user-service/UserServices'
 import { ChangeEmailRequest, ChangePasswordRequest, DeleteAccountRequest, 
   ResendOtpRequest, UpdateProfileRequest, VerifyNewEmailRequest } from "@akashcapro/codex-shared-utils";
-import { UserSuccessTypes } from "@/enums/auth-user/UserSuccessTypes.enum";
-import { OtpType } from "@/enums/auth-user/OtpType.enum";
+import { OTP_TYPE } from "@/const/auth-user/OtpType.const";
 import redis from "@/config/redis";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
+import { USER_SUCCESS_TYPES } from "@/const/auth-user/UserSuccessTypes.const";
 
 export const profileController = { 
 
@@ -19,7 +19,7 @@ export const profileController = {
       if(cached){
         return ResponseHandler.success(
           res,
-          UserSuccessTypes.ProfileDataLoaded,
+          USER_SUCCESS_TYPES.PROFILE_DATA_LOADED,
           HTTP_STATUS.OK,
           JSON.parse(cached)
         );
@@ -30,7 +30,7 @@ export const profileController = {
 
       return ResponseHandler.success(
         res, 
-        UserSuccessTypes.ProfileDataLoaded, 
+        USER_SUCCESS_TYPES.PROFILE_DATA_LOADED, 
         HTTP_STATUS.OK, 
         grpcResponse
       );
@@ -85,7 +85,7 @@ export const profileController = {
         await grpcClient.changePassword(dto);
         return ResponseHandler.success(
           res,
-          UserSuccessTypes.ChangePass,
+          USER_SUCCESS_TYPES.CHANGE_PASS,
           HTTP_STATUS.OK
         )
     } catch (error) {
@@ -104,7 +104,7 @@ export const profileController = {
         await grpcClient.changeEmail(dto);
         return ResponseHandler.success(
           res,
-          UserSuccessTypes.OtpIssued,
+          USER_SUCCESS_TYPES.OTP_ISSUED,
           HTTP_STATUS.OK
         )
     } catch (error) {
@@ -117,12 +117,12 @@ export const profileController = {
         const { email } = req.validated?.body;
         const dto : ResendOtpRequest = {
           email,
-          otpType : OtpType.CHANGE_EMAIL
+          otpType : OTP_TYPE.CHANGE_EMAIL
         }
         await grpcClient.resendOtp(dto);
         return ResponseHandler.success(
           res,
-          UserSuccessTypes.NewOtpIssued,
+          USER_SUCCESS_TYPES.NEW_OTP_ISSUED,
           HTTP_STATUS.OK
         )
     } catch (error) {
@@ -141,7 +141,7 @@ export const profileController = {
         await grpcClient.verifyNewEmail(dto);
         return ResponseHandler.success(
           res,
-          UserSuccessTypes.ChangeEmail,
+          USER_SUCCESS_TYPES.CHANGE_EMAIL,
           HTTP_STATUS.OK
         )
     } catch (error) {
@@ -159,7 +159,7 @@ export const profileController = {
       await grpcClient.deleteAccount(dto);
       return ResponseHandler.success(
         res,
-        UserSuccessTypes.AccountDeleted,
+        USER_SUCCESS_TYPES.ACCOUNT_DELETED,
         HTTP_STATUS.OK
       )
     } catch (error) {

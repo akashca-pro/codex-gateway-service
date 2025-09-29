@@ -1,5 +1,5 @@
 import {  z } from 'zod';
-import { CountrySchema } from '@/util/validation/helper.schema';
+import { CountrySchema } from '@/validation/helper.schema';
 
 // Auth
 

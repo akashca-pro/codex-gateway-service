@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { RunCodeExecRequest, SubmitCodeExecRequest } from '@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage'
-import grpcClient from '@/infra/grpc/code-manage-service/CodeManageService'
+import { SubmitCodeExecRequest } from '@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage'
+import grpcClient from '@/transport/grpc/code-manage-service/CodeManageService'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
-import { CodeManageSuccessType } from "@/enums/codeManage/SuccessTypes.enum";
+import { CODE_MANAGE_SUCCESS_TYPE } from "@/const/codeManage/SuccessTypes.const";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { SubmitCodeResultRequest } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/code_manage";
+import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
+import redis from "@/config/redis";
 
 export const userProblemController = {
 
@@ -21,10 +22,9 @@ export const userProblemController = {
             }
 
             const result = await grpcClient.submitCodeExec(dto);
-
             return ResponseHandler.success(
                 res,
-                CodeManageSuccessType.SubmissionCreated,
+                CODE_MANAGE_SUCCESS_TYPE.SUBMISSION_CREATED,
                 HTTP_STATUS.OK,
                 result
             );
@@ -36,19 +36,21 @@ export const userProblemController = {
 
     submissionResult : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            const { problemId } = req.validated?.params;
-            const { submissionId } = req.validated?.body;
-            const dto : SubmitCodeResultRequest = {
-                problemId,
-                submissionId,
-                userId : req.userId!
-            };
-            const result = await grpcClient.submitCodeResult(dto);
+            const { submissionId } = req.validated?.query;
+            const cacheKey = `${REDIS_KEY_PREFIX.SUBMISSION_NORMAL_CACHE}:${submissionId}`;
+            const cached = await redis.get(cacheKey);
+            if (!cached) {
+                return ResponseHandler.success(
+                    res,
+                    CODE_MANAGE_SUCCESS_TYPE.RESULT_STATUS,
+                    HTTP_STATUS.OK,
+                );
+            }
             return ResponseHandler.success(
                 res,
-                CodeManageSuccessType.SubmissionResultFetched,
+                CODE_MANAGE_SUCCESS_TYPE.SUBMISSION_RESULT_FETCHED,
                 HTTP_STATUS.OK,
-                result
+                JSON.parse(cached!)
             )
         } catch (error) {
             next(error);

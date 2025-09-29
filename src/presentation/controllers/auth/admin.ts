@@ -3,8 +3,9 @@ import { setCookie } from "@/util/set-cookie";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { NextFunction, Request, Response } from "express";
-import grpcClient from '@/infra/grpc/auth-user-service/AdminServices'
+import grpcClient from '@/transport/grpc/auth-user-service/AdminServices'
 import ms from "ms";
+import { APP_LABELS } from "@/const/labels.const";
 
 export const authController = {
 
@@ -14,12 +15,12 @@ export const authController = {
       const grpcResponse = await grpcClient.login({
       email : req.validated?.body.email,
       password : req.validated?.body.password,
-      role : 'ADMIN'
+      role : APP_LABELS.ADMIN_CAP
       })
         
-      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
-      setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
-      setCookie(res, "role","admin", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.REFRESH_TOKEN, grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ROLE, APP_LABELS.USER, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK, grpcResponse.userInfo);
     } catch (error) {
       next(error);
@@ -33,7 +34,7 @@ export const authController = {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
       const grpcResponse = await grpcClient.refreshToken({ userId, email, role });
-      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
 
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,{
         accessToken : grpcResponse.accessToken,
@@ -46,17 +47,19 @@ export const authController = {
 
   logout : async(req : Request, res : Response, next : NextFunction) => {
       try {
-          res.clearCookie("accessToken", {
+          res.clearCookie(APP_LABELS.ACCESS_TOKEN, {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
           });
-          res.clearCookie("refreshToken", {
+
+          res.clearCookie(APP_LABELS.REFRESH_TOKEN, {
             httpOnly : true,
             secure : true,
             sameSite : "strict"
           })
-          res.clearCookie("role", {
+
+          res.clearCookie(APP_LABELS.ROLE,{
             httpOnly : true,
             secure : true,
             sameSite : "strict"

@@ -1,15 +1,16 @@
 import express from 'express';
 import { userProblemController as controller } from '@/presentation/controllers/problem/user';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { submitCodeExecSchema, submitCodeResultSchema } from '@/util/validation/code-exec/submit.schema';
-import { ProblemIdParamsSchema } from '@/util/validation/problem/problem.schema';
+import { submitCodeExecSchema, submitCodeResultQuerySchema } from '@/validation/code-exec/submit.schema';
+import { ProblemIdParamsSchema } from '@/validation/problem/problem.schema';
+import { APP_LABELS } from '@/const/labels.const';
 
 export const userProblemRouter = express.Router();
 
 // Submit code for the specific problem.
 userProblemRouter.post(
     '/:problemId/code/submit',
-    validateRequest(ProblemIdParamsSchema,'params'),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(submitCodeExecSchema),
     controller.submitProblem
 );
@@ -17,8 +18,8 @@ userProblemRouter.post(
 // Retrieve submission result for the specific problem.
 userProblemRouter.get(
     '/:problemId/code/submit/result',
-    validateRequest(ProblemIdParamsSchema,'params'),
-    validateRequest(submitCodeResultSchema),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
+    validateRequest(submitCodeResultQuerySchema, APP_LABELS.QUERY),
     controller.submissionResult
 )
 

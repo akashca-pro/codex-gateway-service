@@ -21,7 +21,7 @@ export const createProblemSchema = z.object({
     .min(3,'Title must be atleast 5 characters long')
     .max(100,'Title must not exceed 100 characters'),
 
-    description : StrictString('Description')
+    description : z.string()
     .trim()
     .min(20, 'Description must be at least 20 characters long')
     .max(2000,'Description must not exceed 2000 characters'),
@@ -178,12 +178,7 @@ export const TemplateCodeParamsSchema = z.object({
     .string('TemplateCode Id is required'),
 })
 
-export const AddTemplateCodeSchema = z.object({
-    language : LanguageSchemaEnum,
-    wrappedCode : codeSchema,
-})
-
 export const UpdateTemplateCodeSchema = z.object({
     language : LanguageSchemaEnum.optional(),
-    wrappedCode : codeSchema.optional(),
+    wrappedCode : z.string().optional(),
 })

@@ -8,7 +8,7 @@ export const submitCodeExecSchema = z.object({
     language : LanguageSchemaEnum
 })
 
-export const submitCodeResultSchema = z.object({
+export const submitCodeResultQuerySchema = z.object({
     submissionId : z
     .string().min(1,'submissionId is required'),
 })

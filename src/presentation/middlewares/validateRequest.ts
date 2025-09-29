@@ -1,3 +1,4 @@
+import { APP_ERRORS } from "@/const/ErrorTypes.const";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { Request, Response, NextFunction } from "express";
@@ -20,7 +21,7 @@ export const validateRequest = (schema: ZodObject<ZodRawShape> , part : RequestP
 
     return ResponseHandler.error(
       res,
-      "Validation Error",
+      APP_ERRORS.VALIDATION_ERROR,
       HTTP_STATUS.BAD_REQUEST,
       formattedErrors
     );
@@ -55,17 +56,17 @@ export const validateFile = (options: FileValidationOptions) => (
     if (req.file.fieldname !== fieldName) {
       return ResponseHandler.error(
         res,
-        `Invalid file field. Expected "${fieldName}"`,
+        `${APP_ERRORS.INVALID_FILE_FIELD} Expected "${fieldName}"`,
         HTTP_STATUS.BAD_REQUEST
       );
     }
 
     if (!allowedMimeTypes.some(type => req?.file?.mimetype.startsWith(type))) {
-      return ResponseHandler.error(res, "Invalid file type", HTTP_STATUS.BAD_REQUEST);
+      return ResponseHandler.error(res, APP_ERRORS.INVALID_FILE_TYPE, HTTP_STATUS.BAD_REQUEST);
     }
 
     if (req.file.size > maxSizeMB * 1024 * 1024) {
-      return ResponseHandler.error(res, `File too large, max size is ${maxSizeMB}MB`, HTTP_STATUS.BAD_REQUEST);
+      return ResponseHandler.error(res, `${APP_ERRORS.LARGE_FILE}, max size is ${maxSizeMB}MB`, HTTP_STATUS.BAD_REQUEST);
     }
 
     next();

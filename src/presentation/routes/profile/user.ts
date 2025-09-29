@@ -2,8 +2,8 @@ import express from 'express';
 import { profileController } from '@/presentation/controllers/profile/user';
 import { validateFile, validateRequest } from '@/presentation/middlewares/validateRequest';
 import { upload } from '@/util/multer';
-import { changeEmailSchema, changePasswordSchema, deleteAccountSchema, emailSchema, updateProfileSchema } from '@/util/validation/profile/user';
-import { verifyOtpSchema } from '@/util/validation/auth/user.schema';
+import { changeEmailSchema, changePasswordSchema, deleteAccountSchema, emailSchema, updateProfileSchema } from '@/validation/profile/user';
+import { verifyOtpSchema } from '@/validation/auth/user.schema';
 
 export const userProfileRouter = express.Router();
 

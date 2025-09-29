@@ -1,3 +1,4 @@
+import { APP_LABELS } from '@/const/labels.const';
 import { adminProblemController as controller } from '@/presentation/controllers/problem/admin';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { 
@@ -10,9 +11,8 @@ import {
     checkQuestionIdQuerySchema,
     checkTitleQuerySchema,
     TemplateCodeParamsSchema,
-    AddTemplateCodeSchema,
     UpdateTemplateCodeSchema, 
-} from '@/util/validation/problem/problem.schema';
+} from '@/validation/problem/problem.schema';
 import express from 'express';
 
 export const adminProblemRouter = express.Router();
@@ -20,21 +20,21 @@ export const adminProblemRouter = express.Router();
 // List problems.
 adminProblemRouter.get(
     '/',
-    validateRequest(getProblemlistQuerySchema,'query'),
+    validateRequest(getProblemlistQuerySchema, APP_LABELS.QUERY),
     controller.listProblem
 )
 
 // Check question id availabilty.
 adminProblemRouter.get(
     '/checkQuestionId',
-    validateRequest(checkQuestionIdQuerySchema,'query'),
+    validateRequest(checkQuestionIdQuerySchema, APP_LABELS.QUERY),
     controller.checkQuestionId
 )
 
 // Check problem title availabilty.
 adminProblemRouter.get(
     '/checkTitle',
-    validateRequest(checkTitleQuerySchema,'query'),
+    validateRequest(checkTitleQuerySchema, APP_LABELS.QUERY),
     controller.checkTitle
 )
 
@@ -48,14 +48,14 @@ adminProblemRouter.post(
 // Get problem details.
 adminProblemRouter.get(
     '/:problemId',
-    validateRequest(ProblemIdParamsSchema,'params'),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     controller.getProblem
 )
 
 // Update basic problem details.
 adminProblemRouter.patch(
     '/:problemId/update',
-    validateRequest(ProblemIdParamsSchema,'params'),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(UpdateBasicProblemDetailsSchema),
     controller.updateBasicProblemDetails
 )
@@ -63,7 +63,7 @@ adminProblemRouter.patch(
 // Add test case.
 adminProblemRouter.post(
     '/:problemId/testCases/add',
-    validateRequest(ProblemIdParamsSchema,'params'),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(AddTestCaseSchema),
     controller.addTestCase
 )
@@ -71,7 +71,7 @@ adminProblemRouter.post(
 // Bulk upload testcase.
 adminProblemRouter.post(
     '/:problemId/testCases/bulkUpload',
-    validateRequest(ProblemIdParamsSchema,'params'),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(BulkUploadTestCasesSchema),
     controller.bulkUploadTestCase
 )
@@ -79,15 +79,15 @@ adminProblemRouter.post(
 // Remove test case.
 adminProblemRouter.delete(
     '/:problemId/testCases/:testCaseId/remove',
-    validateRequest(RemoveTestCaseParamSchema,'params'),
-    validateRequest(RemoveTestCaseQuerySchema,'query'),
+    validateRequest(RemoveTestCaseParamSchema, APP_LABELS.PARAM),
+    validateRequest(RemoveTestCaseQuerySchema, APP_LABELS.QUERY),
     controller.removeTestCase
 )
 
 // Add solution code.
 adminProblemRouter.post(
     '/:problemId/solutionCodes/add',
-    validateRequest(ProblemIdParamsSchema,'params'),
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(AddSolutionCodeSchema),
     controller.addSolutioncode
 )
@@ -95,7 +95,7 @@ adminProblemRouter.post(
 // Update solution code.
 adminProblemRouter.patch(
     '/:problemId/solutionCodes/:solutionCodeId/update',
-    validateRequest(SolutionCodeParamsSchema,'params'),
+    validateRequest(SolutionCodeParamsSchema, APP_LABELS.PARAM),
     validateRequest(UpdateSolutionCodeSchema),
     controller.updateSolutionCode
 )
@@ -103,29 +103,14 @@ adminProblemRouter.patch(
 // Remove solution code.
 adminProblemRouter.delete(
     '/:problemId/solutionCodes/:solutionCodeId/remove',
-    validateRequest(SolutionCodeParamsSchema,'params'),
+    validateRequest(SolutionCodeParamsSchema, APP_LABELS.PARAM),
     controller.removeSolutionCode
-)
-
-// Add template code.
-adminProblemRouter.post(
-    '/:problemId/templateCodes/add',
-    validateRequest(ProblemIdParamsSchema, 'params'),
-    validateRequest(AddTemplateCodeSchema),
-    controller.addTemplateCode
 )
 
 // Update template code.
 adminProblemRouter.patch(
     '/:problemId/templateCodes/:templateCodeId/update',
-    validateRequest(TemplateCodeParamsSchema, 'params'),
+    validateRequest(TemplateCodeParamsSchema, APP_LABELS.PARAM),
     validateRequest(UpdateTemplateCodeSchema),
     controller.updateTemplateCode
-)
-
-// Remove template code.
-adminProblemRouter.delete(
-    '/:problemId/templateCodes/:templateCodeId/remove',
-    validateRequest(TemplateCodeParamsSchema, 'params'),
-    controller.removeTemplateCode
 )

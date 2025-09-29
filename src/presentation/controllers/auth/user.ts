@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import grpcClient from '@/infra/grpc/auth-user-service/UserServices'
+import grpcClient from '@/transport/grpc/auth-user-service/UserServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { setCookie } from "@/util/set-cookie";
@@ -9,9 +9,10 @@ import ms from "ms";
 import { verifyGoogleToken } from "@/util/googleVerifier";
 import { uploadImageUrlToCloudinary } from "@/util/cloudinary/uploadImageToCloudinary";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
-import { ResendOtpRequest, ResetPasswordRequest, VerifyOtpRequest } from "@akashcapro/codex-shared-utils";
-import { OtpType } from "@/enums/auth-user/OtpType.enum";
-import { UserSuccessTypes } from "@/enums/auth-user/UserSuccessTypes.enum";
+import { ResendOtpRequest, ResetPasswordRequest } from "@akashcapro/codex-shared-utils";
+import { OTP_TYPE } from "@/const/auth-user/OtpType.const";
+import { USER_SUCCESS_TYPES } from "@/const/auth-user/UserSuccessTypes.const";
+import { APP_LABELS } from "@/const/labels.const";
 
 export const authController = {
 
@@ -27,11 +28,10 @@ export const authController = {
   resendSignupOtp: async (req: Request, res: Response, next : NextFunction) => {
     try {
       const { email } = req.validated?.body;
-      const dto : ResendOtpRequest = {
+      const grpcResponse = await grpcClient.resendOtp({
         email,
-        otpType : OtpType.SIGNUP
-      }
-      const grpcResponse = await grpcClient.resendOtp(dto);
+        otpType : OTP_TYPE.SIGNUP
+      });
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK);
     } catch (error) {
       next(error);
@@ -42,9 +42,9 @@ export const authController = {
     try {
       const grpcResponse = await grpcClient.verifyOtp(req.validated?.body);
 
-      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
-      setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
-      setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.REFRESH_TOKEN, grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ROLE, APP_LABELS.USER, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
@@ -57,14 +57,14 @@ export const authController = {
       const grpcResponse = await grpcClient.login({
         email : req.body.email,
         password : req.body.password,
-        role : 'USER'
+        role : APP_LABELS.USER_CAP
       });
 
       if(grpcResponse.accessToken && grpcResponse.refreshToken){
 
-        setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
-        setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
-        setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, APP_LABELS.REFRESH_TOKEN, grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+        setCookie(res, APP_LABELS.ROLE, APP_LABELS.USER, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
 
         return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
       }else{
@@ -94,9 +94,9 @@ export const authController = {
         avatar : avatarPublicId || ''
       });
 
-      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
-      setCookie(res, "refreshToken", grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
-      setCookie(res, "role","user", config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.REFRESH_TOKEN, grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ROLE, APP_LABELS.USER, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
 
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
@@ -118,12 +118,12 @@ export const authController = {
       const { email } = req.validated?.body
       const dto : ResendOtpRequest = {
         email,
-        otpType : OtpType.FORGOT_PASS 
+        otpType : OTP_TYPE.FORGOT_PASS 
       }
       await grpcClient.resendOtp(dto);
       return ResponseHandler.success(
         res,
-        UserSuccessTypes.NewOtpIssued,
+        USER_SUCCESS_TYPES.NEW_OTP_ISSUED,
         HTTP_STATUS.OK
       )
     } catch (error) {
@@ -154,7 +154,7 @@ export const authController = {
       }
       const grpcResponse = await grpcClient.refreshToken({ userId, email, role });
 
-      setCookie(res, "accessToken", grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+      setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
 
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
@@ -172,19 +172,19 @@ export const authController = {
           await redis.set(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${req.accessTokenId}`, "1", "EX", accessTokenTtl);
           await redis.set(`${REDIS_KEY_PREFIX.BLACKLIST_REFRESH_TOKEN}${req.refreshTokenId}`, "1", "EX" , refreshTokenTtl)
         
-          res.clearCookie("accessToken", {
+          res.clearCookie(APP_LABELS.ACCESS_TOKEN, {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
           });
 
-          res.clearCookie("refreshToken", {
+          res.clearCookie(APP_LABELS.REFRESH_TOKEN, {
             httpOnly : true,
             secure : true,
             sameSite : "strict"
           })
 
-          res.clearCookie("role",{
+          res.clearCookie(APP_LABELS.ROLE,{
             httpOnly : true,
             secure : true,
             sameSite : "strict"

@@ -8,6 +8,8 @@ import ResponseHandler from '@akashcapro/codex-shared-utils/dist/utils/response_
 import HTTP_STATUS from '@akashcapro/codex-shared-utils/dist/utils/status_code';
 import redis from '@/config/redis';
 import { REDIS_KEY_PREFIX } from '@/config/redis/keyPrefix';
+import { APP_LABELS } from '@/const/labels.const';
+import { APP_ERRORS } from '@/const/ErrorTypes.const';
 
 const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
     return jwt.verify(token,secret) as CustomJwtPayload
@@ -18,32 +20,55 @@ export const verifyAccessToken = (acceptedRole : string) => async (
     res : Response, 
     next : NextFunction) =>{
 
-    const token = req.cookies['accessToken']
+    const token = req.cookies[APP_LABELS.ACCESS_TOKEN]
 
     if(!token)
-        return ResponseHandler.error(res,'Token not found',HTTP_STATUS.UNAUTHORIZED)
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.TOKEN_NOT_FOUND,
+            HTTP_STATUS.UNAUTHORIZED
+        );
 
     try {
-        const decoded = verifyJwt(token, config.JWT_ACCESS_TOKEN_SECRET as string);
+        const decoded = verifyJwt(
+            token, 
+            config.JWT_ACCESS_TOKEN_SECRET as string
+        );
 
         if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
-            return ResponseHandler.error(res, 'Invalid Token payload', HTTP_STATUS.UNAUTHORIZED);
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.INVALID_TOKEN_PAYLOAD, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
         }
 
         if(decoded.role !== acceptedRole.toUpperCase())
-            return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
+            return ResponseHandler.error(
+                res,
+                APP_ERRORS.ENTRY_RESTRICTED,
+                HTTP_STATUS.UNAUTHORIZED
+        );
 
         // Check blacklist
         const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
         if (blacklisted) {
-            return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.TOKEN_BLACKLISTED, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
         }
 
         // Check blocked user
-        if (req.path !== '/logout') {
+        if (req.path !== APP_LABELS.LOGOUT_PATH) {
             const blocked = await redis.get(`${REDIS_KEY_PREFIX.USER_BLOCKED}:${decoded.userId}`);
             if (blocked) {
-                return ResponseHandler.error(res, 'Account is blocked', HTTP_STATUS.FORBIDDEN);
+                return ResponseHandler.error(
+                    res, 
+                    APP_ERRORS.ACCOUNT_BLOCKED, 
+                    HTTP_STATUS.FORBIDDEN
+                );
             }
         }
 
@@ -56,8 +81,12 @@ export const verifyAccessToken = (acceptedRole : string) => async (
         next();
         
     } catch (error) {
-        logger.error('JWT access token verification failed',error);
-        return ResponseHandler.error(res,'Invalid Token',HTTP_STATUS.UNAUTHORIZED)
+        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED,error);
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.INVALID_TOKEN_PAYLOAD,
+            HTTP_STATUS.UNAUTHORIZED
+        );
     }
 };
 
@@ -66,25 +95,41 @@ export const verifyRefreshToken = (acceptedRole : string) => async (
     res : Response,
     next : NextFunction) => {
 
-    const token = req.cookies['refreshToken'];
+    const token = req.cookies[APP_LABELS.REFRESH_TOKEN];
 
     if(!token)
-        return ResponseHandler.error(res,'Token not found',HTTP_STATUS.UNAUTHORIZED);
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.TOKEN_NOT_FOUND,
+            HTTP_STATUS.UNAUTHORIZED
+    );
 
     try {
         const decoded = verifyJwt(token, config.JWT_REFRESH_TOKEN_SECRET as string);
 
         if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
-            return ResponseHandler.error(res, 'Invalid Token', HTTP_STATUS.UNAUTHORIZED);
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.INVALID_TOKEN_PAYLOAD, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
         }
 
         if(decoded.role !== acceptedRole.toUpperCase())
-            return ResponseHandler.error(res,'Entry Restricted',HTTP_STATUS.UNAUTHORIZED);
+            return ResponseHandler.error(
+                res,
+                APP_ERRORS.ENTRY_RESTRICTED,
+                HTTP_STATUS.UNAUTHORIZED
+        );
 
         // Check blacklist
         const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
         if (blacklisted) {
-            return ResponseHandler.error(res, 'Token is blacklisted', HTTP_STATUS.UNAUTHORIZED);
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.TOKEN_BLACKLISTED, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
         }
 
         req.userId = decoded.userId;
@@ -95,9 +140,12 @@ export const verifyRefreshToken = (acceptedRole : string) => async (
         next();
 
     } catch (error) {
-        logger.error('JWT refresh token verification failed',error);
-        return ResponseHandler.error(res,'Invalid Token',HTTP_STATUS.UNAUTHORIZED)
+        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED,error);
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.INVALID_TOKEN_PAYLOAD,
+            HTTP_STATUS.UNAUTHORIZED
+        );
     }
-
 }
 
