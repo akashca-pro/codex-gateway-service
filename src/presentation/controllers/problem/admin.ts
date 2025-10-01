@@ -187,84 +187,17 @@ export const adminProblemController = {
         }
     },
 
-    addSolutioncode : async (req : Request, res : Response, next : NextFunction) => {
-        try {
-            const { problemId } = req.validated?.params;
-            const { Id, code, executionTime, language, memoryTaken } = req.validated?.body;
-            const dto : AddSolutionCodeRequest = {
-                Id : problemId,
-                solutionCode : {
-                    Id,
-                    code,
-                    executionTime,
-                    language,
-                    memoryTaken
-                }
-            }
-            await grpcClient.addSolutionCode(dto);
-            return ResponseHandler.success(
-                res,
-                PROBLEM_SUCCESS_TYPE.SOLUTION_CODE_ADDED,
-                HTTP_STATUS.OK
-            );
-        } catch (error) {
-            next(error);
-        }
-    },
-
-    updateSolutionCode : async (req : Request, res : Response, next : NextFunction) => {
-        try {
-            const { problemId, solutionCodeId } = req.validated?.params;
-            const { code, language, executionTime, memoryTaken } = req.validated?.body;
-            const dto : UpdateSolutionCodeRequest = {
-                Id : problemId,
-                solutionCodeId,
-                solutionCode : {
-                    code,
-                    language,
-                    executionTime,
-                    memoryTaken
-                }
-            }
-            await grpcClient.updateSolutionCode(dto);
-            return ResponseHandler.success(
-                res,
-                PROBLEM_SUCCESS_TYPE.SOLUTION_CODE_UPDATED,
-                HTTP_STATUS.OK
-            );
-        } catch (error) {
-            next(error);
-        }
-    },
-    
-    removeSolutionCode : async (req : Request, res : Response, next : NextFunction) => {
-        try {
-            const { problemId, solutionCodeId } = req.validated?.params;
-            const dto : RemoveSolutionCodeRequest = {
-                Id : problemId,
-                solutionCodeId
-            }
-            await grpcClient.removeSolutionCode(dto);
-            return ResponseHandler.success(
-                res,
-                PROBLEM_SUCCESS_TYPE.SOLUTION_CODE_REMOVED,
-                HTTP_STATUS.OK
-            );
-        } catch (error) {
-            next(error);
-        }
-    },
-
     updateTemplateCode : async (req : Request, res : Response,  next : NextFunction) => {
         try {
             const { problemId, templateCodeId } = req.validated?.params;
-            const { language, wrappedCode } = req.validated?.body;
+            const { language, submitWrapperCode, runWrapperCode } = req.validated?.body;
             const dto : UpdateTemplateCodeRequest = {
                 Id : problemId,
                 templateCodeId : templateCodeId,
                 updatedTemplateCode : {
-                    language : language ? language : undefined,
-                    wrappedCode : wrappedCode ? wrappedCode : undefined
+                    language : language ?? undefined,
+                    submitWrapperCode : submitWrapperCode ?? undefined,
+                    runWrapperCode : runWrapperCode ?? undefined
                 }
             }
             await grpcClient.updateTemplateCode(dto);

@@ -13,3 +13,7 @@ export const PROBLEM_SUCCESS_TYPE = {
   TITLE_AVAILABLE: 'Title is available',
   TEMPLATE_CODE_UPDATED: 'Template code updated',
 } as const;
+
+export const SUBMISSION_SUCCESS_TYPE = {
+  LIST_SUBMISSIONS : 'Submission loaded successfully'
+} as const;

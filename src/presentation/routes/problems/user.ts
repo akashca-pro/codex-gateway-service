@@ -1,8 +1,8 @@
 import express from 'express';
 import { userProblemController as controller } from '@/presentation/controllers/problem/user';
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
-import { submitCodeExecSchema, submitCodeResultQuerySchema } from '@/validation/code-exec/submit.schema';
-import { ProblemIdParamsSchema } from '@/validation/problem/problem.schema';
+import { submitCodeExecSchema } from '@/validation/code-exec/submit.schema';
+import { ListProblemSpecificsubmissionsSchemaQuery, ProblemIdParamsSchema, SubmitResultParamsSchema } from '@/validation/problem/problem.schema';
 import { APP_LABELS } from '@/const/labels.const';
 
 export const userProblemRouter = express.Router();
@@ -17,9 +17,15 @@ userProblemRouter.post(
 
 // Retrieve submission result for the specific problem.
 userProblemRouter.get(
-    '/:problemId/code/submit/result',
-    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
-    validateRequest(submitCodeResultQuerySchema, APP_LABELS.QUERY),
+    '/:problemId/:submissionId/code/submit/result',
+    validateRequest(SubmitResultParamsSchema, APP_LABELS.PARAM),
     controller.submissionResult
+)
+
+// List problem specific submissions (cursor pagination)
+userProblemRouter.get(
+    '/:problemId/submissions',
+    validateRequest(ListProblemSpecificsubmissionsSchemaQuery, APP_LABELS.QUERY),
+    controller.listProblemSpecifiSubmissions
 )
 

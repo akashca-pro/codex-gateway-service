@@ -1,0 +1,35 @@
+import { ListProblemSpecificSubmissionRequest, ListProblemSpecificSubmissionResponse, SubmissionServiceClient } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { GrpcBaseService } from "../GrpcBaseService";
+import { config } from "@/config";
+import { credentials } from "@grpc/grpc-js";
+
+/**
+ * Class implementing the submission grpc client call.
+ * 
+ * @class
+ * @extends {GrpcBaseService}
+ */
+export class GrpcSubmissionService extends GrpcBaseService {
+
+    #_client : SubmissionServiceClient
+
+    constructor(){
+        super();
+        this.#_client = new SubmissionServiceClient(
+            config.GRPC_PROBLEM_SERVICE_URL!,
+            credentials.createInsecure()
+        )
+    }
+
+    listProblemSpecificSubmission = async (
+        request : ListProblemSpecificSubmissionRequest
+    ) : Promise<ListProblemSpecificSubmissionResponse> => {
+        return this.grpcCall(
+            this.#_client.listProblemSpecificSubmission.bind(this.#_client),
+            request
+        )
+    }
+
+}
+
+export default new GrpcSubmissionService();

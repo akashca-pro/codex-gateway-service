@@ -84,29 +84,6 @@ adminProblemRouter.delete(
     controller.removeTestCase
 )
 
-// Add solution code.
-adminProblemRouter.post(
-    '/:problemId/solutionCodes/add',
-    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
-    validateRequest(AddSolutionCodeSchema),
-    controller.addSolutioncode
-)
-
-// Update solution code.
-adminProblemRouter.patch(
-    '/:problemId/solutionCodes/:solutionCodeId/update',
-    validateRequest(SolutionCodeParamsSchema, APP_LABELS.PARAM),
-    validateRequest(UpdateSolutionCodeSchema),
-    controller.updateSolutionCode
-)
-
-// Remove solution code.
-adminProblemRouter.delete(
-    '/:problemId/solutionCodes/:solutionCodeId/remove',
-    validateRequest(SolutionCodeParamsSchema, APP_LABELS.PARAM),
-    controller.removeSolutionCode
-)
-
 // Update template code.
 adminProblemRouter.patch(
     '/:problemId/templateCodes/:templateCodeId/update',

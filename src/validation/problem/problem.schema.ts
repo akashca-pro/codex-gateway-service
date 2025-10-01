@@ -164,6 +164,13 @@ export const ProblemIdParamsSchema = z.object({
     .string('Problem Id is required')
 });
 
+export const SubmitResultParamsSchema = z.object({
+  problemId: z
+    .string('Problem id is required'),
+  submissionId : z
+    .string('Submission id is required')
+})
+
 export const SolutionCodeParamsSchema = z.object({
   problemId: z
     .string('Problem Id is required'),
@@ -180,5 +187,16 @@ export const TemplateCodeParamsSchema = z.object({
 
 export const UpdateTemplateCodeSchema = z.object({
     language : LanguageSchemaEnum.optional(),
-    wrappedCode : z.string().optional(),
+    submitWrapperCode : z.string().optional(),
+    runWrapperCode : z.string().optional(),
+})
+
+export const ListProblemSpecificsubmissionsSchemaQuery = z.object({
+    limit: z.coerce
+      .number("Limit must be a number")
+      .int()
+      .min(1, "Limit must be at least 1")
+      .max(100, "Limit must not exceed 100")
+      .default(5),
+    nextCursor : z.string().optional()
 })
