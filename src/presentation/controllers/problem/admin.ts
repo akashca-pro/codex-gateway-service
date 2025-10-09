@@ -4,14 +4,11 @@ import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_
 import { PROBLEM_SUCCESS_TYPE } from "@/const/problem/SuccessTypes.const";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { 
-    AddSolutionCodeRequest,
     AddTestCaseRequest, 
     BulkUploadTestCasesRequest, 
     UpdateBasicProblemDetailsRequest as GrpcUpdateDTO, 
     ListProblemRequest, 
-    RemoveSolutionCodeRequest, 
     RemoveTestCaseRequest,
-    UpdateSolutionCodeRequest,
     UpdateTemplateCodeRequest
 } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 

@@ -51,10 +51,10 @@ app.use(globalErrorHandler);
 const startServer = () => {
     try {
         
-        app.listen(config.PORT,()=>{
-            logger.info(`${config.SERVICE_NAME} running on port ${config.PORT}`);
+        app.listen(config.GATEWAY_SERVICE_PORT,()=>{
+            logger.info(`${config.SERVICE_NAME} running on port ${config.GATEWAY_SERVICE_PORT}`);
         })
-        startMetricsServer(config.METRICS_PORT!)
+        startMetricsServer(config.GATEWAY_SERVICE_METRICS_PORT!)
     } catch (error) {
         logger.error('Failed to start server : ',error);
         process.exit(1);

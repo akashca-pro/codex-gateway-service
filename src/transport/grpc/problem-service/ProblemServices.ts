@@ -1,5 +1,4 @@
 import { 
-    AddSolutionCodeRequest, 
     AddTestCaseRequest, 
     BulkUploadTestCasesRequest, 
     CheckProblemTitleRequest, 
@@ -10,11 +9,9 @@ import {
     ListProblemRequest, 
     ListProblemResponse, 
     Problem, 
-    ProblemServiceClient, 
-    RemoveSolutionCodeRequest, 
+    ProblemServiceClient,  
     RemoveTestCaseRequest, 
     UpdateBasicProblemDetailsRequest, 
-    UpdateSolutionCodeRequest, 
     UpdateTemplateCodeRequest 
 } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 import { GrpcBaseService } from "../GrpcBaseService";
@@ -99,33 +96,6 @@ class GrpcProblemService extends GrpcBaseService {
     ) : Promise<Empty> => {
         return this.grpcCall(
             this.#_client.removeTestCase.bind(this.#_client),
-            request
-        );
-    }
-
-    addSolutionCode = async (
-        request: AddSolutionCodeRequest
-    ) : Promise<Empty> => {
-        return this.grpcCall(
-            this.#_client.addSolutionCode.bind(this.#_client),
-            request
-        );
-    }
-
-    updateSolutionCode = async (
-        request: UpdateSolutionCodeRequest
-    ) : Promise<Empty> => {
-        return this.grpcCall(
-            this.#_client.updateSolutionCode.bind(this.#_client),
-            request
-        );
-    }
-
-    removeSolutionCode = async (
-        request: RemoveSolutionCodeRequest
-    ) : Promise<Empty> => {
-        return this.grpcCall(
-            this.#_client.removeSolutionCode.bind(this.#_client),
             request
         );
     }

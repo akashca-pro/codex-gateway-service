@@ -2,15 +2,15 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 interface Config {
-  SERVICE_NAME: string;
-  PORT: number;
+  SERVICE_NAME : string;
+  GATEWAY_SERVICE_PORT: number;
   DEFAULT_GRPC_TIMEOUT : number,
   JWT_ACCESS_TOKEN_SECRET : string;
   JWT_REFRESH_TOKEN_SECRET: string;
   LOG_LEVEL: string;
   REDIS_URL: string;
-  GRPC_AUTH_SERVER_URL : string;
-  METRICS_PORT : number;
+  GRPC_AUTH_USER_SERVICE_URL : string;
+  GATEWAY_SERVICE_METRICS_PORT : number;
   METRICS_URL : string;
   JWT_REFRESH_TOKEN_EXPIRY : string;
   JWT_ACCESS_TOKEN_EXPIRY : string;
@@ -23,15 +23,15 @@ interface Config {
 }
 
 export const config: Config = {
-  SERVICE_NAME: require('../../package.json').name,
+  SERVICE_NAME: 'GATEWAY_SERVICE',
   DEFAULT_GRPC_TIMEOUT : Number(process.env.DEFAULT_GRPC_TIMEOUT),
-  PORT: Number(process.env.PORT),
+  GATEWAY_SERVICE_PORT: Number(process.env.GATEWAY_SERVICE_PORT),
   JWT_ACCESS_TOKEN_SECRET : process.env.JWT_ACCESS_TOKEN_SECRET!,
   JWT_REFRESH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET!,
   LOG_LEVEL: process.env.LOG_LEVEL!,
   REDIS_URL: process.env.REDIS_URL!,
-  GRPC_AUTH_SERVER_URL : process.env.GRPC_AUTH_SERVER_URL!,
-  METRICS_PORT : Number(process.env.METRICS_PORT)!,
+  GRPC_AUTH_USER_SERVICE_URL : process.env.GRPC_AUTH_USER_SERVICE_URL!,
+  GATEWAY_SERVICE_METRICS_PORT : Number(process.env.GATEWAY_SERVICE_METRICS_PORT)!,
   METRICS_URL : process.env.METRICS_URL!,
   JWT_ACCESS_TOKEN_EXPIRY : process.env.JWT_ACCESS_TOKEN_EXPIRY!,
   JWT_REFRESH_TOKEN_EXPIRY : process.env.JWT_REFRESH_TOKEN_EXPIRY!,

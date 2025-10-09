@@ -68,6 +68,7 @@ export const userProblemController = {
                 userId : req.userId!,
                 nextCursor : nextCursor ?? undefined
             }
+            console.log(dto)
             const result = await grpcSubmissionClient.listProblemSpecificSubmission(dto);
             return ResponseHandler.success(
                 res,

@@ -25,6 +25,7 @@ userProblemRouter.get(
 // List problem specific submissions (cursor pagination)
 userProblemRouter.get(
     '/:problemId/submissions',
+    validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(ListProblemSpecificsubmissionsSchemaQuery, APP_LABELS.QUERY),
     controller.listProblemSpecifiSubmissions
 )
