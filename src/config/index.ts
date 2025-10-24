@@ -20,6 +20,7 @@ interface Config {
   CLOUDINARY_API_SECRET : string;
   GRPC_PROBLEM_SERVICE_URL : string;
   GRPC_CODE_MANAGE_SERVICE_URL : string;
+  GRPC_COLLAB_SERVICE_URL : string;
 }
 
 export const config: Config = {
@@ -41,4 +42,5 @@ export const config: Config = {
   CLOUDINARY_CLOUD_NAME : process.env.CLOUDINARY_CLOUD_NAME!,
   GRPC_PROBLEM_SERVICE_URL : process.env.GRPC_PROBLEM_SERVICE_URL!,
   GRPC_CODE_MANAGE_SERVICE_URL : process.env.GRPC_CODE_MANAGE_SERVICE_URL!,
+  GRPC_COLLAB_SERVICE_URL : process.env.GRPC_COLLAB_SERVICE_URL!,
 }

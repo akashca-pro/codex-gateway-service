@@ -1,7 +1,7 @@
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { config } from '@/config';
 import { Request, Response, NextFunction } from 'express';
-import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
+import logger from '@/util/pinoLogger';
 
 import { CustomJwtPayload } from '@akashcapro/codex-shared-utils'
 import ResponseHandler from '@akashcapro/codex-shared-utils/dist/utils/response_handler';

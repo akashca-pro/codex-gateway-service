@@ -1,5 +1,7 @@
 import { Response } from "express";
 import ms from "ms";
+import dotenv from 'dotenv'
+dotenv.config();
 
 export const setCookie = (
     res : Response,
@@ -7,11 +9,12 @@ export const setCookie = (
     value : string, 
     maxAge : ms.StringValue
     ) : void => {
-
-        res.cookie(key,value,{
-            httpOnly : true,
-            secure : true,
-            sameSite : 'strict',
-            maxAge : ms(maxAge)
-        })
+    res.cookie(key,value,{
+        httpOnly : true,
+        secure : process.env.NODE_ENV === 'production',
+        sameSite : "lax",
+        domain: process.env.domain ?? undefined,
+        path: "/",
+        maxAge: ms(maxAge), 
+    })
 }

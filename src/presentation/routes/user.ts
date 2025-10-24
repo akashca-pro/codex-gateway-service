@@ -4,6 +4,7 @@ import { userProfileRouter } from './profile/user';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { userProblemRouter } from './problems/user';
 import { APP_LABELS } from '@/const/labels.const';
+import { userCollabRouter } from './collab/user';
 
 
 export const userRouter = express.Router();
@@ -26,4 +27,11 @@ userRouter.use(
     '/problems',
     verifyAccessToken(APP_LABELS.USER),
     userProblemRouter
+)
+
+// collab routes
+userRouter.post(
+    '/collab',
+    verifyAccessToken(APP_LABELS.USER),
+    userCollabRouter
 )

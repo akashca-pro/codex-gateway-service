@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import client from 'prom-client'
-import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
+import logger from '@/util/logger';
 
 export const startMetricsServer = (port : number)  => {
 

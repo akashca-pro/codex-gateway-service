@@ -1,12 +1,13 @@
+import './config/tracing'
 import express,{Request, Response} from 'express';
 import dotenv from 'dotenv'
 dotenv.config();
 import helmet from 'helmet';
 import cors from 'cors'
-import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
+import logger from '@/util/pinoLogger';
+import { httpLogger } from '@/util/pinoLogger';
 import { config } from '@/config';
 import cookieParser from 'cookie-parser';
-import { startMetricsServer } from './config/metrics';
 
 // Routes
 
@@ -17,6 +18,7 @@ import { httpMetricsMiddleware } from './config/metrics/metricsMiddleware';
 import { publicRouter } from './presentation/routes/public';
 
 const app = express();
+app.use(httpLogger);
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
@@ -30,11 +32,14 @@ app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT','PATCH','DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Set-Cookie'],
 }));
 
 // Health check endpoint
 app.get('/health', (req : Request, res : Response)=>{
-    res.status(200).json({ status : 'OK' });
+    req.log.info('Health check hit')
+    return res.status(200).json({ status : 'OK' });
 })
 
 // Routes
@@ -54,9 +59,9 @@ const startServer = () => {
         app.listen(config.GATEWAY_SERVICE_PORT,()=>{
             logger.info(`${config.SERVICE_NAME} running on port ${config.GATEWAY_SERVICE_PORT}`);
         })
-        startMetricsServer(config.GATEWAY_SERVICE_METRICS_PORT!)
+        // startMetricsServer(config.GATEWAY_SERVICE_METRICS_PORT!)
     } catch (error) {
-        logger.error('Failed to start server : ',error);
+        logger.error('Failed to start server : ', error);
         process.exit(1);
     }
 };

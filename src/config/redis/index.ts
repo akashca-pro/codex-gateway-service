@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 import { config } from '@/config';
-import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
+import logger from '@/util/pinoLogger';
 
 class RedisClient {
     private static instance : Redis

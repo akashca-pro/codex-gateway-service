@@ -8,11 +8,12 @@ export const profileController = {
 
   profile : async (req: Request, res: Response,next : NextFunction) => {
     try {
+      req.log.info({userId : req.userId},'Load profile request recieved');
       const { userId,  email } = req;
       const grpcResponse = await grpcClient.profile({
         userId : (userId as string),
         email  : (email as string) });
-
+      req.log.info({userId : req.userId}, 'Load profile response recieved')
       return ResponseHandler.success(
         res, 
         USER_SUCCESS_TYPES.PROFILE_DATA_LOADED, 
@@ -20,6 +21,7 @@ export const profileController = {
         ...grpcResponse,
       });
     } catch (error) {
+      req.log.error({error, userId : req.userId},'Load profile failed')
       next(error);
     }
   }

@@ -1,5 +1,4 @@
 import { Metadata, ServiceError, CallOptions } from '@grpc/grpc-js';
-import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
 import type { GrpcUnaryMethod } from '@/types/GrpcMethod';
 import { config } from '@/config';
 
