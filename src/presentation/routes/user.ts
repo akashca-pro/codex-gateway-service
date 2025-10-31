@@ -30,7 +30,7 @@ userRouter.use(
 )
 
 // collab routes
-userRouter.post(
+userRouter.use(
     '/collab',
     verifyAccessToken(APP_LABELS.USER),
     userCollabRouter

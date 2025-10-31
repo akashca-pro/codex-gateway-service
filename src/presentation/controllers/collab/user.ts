@@ -20,7 +20,7 @@ export const collabController = {
                 res,
                 COLLAB_SUCCESS_TYPE.SESSION_CREATED,
                 HTTP_STATUS.CREATED,
-                result.inviteToken
+                result
             )
         } catch (error) {   
             next(error);

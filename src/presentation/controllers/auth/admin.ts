@@ -31,11 +31,11 @@ export const authController = {
   refreshToken : async (req: Request, res: Response, next : NextFunction) => {
     try {
       req.log.info('Admin refreshToken request recieved');
-      const { userId, email, role } = req ;
-      if (!userId || !email || !role) {
+      const { userId, email, role, username } = req ;
+      if (!userId || !email || !role || !username) {
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
-      const grpcResponse = await grpcClient.refreshToken({ userId, email, role });
+      const grpcResponse = await grpcClient.refreshToken({ userId, email, role, username });
       setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
       req.log.info('Admin refreshToken response recieved');
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,{

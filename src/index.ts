@@ -1,4 +1,6 @@
 import './config/tracing'
+import https from 'https';
+import fs from 'fs';
 import express,{Request, Response} from 'express';
 import dotenv from 'dotenv'
 dotenv.config();
@@ -16,6 +18,10 @@ import { adminRouter } from './presentation/routes/admin';
 import { globalErrorHandler, notFound } from '@/util/errorHandlers'
 import { httpMetricsMiddleware } from './config/metrics/metricsMiddleware';
 import { publicRouter } from './presentation/routes/public';
+
+const privateKey = fs.readFileSync('../../localhost+1-key.pem', 'utf8');
+const certificate = fs.readFileSync('../../localhost+1.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 app.use(httpLogger);
@@ -53,13 +59,15 @@ app.use(notFound);
 // Global error handler.
 app.use(globalErrorHandler);
 
+const httpsServer = https.createServer(credentials, app);
+
 const startServer = () => {
     try {
         
-        app.listen(config.GATEWAY_SERVICE_PORT,()=>{
-            logger.info(`${config.SERVICE_NAME} running on port ${config.GATEWAY_SERVICE_PORT}`);
-        })
-        // startMetricsServer(config.GATEWAY_SERVICE_METRICS_PORT!)
+        httpsServer.listen(config.GATEWAY_SERVICE_PORT, () => {
+            logger.info(`HTTPS ${config.SERVICE_NAME} running on port ${config.GATEWAY_SERVICE_PORT}`);
+        });
+
     } catch (error) {
         logger.error('Failed to start server : ', error);
         process.exit(1);

@@ -74,6 +74,7 @@ export const verifyAccessToken = (acceptedRole : string) => async (
 
         req.userId = decoded.userId;
         req.email = decoded.email;
+        req.username = decoded.username;
         req.role = decoded.role;
         req.accessTokenId = decoded.tokenId;
         req.accessTokenExp = decoded.exp;
@@ -134,6 +135,7 @@ export const verifyRefreshToken = (acceptedRole : string) => async (
 
         req.userId = decoded.userId;
         req.email = decoded.email;
+        req.username = decoded.username;
         req.role = decoded.role;
         req.refreshTokenId = decoded.tokenId;
         req.refreshTokenExp = decoded.exp;

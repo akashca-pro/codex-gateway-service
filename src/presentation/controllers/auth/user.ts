@@ -76,6 +76,7 @@ export const authController = {
         setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
         setCookie(res, APP_LABELS.REFRESH_TOKEN, grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
         setCookie(res, APP_LABELS.ROLE, APP_LABELS.USER, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+        console.log(grpcResponse)
         return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
       }else{
         req.log.warn({ email },'Login gRPC response recieved, user not verified/accepted status'); // Use WARN for accepted (not failure)
@@ -114,6 +115,7 @@ export const authController = {
       setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
       setCookie(res, APP_LABELS.REFRESH_TOKEN, grpcResponse.refreshToken, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
       setCookie(res, APP_LABELS.ROLE, APP_LABELS.USER, config.JWT_REFRESH_TOKEN_EXPIRY as ms.StringValue);
+      console.log(grpcResponse);
       return ResponseHandler.success(res, grpcResponse.message, HTTP_STATUS.OK,grpcResponse.userInfo);
     } catch (error) {
       req.log.error({ error }, 'OAuth login failed');
@@ -176,15 +178,15 @@ export const authController = {
 
   refreshToken: async (req: Request, res: Response, next : NextFunction) => {
     try {
-      const { userId, email, role } = req;
+      const { userId, email, role, username } = req;
       req.log.info({ userId, email },'Refresh token request received');
       
-      if (!userId || !email || !role) {
+      if (!userId || !email || !role || !username) {
         req.log.warn('Refresh token missing required context (userId/email/role)');
         return ResponseHandler.error(res, "Invalid Token", HTTP_STATUS.UNAUTHORIZED);
       }
       
-      const grpcResponse = await grpcClient.refreshToken({ userId, email, role });
+      const grpcResponse = await grpcClient.refreshToken({ userId, email, role, username });
       req.log.info({ userId, email },'Refresh token gRPC response recieved. Access token re-issued.');
       setCookie(res, APP_LABELS.ACCESS_TOKEN, grpcResponse.accessToken, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
       return ResponseHandler.success(res, grpcResponse.message,HTTP_STATUS.OK,grpcResponse.userInfo);

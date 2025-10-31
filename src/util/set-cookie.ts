@@ -11,8 +11,8 @@ export const setCookie = (
     ) : void => {
     res.cookie(key,value,{
         httpOnly : true,
-        secure : process.env.NODE_ENV === 'production',
-        sameSite : "lax",
+        secure : true,
+        sameSite : "none",
         domain: process.env.domain ?? undefined,
         path: "/",
         maxAge: ms(maxAge), 
