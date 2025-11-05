@@ -5,6 +5,8 @@ import { verifyAccessToken } from '../middlewares/jwt';
 import { userProblemRouter } from './problems/user';
 import { APP_LABELS } from '@/const/labels.const';
 import { userCollabRouter } from './collab/user';
+import { userLeaderboardRouter } from './leaderboard/user';
+import { userDashboardRouter } from './dashboard/user';
 
 
 export const userRouter = express.Router();
@@ -34,4 +36,18 @@ userRouter.use(
     '/collab',
     verifyAccessToken(APP_LABELS.USER),
     userCollabRouter
+)
+
+// leaderboard routes
+userRouter.use(
+    '/leaderboard',
+    verifyAccessToken(APP_LABELS.USER),
+    userLeaderboardRouter
+)
+
+// dashboard routes
+userRouter.use(
+    '/dashboard',
+    verifyAccessToken(APP_LABELS.USER),
+    userDashboardRouter
 )

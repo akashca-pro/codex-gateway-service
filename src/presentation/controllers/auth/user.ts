@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import grpcClient from '@/transport/grpc/auth-user-service/UserServices'
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
-import { setCookie } from "@/util/set-cookie";
+import { setCookie, getCookieOptions } from "@/util/set-cookie";
 import redis from "@/config/redis";
 import { config } from "@/config";
 import ms from "ms";
@@ -212,22 +212,10 @@ export const authController = {
           await redis.set(`${REDIS_KEY_PREFIX.BLACKLIST_REFRESH_TOKEN}${req.refreshTokenId}`, "1", "EX" , refreshTokenTtl)
           
           req.log.info({ userId },'Tokens blacklisted. Clearing cookies.');
-          res.clearCookie(APP_LABELS.ACCESS_TOKEN, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-          });
-          res.clearCookie(APP_LABELS.REFRESH_TOKEN, {
-            httpOnly : true,
-            secure : true,
-            sameSite : "strict"
-          })
-
-          res.clearCookie(APP_LABELS.ROLE,{
-            httpOnly : true,
-            secure : true,
-            sameSite : "strict"
-          })
+          const cookieOptions = getCookieOptions();
+          res.clearCookie(APP_LABELS.ACCESS_TOKEN, cookieOptions);
+          res.clearCookie(APP_LABELS.REFRESH_TOKEN, cookieOptions);
+          res.clearCookie(APP_LABELS.ROLE, cookieOptions);
           
           req.log.info({ userId },'Logout success');
           return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);

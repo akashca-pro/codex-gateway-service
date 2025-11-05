@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { setCookie } from "@/util/set-cookie";
+import { setCookie, getCookieOptions } from "@/util/set-cookie";
 import ResponseHandler from "@akashcapro/codex-shared-utils/dist/utils/response_handler";
 import HTTP_STATUS from "@akashcapro/codex-shared-utils/dist/utils/status_code";
 import { NextFunction, Request, Response } from "express";
@@ -50,21 +50,10 @@ export const authController = {
   logout : async(req : Request, res : Response, next : NextFunction) => {
       try {
           req.log.info('Admin logout request recieved');
-          res.clearCookie(APP_LABELS.ACCESS_TOKEN, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-          });
-          res.clearCookie(APP_LABELS.REFRESH_TOKEN, {
-            httpOnly : true,
-            secure : true,
-            sameSite : "strict"
-          })
-          res.clearCookie(APP_LABELS.ROLE,{
-            httpOnly : true,
-            secure : true,
-            sameSite : "strict"
-          })
+          const cookieOptions = getCookieOptions();
+          res.clearCookie(APP_LABELS.ACCESS_TOKEN, cookieOptions);
+          res.clearCookie(APP_LABELS.REFRESH_TOKEN, cookieOptions);
+          res.clearCookie(APP_LABELS.ROLE, cookieOptions);
           return ResponseHandler.success(res,'Logout Successfully',HTTP_STATUS.OK);
       } catch (error) {
         req.log.error('Admin logout request failed');

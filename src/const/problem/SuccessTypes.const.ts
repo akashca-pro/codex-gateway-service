@@ -15,5 +15,8 @@ export const PROBLEM_SUCCESS_TYPE = {
 } as const;
 
 export const SUBMISSION_SUCCESS_TYPE = {
-  LIST_SUBMISSIONS : 'Submission loaded successfully'
+  LIST_SUBMISSIONS : 'Submission loaded successfully',
+  GLOBAL_LEADERBOARD : 'Global leaderboard loaded successfully',
+  COUNTRY_LEADERBOARD : 'Country leaderboard loaded successfully',
+  DASHBOARD_STATS : 'Dashboard stats loaded successfully'
 } as const;
