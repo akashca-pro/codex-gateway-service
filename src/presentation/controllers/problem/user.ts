@@ -21,6 +21,7 @@ export const userProblemController = {
             const dto : SubmitCodeExecRequest = {
                 problemId,
                 userId : req.userId!,
+                username : req.username!,
                 language,
                 userCode,
                 ...(country ? { country : country } : {})
