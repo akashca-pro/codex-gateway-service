@@ -1,4 +1,4 @@
-import { GetDashboardStatsRequest, GetDashboardStatsResponse, ListProblemSpecificSubmissionRequest, ListProblemSpecificSubmissionResponse, ListTopKCountryLeaderboardRequest, ListTopKCountryLeaderboardResponse, SubmissionServiceClient } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { GetDashboardStatsRequest, GetDashboardStatsResponse, ListProblemSpecificSubmissionRequest, ListProblemSpecificSubmissionResponse, ListTopKCountryLeaderboardRequest, ListTopKCountryLeaderboardResponse, ListTopKGlobalLeaderboardRequest, ListTopKGlobalLeaderboardResponse, SubmissionServiceClient } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
@@ -31,8 +31,8 @@ export class GrpcSubmissionService extends GrpcBaseService {
     }
 
     listTopKGlobalLeaderboard = async (
-        request : ListTopKCountryLeaderboardRequest
-    ) : Promise<ListTopKCountryLeaderboardResponse> => {
+        request : ListTopKGlobalLeaderboardRequest
+    ) : Promise<ListTopKGlobalLeaderboardResponse> => {
         return this.grpcCall(
             this.#_client.listTopKGlobalLeaderboard.bind(this.#_client),
             request

@@ -9,7 +9,7 @@ export const LeaderboardController = {
         try {
             const { k } = req.validated?.query;
             req.log.info({ k }, 'Get top k global leaderboard request recieved');
-            const result = await grpcSubmissionClient.listTopKGlobalLeaderboard(k);
+            const result = await grpcSubmissionClient.listTopKGlobalLeaderboard({ k });
             req.log.info({ k },'Get top k global leaderboard response recieved');
             return ResponseHandler.success(
                 res,
