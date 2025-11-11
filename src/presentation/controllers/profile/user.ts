@@ -79,7 +79,8 @@ export const profileController = {
         return ResponseHandler.success(
           res,
           result.message,
-          HTTP_STATUS.OK
+          HTTP_STATUS.OK,
+          result.updatedData ?? null
         )
     } catch (error) {
       req.log.error({userId : req.userId , error},'Update profile failed')
