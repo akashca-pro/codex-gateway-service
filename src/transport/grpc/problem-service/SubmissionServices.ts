@@ -1,7 +1,8 @@
-import { GetDashboardStatsRequest, GetDashboardStatsResponse, ListProblemSpecificSubmissionRequest, ListProblemSpecificSubmissionResponse, ListTopKCountryLeaderboardRequest, ListTopKCountryLeaderboardResponse, ListTopKGlobalLeaderboardRequest, ListTopKGlobalLeaderboardResponse, SubmissionServiceClient } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
+import { GetDashboardStatsRequest, GetDashboardStatsResponse, GetProblemSubmissionStatsResponse, ListProblemSpecificSubmissionRequest, ListProblemSpecificSubmissionResponse, ListTopKCountryLeaderboardRequest, ListTopKCountryLeaderboardResponse, ListTopKGlobalLeaderboardRequest, ListTopKGlobalLeaderboardResponse, SubmissionServiceClient } from "@akashcapro/codex-shared-utils/dist/proto/compiled/gateway/problem";
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
+import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 
 /**
  * Class implementing the submission grpc client call.
@@ -54,6 +55,13 @@ export class GrpcSubmissionService extends GrpcBaseService {
         return this.grpcCall(
             this.#_client.getDashboardStats.bind(this.#_client),
             request
+        )
+    }
+
+    getProblemSubmissionStats = async () : Promise<GetProblemSubmissionStatsResponse> => {
+        return this.grpcCall(
+            this.#_client.getProblemSubmissionStats.bind(this.#_client),
+            Empty
         )
     }
 
