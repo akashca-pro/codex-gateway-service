@@ -7,6 +7,7 @@ import { verifyAccessToken } from '../middlewares/jwt';
 import { adminMetricRouter } from './metrics/admin';
 import { adminUserRouter } from './user-management/admin';
 import { APP_LABELS } from '@/const/labels.const';
+import { adminLeaderboardRouter } from './leaderboard/admin';
 
 export const adminRouter = express.Router();
 
@@ -43,6 +44,12 @@ adminRouter.use(
     verifyAccessToken(APP_LABELS.ADMIN),
     adminDashboardRouter
 );
+
+adminRouter.use(
+    '/leaderboard',
+    verifyAccessToken(APP_LABELS.ADMIN),
+    adminLeaderboardRouter
+)
 
 // User management routes.
 adminRouter.use(
