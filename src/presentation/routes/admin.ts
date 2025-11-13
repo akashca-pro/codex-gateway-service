@@ -53,7 +53,7 @@ adminRouter.use(
 
 // User management routes.
 adminRouter.use(
-  '/users',
-  verifyAccessToken(APP_LABELS.ADMIN),
-  adminUserRouter 
+    '/users',
+    verifyAccessToken(APP_LABELS.ADMIN),
+    adminUserRouter 
 );
