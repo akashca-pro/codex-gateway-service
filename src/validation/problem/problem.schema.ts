@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { codeSchema, DifficultySchemaEnum, escapeRegex, ExampleSchema, LanguageSchemaEnum, NonEmpty, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
+import { codeSchema, DifficultySchemaEnum, escapeRegex, ExampleSchema, LanguageSchemaEnum, NonEmpty, SolutionRoadmapSchema, StarterCodeSchema, TestCaseCollectionTypeEnum, TestCaseSchema } from "./helpers.schema";
 import { StrictString } from "../helper.schema";
 
 export const checkQuestionIdQuerySchema = z.object({
@@ -106,20 +106,22 @@ export const UpdateBasicProblemDetailsSchema = z.object({
 
   tags: z.array(StrictString('Tags').min(1).max(20))
   .nonempty("At least one tag is required")
-  .optional()
-  .default([]),
+  .optional(),
 
   constraints: z.array(NonEmpty)
-  .optional()
-  .default([]),
+  .optional(),
 
   examples: z.array(ExampleSchema)
-  .optional()
-  .default([]),
+  .optional(),
 
   starterCodes: z.array(StarterCodeSchema)
-  .optional()
-  .default([])
+  .optional(),
+
+  solutionRoadmap: z
+  .array(SolutionRoadmapSchema)
+  .min(5, "You must provide exactly 5 solution steps.")
+  .max(5, "You must provide exactly 5 solution steps.")
+  .optional(),
 });   
 
 export const AddTestCaseSchema = z.object({

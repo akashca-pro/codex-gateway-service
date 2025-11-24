@@ -116,7 +116,7 @@ export const adminProblemController = {
             const { problemId } = req.validated?.params;
             const { questionId, title, active } = req.validated?.body;
             req.log.info({ problemId, questionId, title, active }, 'Update basic problem details request recieved');
-            const { description, difficulty, tags, constraints, examples, starterCodes } = req.validated?.body;
+            const { description, difficulty, tags, constraints, examples, starterCodes, solutionRoadmap } = req.validated?.body;
 
             const dto : GrpcUpdateDTO = {
                 Id : problemId,
@@ -128,7 +128,8 @@ export const adminProblemController = {
                 tags : tags ?? [],
                 constraints : constraints ?? [],
                 examples : examples ?? [],
-                starterCodes : starterCodes ?? []
+                starterCodes : starterCodes ?? [],
+                solutionRoadmap : solutionRoadmap ?? [],
             }
             await grpcClient.updateBasicProblemDetails(dto);
             req.log.info({ problemId, questionId }, 'Update basic problem details gRPC response recieved');
