@@ -202,3 +202,12 @@ export const ListProblemSpecificsubmissionsSchemaQuery = z.object({
       .default(5),
     nextCursor : z.string().optional()
 })
+
+export const RequestHintSchema = z.object({
+  userCode: codeSchema,
+  language: z.enum(["javascript", "python", "go"], "language is required"),
+});
+
+export const RequestFullSolutionSchema = z.object({
+  language: z.enum(["javascript", "python", "go"], "language is required"),
+})

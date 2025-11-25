@@ -27,7 +27,7 @@ userRouter.use(
 // Problem routes
 userRouter.use(
     '/problems',
-    verifyAccessToken(APP_LABELS.USER),
+    // verifyAccessToken(APP_LABELS.USER),
     userProblemRouter
 )
 

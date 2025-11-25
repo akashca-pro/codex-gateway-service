@@ -92,5 +92,75 @@ export const userProblemController = {
             req.log.error({userId : req.userId},'List problem specific submissions failed')
             next(error);
         }
+    },
+
+    getPreviousHints : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { userId } = req;
+            req.log.info({userId},'Get previous hints request recieved')
+            const { problemId } = req.validated?.params;
+            const result = await grpcSubmissionClient.getPreviousHints({
+                userId : userId!,
+                problemId
+            })
+            req.log.info({userId, problemId},'Get previous hints response recieved')
+            return ResponseHandler.success(
+                res,
+                SUBMISSION_SUCCESS_TYPE.PREVIOUS_HINTS_FETCHED,
+                HTTP_STATUS.OK,
+                result
+            );
+        } catch (error) {
+            req.log.error({userId : req.userId},'Get previous hints failed')
+            next(error);
+        }
+    },
+
+    requestHint : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { userId } = req;
+            const { problemId } = req.validated?.params;
+            const { userCode, language } = req.body;
+            req.log.info({userId},'Request hint request recieved');
+            const result = await grpcSubmissionClient.requestHint({
+                userId : req.userId!,
+                problemId,
+                userCode,
+                language
+            })
+            req.log.info({userId, problemId},'Request hint response recieved');
+            return ResponseHandler.success(
+                res,
+                SUBMISSION_SUCCESS_TYPE.NEW_HINT_RECIEVIED,
+                HTTP_STATUS.OK,
+                result
+            )
+        } catch (error) {
+            req.log.error({userId : req.userId},'Request hint failed')
+            next(error);
+        }
+    },
+
+    requestFullSolution : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            const { userId } = req;
+            const { problemId } = req.validated?.params;
+            const { language } = req.body;
+            req.log.info({userId},'Request full solution request recieved');
+            const result = await grpcSubmissionClient.requestFullSolution({
+                userId : "9fd8f8e7-33ed-4542-86bc-f60455f5c96f",
+                problemId,
+                language
+            })
+            req.log.info({userId, problemId},'Request full solution response recieved');
+            return ResponseHandler.success(
+                res,
+                SUBMISSION_SUCCESS_TYPE.FULL_SOLUTION_RECIEVED,
+                HTTP_STATUS.OK,
+                result
+            )
+        } catch (error) {
+            next(error);
+        }
     }
 }

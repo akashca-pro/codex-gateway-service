@@ -18,5 +18,8 @@ export const SUBMISSION_SUCCESS_TYPE = {
   LIST_SUBMISSIONS : 'Submission loaded successfully',
   GLOBAL_LEADERBOARD : 'Global leaderboard loaded successfully',
   COUNTRY_LEADERBOARD : 'Country leaderboard loaded successfully',
-  DASHBOARD_STATS : 'Dashboard stats loaded successfully'
+  DASHBOARD_STATS : 'Dashboard stats loaded successfully',
+  PREVIOUS_HINTS_FETCHED : 'Previous hints fetched successfully',
+  NEW_HINT_RECIEVIED : 'New hint recieved successfully',
+  FULL_SOLUTION_RECIEVED : 'Full solution recieved successfully',
 } as const;
