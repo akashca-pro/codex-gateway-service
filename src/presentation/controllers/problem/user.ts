@@ -148,7 +148,7 @@ export const userProblemController = {
             const { language } = req.body;
             req.log.info({userId},'Request full solution request recieved');
             const result = await grpcSubmissionClient.requestFullSolution({
-                userId : "9fd8f8e7-33ed-4542-86bc-f60455f5c96f",
+                userId : req.userId!,
                 problemId,
                 language
             })

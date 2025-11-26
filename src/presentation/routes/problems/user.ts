@@ -16,7 +16,7 @@ userProblemRouter.get(
 
 // Get ai hint for a specific problem.
 userProblemRouter.post(
-    '/:problemId/hints',
+    '/:problemId/hints/request',
     validateRequest(ProblemIdParamsSchema, APP_LABELS.PARAM),
     validateRequest(RequestHintSchema),
     controller.requestHint
