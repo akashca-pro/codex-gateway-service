@@ -1,35 +1,153 @@
 import jwt from 'jsonwebtoken';
-import { config } from '../../config';
+import { config } from '@/config';
 import { Request, Response, NextFunction } from 'express';
-import logger from '@akashcapro/codex-shared-utils/dist/utils/logger';
+import logger from '@/util/pinoLogger';
 
 import { CustomJwtPayload } from '@akashcapro/codex-shared-utils'
 import ResponseHandler from '@akashcapro/codex-shared-utils/dist/utils/response_handler';
 import HTTP_STATUS from '@akashcapro/codex-shared-utils/dist/utils/status_code';
+import redis from '@/config/redis';
+import { REDIS_KEY_PREFIX } from '@/config/redis/keyPrefix';
+import { APP_LABELS } from '@/const/labels.const';
+import { APP_ERRORS } from '@/const/ErrorTypes.const';
 
-const verify_jwt = (token : string) : CustomJwtPayload => {
-    const secret = config.JWT_SECRET;
+const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
     return jwt.verify(token,secret) as CustomJwtPayload
 }
 
-export const jwt_middleware = (req : Request, res : Response, next : NextFunction) =>{
+export const verifyAccessToken = (acceptedRole : string) => async (
+    req : Request,
+    res : Response, 
+    next : NextFunction) =>{
 
-    const token = req.cookies?.token
+    const token = req.cookies[APP_LABELS.ACCESS_TOKEN]
 
     if(!token)
-        return ResponseHandler.error(res,'No token provided in cookies',HTTP_STATUS.UNAUTHORIZED)
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.TOKEN_NOT_FOUND,
+            HTTP_STATUS.UNAUTHORIZED
+        );
 
     try {
-        const decoded = verify_jwt(token);
+        const decoded = verifyJwt(
+            token, 
+            config.JWT_ACCESS_TOKEN_SECRET as string
+        );
+
+        if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.INVALID_TOKEN_PAYLOAD, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
+        }
+
+        if(decoded.role !== acceptedRole.toUpperCase())
+            return ResponseHandler.error(
+                res,
+                APP_ERRORS.ENTRY_RESTRICTED,
+                HTTP_STATUS.UNAUTHORIZED
+        );
+
+        // Check blacklist
+        const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
+        if (blacklisted) {
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.TOKEN_BLACKLISTED, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
+        }
+
+        // Check blocked user
+        if (req.path !== APP_LABELS.LOGOUT_PATH) {
+            const blocked = await redis.get(`${REDIS_KEY_PREFIX.USER_BLOCKED}:${decoded.userId}`);
+            if (blocked) {
+                return ResponseHandler.error(
+                    res, 
+                    APP_ERRORS.ACCOUNT_BLOCKED, 
+                    HTTP_STATUS.FORBIDDEN
+                );
+            }
+        }
+
         req.userId = decoded.userId;
         req.email = decoded.email;
+        req.username = decoded.username;
         req.role = decoded.role;
+        req.accessTokenId = decoded.tokenId;
+        req.accessTokenExp = decoded.exp;
+
         next();
         
     } catch (error) {
-        logger.error('JWT verification failed',error);
-        return ResponseHandler.error(res,'Invalid Token',HTTP_STATUS.UNAUTHORIZED)
+        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED,error);
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.INVALID_TOKEN_PAYLOAD,
+            HTTP_STATUS.UNAUTHORIZED
+        );
     }
 };
 
-export default jwt_middleware
+export const verifyRefreshToken = (acceptedRole : string) => async (
+    req : Request,
+    res : Response,
+    next : NextFunction) => {
+
+    const token = req.cookies[APP_LABELS.REFRESH_TOKEN];
+
+    if(!token)
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.TOKEN_NOT_FOUND,
+            HTTP_STATUS.UNAUTHORIZED
+    );
+
+    try {
+        const decoded = verifyJwt(token, config.JWT_REFRESH_TOKEN_SECRET as string);
+
+        if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.INVALID_TOKEN_PAYLOAD, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
+        }
+
+        if(decoded.role !== acceptedRole.toUpperCase())
+            return ResponseHandler.error(
+                res,
+                APP_ERRORS.ENTRY_RESTRICTED,
+                HTTP_STATUS.UNAUTHORIZED
+        );
+
+        // Check blacklist
+        const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
+        if (blacklisted) {
+            return ResponseHandler.error(
+                res, 
+                APP_ERRORS.TOKEN_BLACKLISTED, 
+                HTTP_STATUS.UNAUTHORIZED
+            );
+        }
+
+        req.userId = decoded.userId;
+        req.email = decoded.email;
+        req.username = decoded.username;
+        req.role = decoded.role;
+        req.refreshTokenId = decoded.tokenId;
+        req.refreshTokenExp = decoded.exp;
+        next();
+
+    } catch (error) {
+        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED,error);
+        return ResponseHandler.error(
+            res,
+            APP_ERRORS.INVALID_TOKEN_PAYLOAD,
+            HTTP_STATUS.UNAUTHORIZED
+        );
+    }
+}
+

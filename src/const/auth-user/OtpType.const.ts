@@ -1,0 +1,5 @@
+export const OTP_TYPE = {
+  SIGNUP: 'SIGNUP',
+  FORGOT_PASS: 'FORGOT_PASS',
+  CHANGE_EMAIL: 'CHANGE_EMAIL'
+} as const;

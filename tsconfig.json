@@ -13,7 +13,13 @@
     "typeRoots": ["src/domain/types", "./node_modules/@types"],
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+
+    "baseUrl": "./src",               
+    "paths": {
+      "@/*": ["*"]           
+    }
+
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
