@@ -21,6 +21,8 @@ interface Config {
   GRPC_PROBLEM_SERVICE_URL : string;
   GRPC_CODE_MANAGE_SERVICE_URL : string;
   GRPC_COLLAB_SERVICE_URL : string;
+  CLIENT_URL_1 : string;
+  CLIENT_URL_2 : string;
 }
 
 export const config: Config = {
@@ -43,4 +45,6 @@ export const config: Config = {
   GRPC_PROBLEM_SERVICE_URL : process.env.GRPC_PROBLEM_SERVICE_URL!,
   GRPC_CODE_MANAGE_SERVICE_URL : process.env.GRPC_CODE_MANAGE_SERVICE_URL!,
   GRPC_COLLAB_SERVICE_URL : process.env.GRPC_COLLAB_SERVICE_URL!,
+  CLIENT_URL_1 : process.env.CLIENT_URL_1!,
+  CLIENT_URL_2 : process.env.CLIENT_URL_2!,
 }

@@ -19,10 +19,6 @@ import { globalErrorHandler, notFound } from '@/util/errorHandlers'
 import { httpMetricsMiddleware } from './config/metrics/metricsMiddleware';
 import { publicRouter } from './presentation/routes/public';
 
-// const privateKey = fs.readFileSync('../../localhost+1-key.pem', 'utf8');
-// const certificate = fs.readFileSync('../../localhost+1.pem', 'utf8');
-// const credentials = { key: privateKey, cert: certificate };
-
 const app = express();
 app.use(httpLogger);
 
@@ -35,7 +31,7 @@ app.use(helmet());
 app.use(httpMetricsMiddleware);
 
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: [config.CLIENT_URL_1, config.CLIENT_URL_2],
   credentials: true,
   methods: ['GET', 'POST', 'PUT','PATCH','DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
