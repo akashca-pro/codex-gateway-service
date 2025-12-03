@@ -73,7 +73,8 @@ export const TestCaseSchema = z.object({
 // Example
 export const ExampleSchema = z.object({
   input: NonEmpty.min(1,'Input is required'),
-  output: NonEmpty.min(1,'Output is required')
+  output: NonEmpty.min(1,'Output is required'),
+  explanation : z.string().optional(),
 });
 
 // StarterCode
