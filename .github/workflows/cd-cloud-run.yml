@@ -34,4 +34,4 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --service-account ${{ secrets.GATEWAY_SA_EMAIL }} \
-            --set-secrets=/secrets/ca.pem=codex-ca:latest,/secrets/gateway.key=gateway-tls-key:latest,/secrets/gateway.pem=gateway-tls-cert:latest
+            --set-secrets=/secrets/ca/ca.pem=codex-ca:latest,/secrets/key/gateway.key=gateway-tls-key:latest,/secrets/cert/gateway.pem=gateway-tls-cert:latest
