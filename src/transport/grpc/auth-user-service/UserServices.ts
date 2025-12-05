@@ -5,9 +5,9 @@ import { credentials } from "@grpc/grpc-js";
 import fs from "fs";
 import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 
-const caCert = fs.readFileSync("/secrets/ca.pem");
-const clientKey = fs.readFileSync("/secrets/gateway.key");
-const clientCert = fs.readFileSync("/secrets/gateway.pem");
+const caCert = fs.readFileSync("/secrets/ca/ca.pem");
+const clientKey = fs.readFileSync("/secrets/key/gateway.key");
+const clientCert = fs.readFileSync("/secrets/cert/gateway.pem");
 
 /**
  * Class implementing the user grpc client call.
