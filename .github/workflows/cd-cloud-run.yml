@@ -1,4 +1,4 @@
-name: CD - Deploy to Cloud Run
+name: CD - Deploy Gateway to Cloud Run
 
 on:
   workflow_run:
@@ -13,8 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    if: >
-      github.event.workflow_run.conclusion == 'success'
+    if: github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: Authenticate to Google Cloud
@@ -33,4 +32,6 @@ jobs:
             --image docker.io/${{ env.IMAGE_NAME }}:latest \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --service-account ${{ secrets.GATEWAY_SA_EMAIL }} \
+            --set-secrets=/secrets/ca.pem=codex-ca:latest,/secrets/gateway.key=gateway-tls-key:latest,/secrets/gateway.pem=gateway-tls-cert:latest
