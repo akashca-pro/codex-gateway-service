@@ -11,6 +11,12 @@ import {
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
+import fs from "fs";
+
+const caCert = fs.readFileSync("/secrets/ca.pem");
+const clientKey = fs.readFileSync("/secrets/gateway.key");
+const clientCert = fs.readFileSync("/secrets/gateway.pem");
+
 
 /**
  * Class implementing the code manage grpc client call.
@@ -26,7 +32,7 @@ class GrpcCodeManageService extends GrpcBaseService {
         super();
         this.#_client = new CodeManageServiceClient(
             config.GRPC_CODE_MANAGE_SERVICE_URL,
-            credentials.createInsecure()
+            credentials.createSsl(caCert, clientKey, clientCert)
         )
     }
 
