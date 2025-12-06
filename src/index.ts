@@ -20,6 +20,7 @@ import { httpMetricsMiddleware } from './config/metrics/metricsMiddleware';
 import { publicRouter } from './presentation/routes/public';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(httpLogger);
 
 app.use(express.json());
