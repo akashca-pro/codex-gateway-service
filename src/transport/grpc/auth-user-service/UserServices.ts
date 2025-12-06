@@ -2,12 +2,8 @@ import { AuthUserServiceClient, ChangeEmailRequest, ChangePasswordRequest, Delet
 import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
-import fs from "fs";
 import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 
-// const caCert = fs.readFileSync("/secrets/ca/ca.pem");
-// const clientKey = fs.readFileSync("/secrets/key/gateway.key");
-// const clientCert = fs.readFileSync("/secrets/cert/gateway.pem");
 
 /**
  * Class implementing the user grpc client call.
@@ -23,7 +19,7 @@ class GrpcUserService extends GrpcBaseService {
         super();
         this.#_client = new AuthUserServiceClient(
             config.GRPC_AUTH_USER_SERVICE_URL!,
-            credentials.createInsecure()
+            credentials.createSsl()
         );
     }
 

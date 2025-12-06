@@ -8,12 +8,6 @@ import { GrpcBaseService } from "../GrpcBaseService";
 import { config } from "@/config";
 import { credentials } from "@grpc/grpc-js";
 import { Empty } from '@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty';
-import fs from "fs";
-
-// const caCert = fs.readFileSync("/secrets/ca/ca.pem");
-// const clientKey = fs.readFileSync("/secrets/key/gateway.key");
-// const clientCert = fs.readFileSync("/secrets/cert/gateway.pem");
-
 
 /**
  * Class implementing the collab service grpc client call.
@@ -29,7 +23,7 @@ export class GrpcCollabService extends GrpcBaseService {
         super();
         this.#_client = new SessionManagerClient(
             config.GRPC_COLLAB_SERVICE_URL,
-            credentials.createInsecure()
+            credentials.createSsl()
         )
     }
 
