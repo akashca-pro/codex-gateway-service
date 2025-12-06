@@ -20,9 +20,9 @@ import { credentials } from "@grpc/grpc-js";
 import { Empty } from "@akashcapro/codex-shared-utils/dist/proto/compiled/google/protobuf/empty";
 import fs from "fs";
 
-const caCert = fs.readFileSync("/secrets/ca/ca.pem");
-const clientKey = fs.readFileSync("/secrets/key/gateway.key");
-const clientCert = fs.readFileSync("/secrets/cert/gateway.pem");
+// const caCert = fs.readFileSync("/secrets/ca/ca.pem");
+// const clientKey = fs.readFileSync("/secrets/key/gateway.key");
+// const clientCert = fs.readFileSync("/secrets/cert/gateway.pem");
 
 
 /**
@@ -39,7 +39,7 @@ class GrpcProblemService extends GrpcBaseService {
         super();
         this.#_client = new ProblemServiceClient(
             config.GRPC_PROBLEM_SERVICE_URL!,
-            credentials.createSsl(caCert, clientKey, clientCert)
+            credentials.createInsecure()
         );
     }
 
