@@ -11,11 +11,12 @@ class RedisClient {
     public static getInstance() : Redis {
         if(!RedisClient.instance){
             RedisClient.instance = new Redis(config.REDIS_URL as string, {
+                tls : {},
                 retryStrategy : (times : number) => {
                     const delay = Math.min(times * 50,2000);
                     return delay
                 },
-                maxRetriesPerRequest : 3,
+                maxRetriesPerRequest : 10,
             });
             RedisClient.setupEventListeners();
         }
