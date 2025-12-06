@@ -26,7 +26,9 @@ app.use(httpLogger);
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(cookieParser())
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 
 // metrics middleware
 app.use(httpMetricsMiddleware);
