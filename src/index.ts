@@ -20,12 +20,15 @@ import { httpMetricsMiddleware } from './config/metrics/metricsMiddleware';
 import { publicRouter } from './presentation/routes/public';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(httpLogger);
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(cookieParser())
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 
 // metrics middleware
 app.use(httpMetricsMiddleware);
