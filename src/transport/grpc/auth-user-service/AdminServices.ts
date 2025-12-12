@@ -18,7 +18,7 @@ class GrpcAdminService extends GrpcBaseService {
         super();
         this.#_client = new AuthAdminServiceClient(
             config.GRPC_AUTH_USER_SERVICE_URL!,
-            credentials.createSsl()
+            credentials.createInsecure()
         );
     }
 

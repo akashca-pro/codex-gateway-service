@@ -27,7 +27,7 @@ class GrpcCodeManageService extends GrpcBaseService {
         super();
         this.#_client = new CodeManageServiceClient(
             config.GRPC_CODE_MANAGE_SERVICE_URL,
-            credentials.createSsl()
+            credentials.createInsecure()
         )
     }
 

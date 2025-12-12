@@ -19,7 +19,7 @@ class GrpcUserService extends GrpcBaseService {
         super();
         this.#_client = new AuthUserServiceClient(
             config.GRPC_AUTH_USER_SERVICE_URL!,
-            credentials.createSsl()
+            credentials.createInsecure()
         );
     }
 

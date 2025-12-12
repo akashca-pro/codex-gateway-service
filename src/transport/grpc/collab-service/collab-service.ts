@@ -23,7 +23,7 @@ export class GrpcCollabService extends GrpcBaseService {
         super();
         this.#_client = new SessionManagerClient(
             config.GRPC_COLLAB_SERVICE_URL,
-            credentials.createSsl()
+            credentials.createInsecure()
         )
     }
 
