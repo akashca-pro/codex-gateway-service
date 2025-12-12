@@ -33,7 +33,7 @@ class GrpcProblemService extends GrpcBaseService {
         super();
         this.#_client = new ProblemServiceClient(
             config.GRPC_PROBLEM_SERVICE_URL!,
-            credentials.createSsl()
+            credentials.createInsecure()
         );
     }
 
