@@ -1,6 +1,4 @@
 import './config/tracing'
-import https from 'https';
-import fs from 'fs';
 import express,{Request, Response} from 'express';
 import dotenv from 'dotenv'
 dotenv.config();
@@ -10,6 +8,8 @@ import logger from '@/util/pinoLogger';
 import { httpLogger } from '@/util/pinoLogger';
 import { config } from '@/config';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 
 // Routes
 
@@ -46,6 +46,19 @@ app.get('/health', (req : Request, res : Response)=>{
     req.log.info('Health check hit')
     return res.status(200).json({ status : 'OK' });
 })
+
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Codex Gateway API Documentation',
+}));
+
+// Swagger JSON download endpoint
+app.get('/api-docs/swagger.json', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', 'attachment; filename=swagger.json');
+  return res.json(swaggerSpec);
+});
 
 // Routes
 app.use('/api/v1/user', userRouter); // user auth and protected routes.
