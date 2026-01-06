@@ -4,8 +4,11 @@ import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middleware
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { adminLoginSchema } from '@/validation/auth/admin.schema';
 import { APP_LABELS } from '@/const/labels.const';
+import { authLimiter } from '@/presentation/middlewares/rate-limiter';
 
 export const adminAuthRouter = express.Router();
+
+adminAuthRouter.use(authLimiter);
 
 // Verify credentials and issue access and refresh token.
 adminAuthRouter.post(

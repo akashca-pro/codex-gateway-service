@@ -129,7 +129,22 @@ Strong validation for:
 
 ### **Rate Limiting**
 
-Protects against spam and brute-force attempts.
+The gateway implements route-specific rate limiting to protect against spam, brute-force attacks, and API abuse. Different routes have different limits based on their sensitivity and expected usage patterns.
+
+| Route Category                 | Rate Limiter         | Max Requests | Window | Use Case                                          |
+| ------------------------------ | -------------------- | ------------ | ------ | ------------------------------------------------- |
+| Authentication (`/auth/*`)     | `authLimiter`        | 10           | 15 min | Strict limit to prevent brute-force login attacks |
+| Problems (`/problems/*`)       | `problemsLimiter`    | 200          | 15 min | Generous limit for browsing problems              |
+| Code Execution (`/codepad/*`)  | `codepadLimiter`     | 50           | 15 min | Moderate limit for code submissions               |
+| Collaboration (`/collab/*`)    | `collabLimiter`      | 150          | 15 min | Allows frequent collab interactions               |
+| Profile (`/profile/*`)         | `profileLimiter`     | 100          | 15 min | Standard limit for profile operations             |
+| Leaderboard (`/leaderboard/*`) | `leaderboardLimiter` | 120          | 15 min | Allows frequent leaderboard checks                |
+| Dashboard (`/dashboard/*`)     | `dashboardLimiter`   | 100          | 15 min | Standard limit for dashboard views                |
+| Metrics (`/metrics/*`)         | `metricsLimiter`     | 30           | 15 min | Limited access to analytics data                  |
+| User Management (`/users/*`)   | `adminLimiter`       | 60           | 15 min | Security-focused limit for admin operations       |
+| Default                        | `defaultLimiter`     | 100          | 15 min | Fallback for unspecified routes                   |
+
+All rate limiters return standardized `429 Too Many Requests` responses with `RateLimit-*` headers.
 
 ### **Error Handler**
 

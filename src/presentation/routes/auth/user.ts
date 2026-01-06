@@ -4,13 +4,13 @@ import { verifyAccessToken, verifyRefreshToken } from '@/presentation/middleware
 
 import { validateRequest } from '@/presentation/middlewares/validateRequest';
 import { resetPasswordSchema, forgotPasswordSchema, resendOtpSchema, signupSchema, userLoginSchema, verifyOtpSchema, userGoogleLoginSchema } from '@/validation/auth/user.schema';
-import { limiter } from '@/presentation/middlewares/rate-limiter';
+import { authLimiter } from '@/presentation/middlewares/rate-limiter';
 import { emailSchema } from '@/validation/profile/user';
 import { APP_LABELS } from '@/const/labels.const';
 
 export const userAuthRouter = express.Router();
 
-userAuthRouter.use(limiter);
+userAuthRouter.use(authLimiter);
 
 // Register a new user and send otp for sign up verification.
 userAuthRouter.post(
